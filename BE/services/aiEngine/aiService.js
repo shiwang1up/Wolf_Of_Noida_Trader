@@ -5,6 +5,7 @@ const indicatorService = require('../indicators/indicatorService');
 const { PrismaClient } = require('@prisma/client');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
+const logger = require('../../utils/logger');
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
@@ -24,20 +25,20 @@ class AIEngineService {
      */
     async _queryLLM(systemPrompt, marketStatePayload) {
         if (this.groq) {
-            console.log("Using Groq API for Market reasoning");
+            logger.info("Using Groq API for Market reasoning");
             const completion = await this.groq.chat.completions.create({
                 messages: [
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: JSON.stringify(marketStatePayload) }
                 ],
-                model: 'llama3-70b-8192',
+                model: 'openai/gpt-oss-120b',
                 response_format: { type: "json_object" }
             });
             return completion.choices[0].message.content;
         }
 
         if (this.genAI) {
-            console.log("Using Gemini API for Market reasoning");
+            logger.info("Using Gemini API for Market reasoning");
             const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
             const prompt = `${systemPrompt}\n\nMarket State:\n${JSON.stringify(marketStatePayload)}`;
             const result = await model.generateContent(prompt);
@@ -45,7 +46,7 @@ class AIEngineService {
         }
 
         if (this.openai) {
-            console.log("Using OpenAI API for Market reasoning");
+            logger.info("Using OpenAI API for Market reasoning");
             const completion = await this.openai.chat.completions.create({
                 messages: [
                     { role: 'system', content: systemPrompt },
@@ -116,11 +117,14 @@ class AIEngineService {
       }`;
 
             // 5. Query the LLM dynamically
+            logger.info('[AI Engine] Market State Payload being sent to LLM:', JSON.stringify(marketStatePayload, null, 2));
             const resultStr = await this._queryLLM(systemPrompt, marketStatePayload);
 
             // Strip out markdown formatting if Gemini/Groq appends ```json
             const cleanStr = resultStr.replace(/```json/g, '').replace(/```/g, '').trim();
             const parsedResult = JSON.parse(cleanStr);
+
+            logger.info(`[AI Engine] LLM Reasoning for ${symbol}:`, parsedResult.reasoning);
 
             // 6. Save the Signal to database
             const signalRecord = await prisma.signal.create({
@@ -135,10 +139,10 @@ class AIEngineService {
                 }
             });
 
-            console.log(`[AI Engine] Generated signal for ${symbol}: ${parsedResult.action}`);
+            logger.info(`[AI Engine] Generated signal for ${symbol}: ${parsedResult.action}`);
             return signalRecord;
         } catch (error) {
-            console.error('[AI Engine Error] Error generating signal:', error.message);
+            logger.error('[AI Engine Error] Error generating signal:', error.message);
             throw error;
         }
     }

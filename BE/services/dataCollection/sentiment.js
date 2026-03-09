@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require('../../utils/logger');
 
 class SentimentService {
     constructor() {
@@ -19,7 +20,7 @@ class SentimentService {
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching Fear & Greed Index:', error.message);
+            logger.error('Error fetching Fear & Greed Index:', error.message);
             throw error;
         }
     }
@@ -29,7 +30,7 @@ class SentimentService {
      */
     async getNews(filter = 'rising', currencies = 'BTC,ETH') {
         if (!this.cryptoPanicToken) {
-            console.warn('CryptoPanic token is missing.');
+            logger.warn('CryptoPanic token is missing.');
             return null;
         }
 
@@ -44,7 +45,7 @@ class SentimentService {
             });
             return response.data.results;
         } catch (error) {
-            console.error('Error fetching News from CryptoPanic:', error.message);
+            logger.error('Error fetching News from CryptoPanic:', error.message);
             throw error;
         }
     }

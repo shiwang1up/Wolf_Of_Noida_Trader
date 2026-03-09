@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require('../../utils/logger');
 
 class CryptoCompareService {
     constructor() {
@@ -21,7 +22,7 @@ class CryptoCompareService {
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching multiple prices from CryptoCompare:', error.message);
+            logger.error('Error fetching multiple prices from CryptoCompare:', error.message);
             throw error;
         }
     }
@@ -44,7 +45,7 @@ class CryptoCompareService {
             }
             throw new Error(response.data.Message);
         } catch (error) {
-            console.error(`Error fetching historical daily for ${fsym}:`, error.message);
+            logger.error(`Error fetching historical daily for ${fsym}:`, error.message);
             throw error;
         }
     }

@@ -1,5 +1,6 @@
 const axios = require('axios');
 const crypto = require('crypto');
+const logger = require('../../utils/logger');
 
 class CoinDCXService {
     constructor() {
@@ -13,7 +14,7 @@ class CoinDCXService {
      */
     _getAuthHeaders(payload = {}) {
         if (!this.apiKey || !this.apiSecret) {
-            console.warn("CoinDCX API keys are missing!");
+            logger.warn("CoinDCX API keys are missing!");
             return {};
         }
 
@@ -48,7 +49,7 @@ class CoinDCXService {
             });
             return response.data;
         } catch (error) {
-            console.error(`Error fetching candles for ${pair}:`, error.message);
+            logger.error(`Error fetching candles for ${pair}:`, error.message);
             throw error;
         }
     }
@@ -63,7 +64,7 @@ class CoinDCXService {
             });
             return response.data;
         } catch (error) {
-            console.error(`Error fetching orderbook for ${pair}:`, error.message);
+            logger.error(`Error fetching orderbook for ${pair}:`, error.message);
             throw error;
         }
     }
