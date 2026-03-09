@@ -2,6 +2,9 @@ const { OpenAI } = require('openai');
 const Groq = require('groq-sdk');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const indicatorService = require('../indicators/indicatorService');
+const cryptocompareService = require('../dataCollection/cryptocompare');
+const coindcxService = require('../dataCollection/coindcx');
+const sentimentService = require('../dataCollection/sentiment');
 const { PrismaClient } = require('@prisma/client');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -89,6 +92,47 @@ class AIEngineService {
                 where: { source: 'FearGreedIndex' }
             });
 
+            // 3a. Fetch Live Orderbook (Top 3 Bids/Asks)
+            let orderbookSummary = null;
+            try {
+                const obData = await coindcxService.getOrderbook(symbol);
+                if (obData && obData.bids && obData.asks) {
+                    const sortedBids = Object.entries(obData.bids).sort((a, b) => parseFloat(b[0]) - parseFloat(a[0])).slice(0, 3);
+                    const sortedAsks = Object.entries(obData.asks).sort((a, b) => parseFloat(a[0]) - parseFloat(b[0])).slice(0, 3);
+
+                    orderbookSummary = {
+                        topBids: sortedBids,
+                        topAsks: sortedAsks
+                    };
+                }
+            } catch (e) {
+                logger.warn('Failed to fetch orderbook for AI payload:', e.message);
+            }
+
+            // 3b. Fetch Social Stats from CryptoCompare
+            let socialSummary = null;
+            try {
+                // Defaulting to BTC for this specific pair
+                const socialData = await cryptocompareService.getSocialData(1182);
+                if (socialData) {
+                    socialSummary = {
+                        totalPoints: socialData.General?.Points,
+                        redditSubscribers: socialData.Reddit?.subscribers,
+                        twitterFollowers: socialData.Twitter?.followers,
+                    };
+                }
+            } catch (e) {
+                logger.warn('Failed to fetch social data for AI payload:', e.message);
+            }
+
+            // 3c. Fetch Latest Crypto News from CryptoPanic
+            let newsHeadlines = null;
+            try {
+                newsHeadlines = await sentimentService.getNews('rising', 'BTC,ETH');
+            } catch (e) {
+                logger.warn('Failed to fetch CryptoPanic news for AI payload:', e.message);
+            }
+
             // 4. Construct Prompt payload
             const marketStatePayload = {
                 symbol,
@@ -103,11 +147,14 @@ class AIEngineService {
                 marketSentiment: latestSentiment ? {
                     score: latestSentiment.score, // e.g. 0 to 100
                     label: latestSentiment.label
-                } : 'Unknown'
+                } : 'Unknown',
+                orderbook: orderbookSummary || 'Unavailable',
+                socialStats: socialSummary || 'Unavailable',
+                latestNewsHeadlines: newsHeadlines || 'Unavailable'
             };
 
             const systemPrompt = `You are an expert Crypto Trading AI. 
-      Given the current technical indicators and market sentiment, determine the best trading action.
+      Given the current technical indicators, Fear & Greed market sentiment, live Orderbook resting liquidity, Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
       You must respond in pure JSON format:
       {
         "action": "BUY" | "SELL" | "HOLD",
@@ -117,7 +164,23 @@ class AIEngineService {
       }`;
 
             // 5. Query the LLM dynamically
-            logger.info('[AI Engine] Market State Payload being sent to LLM:', JSON.stringify(marketStatePayload, null, 2));
+            logger.info('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            logger.info('  [AI ENGINE] DATA BEING FED TO LLM');
+            logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            logger.info(`  📈 Price       : $${marketStatePayload.currentPrice}`);
+            logger.info(`  📊 RSI         : ${marketStatePayload.indicators.rsi?.toFixed(2)}`);
+            logger.info(`  📊 MACD Hist   : ${marketStatePayload.indicators.macd?.histogram?.toFixed(2)}`);
+            logger.info(`  📊 Bollinger %B: ${marketStatePayload.indicators.bollingerBands?.pb?.toFixed(3)}`);
+            logger.info(`  📊 EMA20       : ${marketStatePayload.indicators.ema20?.toFixed(2)}`);
+            logger.info(`  📊 EMA50       : ${marketStatePayload.indicators.ema50?.toFixed(2)}`);
+            logger.info(`  😱 Fear & Greed: ${marketStatePayload.marketSentiment?.score} (${marketStatePayload.marketSentiment?.label})`);
+            logger.info(`  📖 Orderbook   : Top Bid ${marketStatePayload.orderbook?.topBids?.[0]?.[0]} | Top Ask ${marketStatePayload.orderbook?.topAsks?.[0]?.[0]}`);
+            logger.info(`  👥 Social      : Reddit ${marketStatePayload.socialStats?.redditSubscribers?.toLocaleString()} | Twitter ${marketStatePayload.socialStats?.twitterFollowers?.toLocaleString()}`);
+            if (marketStatePayload.latestNewsHeadlines && Array.isArray(marketStatePayload.latestNewsHeadlines)) {
+                logger.info('  📰 News Headlines:');
+                marketStatePayload.latestNewsHeadlines.forEach((h, i) => logger.info(`     ${i + 1}. ${h}`));
+            }
+            logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
             const resultStr = await this._queryLLM(systemPrompt, marketStatePayload);
 
             // Strip out markdown formatting if Gemini/Groq appends ```json

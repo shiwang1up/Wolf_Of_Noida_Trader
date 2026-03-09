@@ -49,6 +49,27 @@ class CryptoCompareService {
             throw error;
         }
     }
+
+    /**
+     * Fetch social statistics for a coin (defaults to coinId 1182 for BTC).
+     */
+    async getSocialData(coinId = 1182) {
+        try {
+            const response = await axios.get(`${this.baseUrl}/social/coin/latest`, {
+                params: {
+                    coinId,
+                    api_key: this.apiKey,
+                }
+            });
+            if (response.data.Response === 'Success') {
+                return response.data.Data;
+            }
+            throw new Error(response.data.Message || 'Failed to fetch social data');
+        } catch (error) {
+            logger.error(`Error fetching social data for coinId ${coinId}:`, error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = new CryptoCompareService();
