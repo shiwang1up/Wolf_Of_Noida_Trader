@@ -105,8 +105,10 @@ class IndicatorService {
         const lastVol = volumes[volumes.length - 1];
 
         // Support/Resistance (Min/Max of last 100)
-        const support = Math.min(...lowPrices);
-        const resistance = Math.max(...highPrices);
+        const recentHighs = highPrices.slice(-100);
+        const recentLows = lowPrices.slice(-100);
+        const support = Math.min(...recentLows);
+        const resistance = Math.max(...recentHighs);
 
         // Volume Spike (Current Vol / Avg Vol of last 20)
         let volSpike = 0;
@@ -124,9 +126,17 @@ class IndicatorService {
         }
 
         // Momentum changes
-        const getMomentum = (interval) => {
-            if (closePrices.length > interval) {
-                const oldPrice = closePrices[closePrices.length - 1 - interval];
+        // NOTE: Offsets are in "number of candles" and currently tuned for 1m candles.
+        // If you use a different timeframe, update these offsets or derive them from timeframe.
+        const MOMENTUM_OFFSETS = {
+            M1_CANDLES: 1,   // 1 candle @ 1m -> ~1 minute momentum
+            M5_CANDLES: 5,   // 5 candles @ 1m -> ~5 minute momentum
+            H1_CANDLES: 60,  // 60 candles @ 1m -> ~1 hour momentum
+        };
+
+        const getMomentum = (candleOffset) => {
+            if (closePrices.length > candleOffset) {
+                const oldPrice = closePrices[closePrices.length - 1 - candleOffset];
                 return ((currentPrice - oldPrice) / oldPrice) * 100;
             }
             return 0;
@@ -141,9 +151,10 @@ class IndicatorService {
             volumeSpike: volSpike,
             buySellRatio: buySellRatio,
             momentum: {
-                m1: getMomentum(1),
-                m5: getMomentum(5),
-                h1: getMomentum(60)
+                // These labels (m1, m5, h1) assume 1m candles; see MOMENTUM_OFFSETS above.
+                m1: getMomentum(MOMENTUM_OFFSETS.M1_CANDLES),
+                m5: getMomentum(MOMENTUM_OFFSETS.M5_CANDLES),
+                h1: getMomentum(MOMENTUM_OFFSETS.H1_CANDLES)
             },
             rsi: rsi.length > 0 ? rsi[rsi.length - 1] : null,
             macd: macd.length > 0 ? macd[macd.length - 1] : null,

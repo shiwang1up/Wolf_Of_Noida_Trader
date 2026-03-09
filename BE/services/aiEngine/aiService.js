@@ -254,7 +254,7 @@ class AIEngineService {
             // Ensure risk_level is a valid string before calling toUpperCase()
             const riskLevelStr = typeof parsedResult.risk_level === 'string'
                 ? parsedResult.risk_level.toUpperCase()
-                : 'SOME_ISSUE_RISK!==string';
+                : 'UNKNOWN';
 
             // 6. Save the Signal to database
             const signalRecord = await prisma.signal.create({
