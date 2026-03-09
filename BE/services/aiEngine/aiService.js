@@ -111,9 +111,9 @@ class AIEngineService {
       You must respond in pure JSON format:
       {
         "action": "BUY" | "SELL" | "HOLD",
-        "confidenceScore": 85.5,
+        "confidenceScore": 8.5, // A score out of 10 (e.g. 1 to 10)
         "riskLevel": "LOW" | "MEDIUM" | "HIGH",
-        "reasoning": "string of 2-3 sentences explaining the logic"
+        "reasoning": "string of 2-3 sentences explaining the logic for the chosen action AND explicitly justifying why the confidence score is what it is."
       }`;
 
             // 5. Query the LLM dynamically
@@ -139,7 +139,7 @@ class AIEngineService {
                 }
             });
 
-            logger.info(`[AI Engine] Generated signal for ${symbol}: ${parsedResult.action}`);
+            logger.info(`[AI Engine] Generated signal for ${symbol}: ${parsedResult.action} (Confidence: ${parsedResult.confidenceScore}/10)`);
             return signalRecord;
         } catch (error) {
             logger.error('[AI Engine Error] Error generating signal:', error.message);
