@@ -34,7 +34,8 @@ class AIEngineService {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: JSON.stringify(marketStatePayload) }
                 ],
-                model: 'openai/gpt-oss-120b',
+                model: 'qwen/qwen3-32b',
+                // model: 'openai/gpt-oss-120b',
                 response_format: { type: "json_object" }
             });
             return completion.choices[0].message.content;
@@ -125,12 +126,29 @@ class AIEngineService {
                 logger.warn('Failed to fetch social data for AI payload:', e.message);
             }
 
-            // 3c. Fetch Latest Crypto News from CryptoPanic
+            // 3c. Fetch Latest Cached Crypto News from DB
             let newsHeadlines = null;
             try {
-                newsHeadlines = await sentimentService.getNews('rising', 'BTC,ETH');
+                const cachedNews = await prisma.news.findFirst({
+                    orderBy: { timestamp: 'desc' },
+                    where: { source: 'CryptoPanic' }
+                });
+                if (cachedNews && cachedNews.headlines) {
+                    newsHeadlines = cachedNews.headlines;
+                }
             } catch (e) {
-                logger.warn('Failed to fetch CryptoPanic news for AI payload:', e.message);
+                logger.warn('Failed to fetch cached CryptoPanic news for AI payload:', e.message);
+            }
+
+            // 3d. Fetch Global Market Metrics (CoinGecko)
+            let globalMetrics = { totalMarketCap: 0, btcDominance: 0 };
+            try {
+                const metrics = await cryptocompareService.getGlobalMarketData();
+                if (metrics && metrics.totalMarketCap && metrics.btcDominance) {
+                    globalMetrics = metrics;
+                }
+            } catch (e) {
+                logger.warn('Failed to fetch global market data for AI payload:', e.message);
             }
 
             // 4. Construct Prompt payload
@@ -142,8 +160,21 @@ class AIEngineService {
                     macd: features.macd,
                     bollingerBands: features.bollingerBands,
                     ema20: features.ema20,
-                    ema50: features.ema50
+                    ema50: features.ema50,
+                    adx: features.adx,
+                    atr: features.atr
                 },
+                marketStructure: {
+                    support: features.support,
+                    resistance: features.resistance
+                },
+                volume: {
+                    lastVolume: features.volume,
+                    volumeSpikePercent: features.volumeSpike,
+                    buySellRatio: features.buySellRatio
+                },
+                momentum: features.momentum,
+                marketContext: globalMetrics,
                 marketSentiment: latestSentiment ? {
                     score: latestSentiment.score, // e.g. 0 to 100
                     label: latestSentiment.label
@@ -154,25 +185,39 @@ class AIEngineService {
             };
 
             const systemPrompt = `You are an expert Crypto Trading AI. 
-      Given the current technical indicators, Fear & Greed market sentiment, live Orderbook resting liquidity, Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
-      You must respond in pure JSON format:
+      Given the current technical indicators, Market Structure (Support/Resistance), Volume data, Momentum changes, Broad Market Context (BTC Dominance/Market Cap), Fear & Greed market sentiment, live Orderbook resting liquidity, Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
+      You must respond in pure JSON format exactly matching this schema:
       {
-        "action": "BUY" | "SELL" | "HOLD",
-        "confidenceScore": 8.5, // A score out of 10 (e.g. 1 to 10)
-        "riskLevel": "LOW" | "MEDIUM" | "HIGH",
-        "reasoning": "string of 2-3 sentences explaining the logic for the chosen action AND explicitly justifying why the confidence score is what it is."
+        "signal": "BUY" | "SELL" | "HOLD",
+        "confidence": 6.5,
+        "trend": "bullish" | "bearish" | "ranging",
+        "momentum": "strengthening" | "weakening" | "neutral",
+        "sentiment": "extreme fear" | "fear" | "neutral" | "greed" | "extreme greed",
+        "risk_level": "low" | "medium" | "high",
+        "reasoning": [
+          "string explaining point 1",
+          "string explaining point 2",
+          "string explaining point 3"
+        ],
+        "summary": "1 sentence summarizing the overall decision."
       }`;
 
             // 5. Query the LLM dynamically
-            logger.info('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             logger.info('  [AI ENGINE] DATA BEING FED TO LLM');
             logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             logger.info(`  📈 Price       : $${marketStatePayload.currentPrice}`);
+            logger.info(`  🧱 Structure   : Support ${marketStatePayload.marketStructure?.support?.toFixed(1)} | Resistance ${marketStatePayload.marketStructure?.resistance?.toFixed(1)}`);
             logger.info(`  📊 RSI         : ${marketStatePayload.indicators.rsi?.toFixed(2)}`);
             logger.info(`  📊 MACD Hist   : ${marketStatePayload.indicators.macd?.histogram?.toFixed(2)}`);
             logger.info(`  📊 Bollinger %B: ${marketStatePayload.indicators.bollingerBands?.pb?.toFixed(3)}`);
             logger.info(`  📊 EMA20       : ${marketStatePayload.indicators.ema20?.toFixed(2)}`);
             logger.info(`  📊 EMA50       : ${marketStatePayload.indicators.ema50?.toFixed(2)}`);
+            logger.info(`  📊 ADX         : ${marketStatePayload.indicators.adx?.toFixed(2)}`);
+            logger.info(`  📊 ATR         : ${marketStatePayload.indicators.atr?.toFixed(2)}`);
+            logger.info(`  🔊 Volume      : ${marketStatePayload.volume?.lastVolume?.toFixed(2)} BTC (Spike: ${marketStatePayload.volume?.volumeSpikePercent?.toFixed(1)}%) | B/S Ratio: ${marketStatePayload.volume?.buySellRatio?.toFixed(2)}`);
+            logger.info(`  🚀 Momentum    : 1m ${marketStatePayload.momentum?.m1?.toFixed(2)}% | 5m ${marketStatePayload.momentum?.m5?.toFixed(2)}% | 1h ${marketStatePayload.momentum?.h1?.toFixed(2)}%`);
+            logger.info(`  🌍 Market Ctx  : BTC Dom. ${marketStatePayload.marketContext?.btcDominance?.toFixed(1)}% | MCap $${(marketStatePayload.marketContext?.totalMarketCap / 1e12).toFixed(2)}T`);
             logger.info(`  😱 Fear & Greed: ${marketStatePayload.marketSentiment?.score} (${marketStatePayload.marketSentiment?.label})`);
             logger.info(`  📖 Orderbook   : Top Bid ${marketStatePayload.orderbook?.topBids?.[0]?.[0]} | Top Ask ${marketStatePayload.orderbook?.topAsks?.[0]?.[0]}`);
             logger.info(`  👥 Social      : Reddit ${marketStatePayload.socialStats?.redditSubscribers?.toLocaleString()} | Twitter ${marketStatePayload.socialStats?.twitterFollowers?.toLocaleString()}`);
@@ -183,26 +228,48 @@ class AIEngineService {
             logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
             const resultStr = await this._queryLLM(systemPrompt, marketStatePayload);
 
-            // Strip out markdown formatting if Gemini/Groq appends ```json
-            const cleanStr = resultStr.replace(/```json/g, '').replace(/```/g, '').trim();
-            const parsedResult = JSON.parse(cleanStr);
+            if (!resultStr) {
+                throw new Error("LLM returned an empty or undefined response.");
+            }
 
-            logger.info(`[AI Engine] LLM Reasoning for ${symbol}:`, parsedResult.reasoning);
+            let parsedResult;
+            try {
+                // Strip out markdown formatting if Gemini/Groq appends ```json
+                const cleanStr = resultStr.replace(/```json/g, '').replace(/```/g, '').trim();
+                parsedResult = JSON.parse(cleanStr);
+            } catch (err) {
+                logger.error('[AI Engine] Failed to parse LLM Response. Raw Output:', resultStr);
+                throw new Error("LLM output is not valid JSON.");
+            }
+
+            logger.info(`[AI Engine] LLM Reasoning for ${symbol}:`, parsedResult.summary);
+            logger.info(`[AI Engine] Trend: ${parsedResult.trend} | Momentum: ${parsedResult.momentum} | Sub-sentiment: ${parsedResult.sentiment}`);
+
+            // Construct reasoning string for DB compatibility
+            let reasoningStr = parsedResult.summary;
+            if (parsedResult.reasoning && Array.isArray(parsedResult.reasoning)) {
+                reasoningStr += "\n\nPoints:\n- " + parsedResult.reasoning.join("\n- ");
+            }
+
+            // Ensure risk_level is a valid string before calling toUpperCase()
+            const riskLevelStr = typeof parsedResult.risk_level === 'string'
+                ? parsedResult.risk_level.toUpperCase()
+                : 'UNKNOWN';
 
             // 6. Save the Signal to database
             const signalRecord = await prisma.signal.create({
                 data: {
                     symbol,
-                    action: parsedResult.action,
-                    confidenceScore: parsedResult.confidenceScore,
-                    riskLevel: parsedResult.riskLevel,
-                    reasoning: parsedResult.reasoning,
+                    action: parsedResult.signal,              // mapped from "signal"
+                    confidenceScore: parsedResult.confidence, // mapped from "confidence"
+                    riskLevel: riskLevelStr,                  // securely casted
+                    reasoning: reasoningStr,
                     currentPrice: features.currentPrice,
                     timestamp: new Date()
                 }
             });
 
-            logger.info(`[AI Engine] Generated signal for ${symbol}: ${parsedResult.action} (Confidence: ${parsedResult.confidenceScore}/10)`);
+            logger.info(`[AI Engine] Generated signal for ${symbol}: ${signalRecord.action} (Confidence: ${signalRecord.confidenceScore}/10)`);
             return signalRecord;
         } catch (error) {
             logger.error('[AI Engine Error] Error generating signal:', error.message);

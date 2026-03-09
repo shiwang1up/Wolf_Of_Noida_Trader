@@ -47,3 +47,11 @@ model Signal {
   
   createdAt       DateTime @default(now())
 }
+
+model News {
+  id          Int      @id @default(autoincrement())
+  source      String   // e.g., "CryptoPanic"
+  headlines   Json     // Array of headline strings
+  timestamp   DateTime // Time fetched
+  createdAt   DateTime @default(now())
+}
