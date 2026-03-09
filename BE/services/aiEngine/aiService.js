@@ -141,9 +141,12 @@ class AIEngineService {
             }
 
             // 3d. Fetch Global Market Metrics (CoinGecko)
-            let globalMetrics = null;
+            let globalMetrics = { totalMarketCap: 0, btcDominance: 0 };
             try {
-                globalMetrics = await cryptocompareService.getGlobalMarketData();
+                const metrics = await cryptocompareService.getGlobalMarketData();
+                if (metrics && metrics.totalMarketCap && metrics.btcDominance) {
+                    globalMetrics = metrics;
+                }
             } catch (e) {
                 logger.warn('Failed to fetch global market data for AI payload:', e.message);
             }
@@ -171,7 +174,7 @@ class AIEngineService {
                     buySellRatio: features.buySellRatio
                 },
                 momentum: features.momentum,
-                marketContext: globalMetrics || 'Unavailable',
+                marketContext: globalMetrics,
                 marketSentiment: latestSentiment ? {
                     score: latestSentiment.score, // e.g. 0 to 100
                     label: latestSentiment.label
@@ -248,13 +251,18 @@ class AIEngineService {
                 reasoningStr += "\n\nPoints:\n- " + parsedResult.reasoning.join("\n- ");
             }
 
+            // Ensure risk_level is a valid string before calling toUpperCase()
+            const riskLevelStr = typeof parsedResult.risk_level === 'string'
+                ? parsedResult.risk_level.toUpperCase()
+                : 'SOME_ISSUE_RISK!==string';
+
             // 6. Save the Signal to database
             const signalRecord = await prisma.signal.create({
                 data: {
                     symbol,
                     action: parsedResult.signal,              // mapped from "signal"
                     confidenceScore: parsedResult.confidence, // mapped from "confidence"
-                    riskLevel: parsedResult.risk_level.toUpperCase(), // mapped from "risk_level"
+                    riskLevel: riskLevelStr,                  // securely casted
                     reasoning: reasoningStr,
                     currentPrice: features.currentPrice,
                     timestamp: new Date()
