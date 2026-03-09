@@ -1,10 +1,10 @@
 const axios = require('axios');
+const logger = require('../../utils/logger');
 
 class SentimentService {
     constructor() {
         this.fearGreedBaseUrl = 'https://api.alternative.me/fng/';
-        this.cryptoPanicBaseUrl = 'https://cryptopanic.com/api/v1/posts/';
-        // Need a free API key from cryptopanic inside the dashboard to actually fetch
+        this.cryptoPanicBaseUrl = 'https://cryptopanic.com/api/developer/v2/posts/';
         this.cryptoPanicToken = process.env.CRYPTOPANIC_TOKEN;
     }
 
@@ -19,7 +19,7 @@ class SentimentService {
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching Fear & Greed Index:', error.message);
+            logger.error('Error fetching Fear & Greed Index:', error.message);
             throw error;
         }
     }
@@ -29,7 +29,7 @@ class SentimentService {
      */
     async getNews(filter = 'rising', currencies = 'BTC,ETH') {
         if (!this.cryptoPanicToken) {
-            console.warn('CryptoPanic token is missing.');
+            logger.warn('CryptoPanic token is missing.');
             return null;
         }
 
@@ -37,15 +37,17 @@ class SentimentService {
             const response = await axios.get(this.cryptoPanicBaseUrl, {
                 params: {
                     auth_token: this.cryptoPanicToken,
-                    filter,
                     currencies,
                     public: 'true'
-                }
+                },
+                headers: { 'Content-Type': 'application/json' }
             });
-            return response.data.results;
+            // Return only the titles as a compact list for the AI prompt
+            const results = response.data.results || [];
+            return results.slice(0, 15).map(post => post.title);
         } catch (error) {
-            console.error('Error fetching News from CryptoPanic:', error.message);
-            throw error;
+            logger.error('Error fetching News from CryptoPanic:', error.message);
+            return null;
         }
     }
 }
