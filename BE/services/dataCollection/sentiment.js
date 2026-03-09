@@ -26,25 +26,37 @@ class SentimentService {
 
     /**
      * Fetch recent news headlines from CryptoPanic.
+     * Allowed filters: 'rising', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol'
      */
-    async getNews(filter = 'rising', currencies = 'BTC,ETH') {
+    async getNews(filters = 'important', currencies = 'BTC,ETH') {
         if (!this.cryptoPanicToken) {
             logger.warn('CryptoPanic token is missing.');
             return null;
         }
+
+        // Validate against CryptoPanic's supported filters
+        const allowedFilters = ['rising', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol'];
+
+        // Handle array or comma-separated string
+        let filterStr = Array.isArray(filters) ? filters.join(',') : filters;
+
+        // If a user passed an invalid filter, fallback to 'important'
+        const validatedFilters = filterStr.split(',').filter(f => allowedFilters.includes(f.trim()));
+        if (validatedFilters.length === 0) validatedFilters.push('important');
 
         try {
             const response = await axios.get(this.cryptoPanicBaseUrl, {
                 params: {
                     auth_token: this.cryptoPanicToken,
                     currencies,
+                    filter: validatedFilters.join(','),
                     public: 'true'
                 },
                 headers: { 'Content-Type': 'application/json' }
             });
             // Return only the titles as a compact list for the AI prompt
             const results = response.data.results || [];
-            return results.slice(0, 15).map(post => post.title);
+            return results.slice(0, 20).map(post => post.title);
         } catch (error) {
             logger.error('Error fetching News from CryptoPanic:', error.message);
             return null;

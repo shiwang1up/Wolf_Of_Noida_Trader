@@ -9,14 +9,10 @@ const logger = {
         }
     },
     warn: (...args) => {
-        if (ENABLE_LOGS) {
-            console.warn(new Date().toISOString(), '[WARN]', ...args);
-        }
+        console.warn(new Date().toISOString(), '[WARN]', ...args);
     },
     error: (...args) => {
-        if (ENABLE_LOGS) {
-            console.error(new Date().toISOString(), '[ERROR]', ...args);
-        }
+        console.error(new Date().toISOString(), '[ERROR]', ...args);
     },
     debug: (...args) => {
         if (ENABLE_LOGS && process.env.DEBUG === 'true') {

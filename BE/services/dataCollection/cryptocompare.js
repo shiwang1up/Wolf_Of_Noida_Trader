@@ -70,6 +70,24 @@ class CryptoCompareService {
             throw error;
         }
     }
+    /**
+     * Fetch global market metrics (Total Market Cap, BTC Dominance) from CoinGecko.
+     */
+    async getGlobalMarketData() {
+        try {
+            const response = await axios.get('https://api.coingecko.com/api/v3/global', {
+                headers: { 'Accept': 'application/json' }
+            });
+            const data = response.data.data;
+            return {
+                totalMarketCap: data.total_market_cap?.usd,
+                btcDominance: data.market_cap_percentage?.btc
+            };
+        } catch (error) {
+            logger.error('Error fetching global market data:', error.message);
+            return null; // non-critical, so return null
+        }
+    }
 }
 
 module.exports = new CryptoCompareService();
