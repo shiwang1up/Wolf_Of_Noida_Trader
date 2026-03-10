@@ -78,6 +78,244 @@ class IndicatorService {
     }
 
     /**
+     * Detect Head & Shoulders pattern.
+     * Looks at the last N candles to find a shape where there are three peaks,
+     * the middle peak being the highest (Head) and the two outer peaks being similar in height (Shoulders).
+     */
+    detectHeadAndShoulders(highs) {
+        if (highs.length < 20) return false;
+
+        // Simplified approach: scan last 20 periods for 3 distinct local maximums.
+        // A robust mathematical implementation requires pivot detection, but for a 1m chart 
+        // passing this into an LLM we can look for basic structural anomalies.
+        const recent = highs.slice(-20);
+
+        // Find local peaks
+        let peaks = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
+                peaks.push({ index: i, value: recent[i] });
+            }
+        }
+
+        if (peaks.length >= 3) {
+            // Check the last 3 peaks specifically
+            const last3 = peaks.slice(-3);
+            const leftShoulder = last3[0].value;
+            const head = last3[1].value;
+            const rightShoulder = last3[2].value;
+
+            // Head must be highest
+            if (head > leftShoulder && head > rightShoulder) {
+                // Shoulders must be relatively close in height (e.g. within 0.5% of each other)
+                const diff = Math.abs(leftShoulder - rightShoulder) / leftShoulder;
+                if (diff < 0.005) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Detect Double Top pattern.
+     * Looks at the last N candles to find two distinct peaks of similar heights,
+     * separated by a valley.
+     */
+    detectDoubleTop(highs) {
+        if (highs.length < 20) return false;
+
+        const recent = highs.slice(-20);
+        let peaks = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
+                peaks.push({ index: i, value: recent[i] });
+            }
+        }
+
+        if (peaks.length >= 2) {
+            const last2 = peaks.slice(-2);
+            const peak1 = last2[0].value;
+            const peak2 = last2[1].value;
+            const separation = last2[1].index - last2[0].index;
+
+            // Must be separated by at least 3 candles to be a meaningful double top
+            if (separation >= 3) {
+                // Peaks must be near identical (e.g. within 0.2% of each other)
+                const diff = Math.abs(peak1 - peak2) / peak1;
+                if (diff < 0.002) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Detect Double Bottom pattern.
+     * Looks for two distinct valleys of similar depths, separated by a peak.
+     */
+    detectDoubleBottom(lows) {
+        if (lows.length < 20) return false;
+
+        const recent = lows.slice(-20);
+        let valleys = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] < recent[i - 1] && recent[i] < recent[i + 1]) {
+                valleys.push({ index: i, value: recent[i] });
+            }
+        }
+
+        if (valleys.length >= 2) {
+            const last2 = valleys.slice(-2);
+            const valley1 = last2[0].value;
+            const valley2 = last2[1].value;
+            const separation = last2[1].index - last2[0].index;
+
+            // Must be separated by at least 3 candles
+            if (separation >= 3) {
+                // Valleys must be near identical (e.g. within 0.2% of each other)
+                const diff = Math.abs(valley1 - valley2) / valley1;
+                if (diff < 0.002) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Detect Triple Top pattern.
+     * Looks for three distinct peaks of similar heights.
+     */
+    detectTripleTop(highs) {
+        if (highs.length < 20) return false;
+
+        const recent = highs.slice(-20);
+        let peaks = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
+                peaks.push({ index: i, value: recent[i] });
+            }
+        }
+
+        if (peaks.length >= 3) {
+            const last3 = peaks.slice(-3);
+            const peak1 = last3[0].value;
+            const peak2 = last3[1].value;
+            const peak3 = last3[2].value;
+
+            const diff1 = Math.abs(peak1 - peak2) / peak1;
+            const diff2 = Math.abs(peak2 - peak3) / peak2;
+            const diff3 = Math.abs(peak1 - peak3) / peak1;
+
+            if (diff1 < 0.002 && diff2 < 0.002 && diff3 < 0.002) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Detect Triple Bottom pattern.
+     * Looks for three distinct valleys of similar depths.
+     */
+    detectTripleBottom(lows) {
+        if (lows.length < 20) return false;
+
+        const recent = lows.slice(-20);
+        let valleys = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] < recent[i - 1] && recent[i] < recent[i + 1]) {
+                valleys.push({ index: i, value: recent[i] });
+            }
+        }
+
+        if (valleys.length >= 3) {
+            const last3 = valleys.slice(-3);
+            const v1 = last3[0].value;
+            const v2 = last3[1].value;
+            const v3 = last3[2].value;
+
+            const diff1 = Math.abs(v1 - v2) / v1;
+            const diff2 = Math.abs(v2 - v3) / v2;
+            const diff3 = Math.abs(v1 - v3) / v1;
+
+            if (diff1 < 0.002 && diff2 < 0.002 && diff3 < 0.002) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Detect Bull/Bear Flag (Proxy).
+     * Flagpole: Strong directional movement over a short period.
+     * Flag: Consolidation against the trend.
+     */
+    detectBullBearFlag(closes) {
+        if (closes.length < 15) return 'none';
+
+        const recent = closes.slice(-15);
+        // Look back 10 candles for the flagpole
+        const poleStart = recent[0];
+        const poleEnd = recent[10];
+
+        // Flagpole size (%)
+        const poleChange = ((poleEnd - poleStart) / poleStart) * 100;
+
+        // Consolidation over the last 5 candles
+        const flagEnd = recent[14];
+        const flagChange = ((flagEnd - poleEnd) / poleEnd) * 100;
+
+        // Bull Flag: Strong move up (> 1%), slight move down/sideways (-0.5% to +0.2%)
+        if (poleChange > 1.0 && flagChange < 0.2 && flagChange > -0.5) {
+            return 'bull_flag';
+        }
+
+        // Bear Flag: Strong move down (< -1%), slight move up/sideways (-0.2% to +0.5%)
+        if (poleChange < -1.0 && flagChange > -0.2 && flagChange < 0.5) {
+            return 'bear_flag';
+        }
+
+        return 'none';
+    }
+
+    /**
+     * Detect Bullish/Bearish Engulfing pattern on the latest 2 candles.
+     */
+    detectEngulfing(opens, closes) {
+        if (opens.length < 2 || closes.length < 2) return 'none';
+
+        const prevOpen = opens[opens.length - 2];
+        const prevClose = closes[closes.length - 2];
+        const currOpen = opens[opens.length - 1];
+        const currClose = closes[closes.length - 1];
+
+        const prevIsBullish = prevClose > prevOpen;
+        const prevIsBearish = prevClose < prevOpen;
+        const currIsBullish = currClose > currOpen;
+        const currIsBearish = currClose < currOpen;
+
+        const prevBodyTop = Math.max(prevOpen, prevClose);
+        const prevBodyBottom = Math.min(prevOpen, prevClose);
+        const currBodyTop = Math.max(currOpen, currClose);
+        const currBodyBottom = Math.min(currOpen, currClose);
+
+        // Bullish Engulfing: previous is bearish, current is bullish and completely covers previous body
+        if (prevIsBearish && currIsBullish && currBodyTop > prevBodyTop && currBodyBottom < prevBodyBottom) {
+            return 'bullish_engulfing';
+        }
+
+        // Bearish Engulfing: previous is bullish, current is bearish and completely covers previous body
+        if (prevIsBullish && currIsBearish && currBodyBottom < prevBodyBottom && currBodyTop > prevBodyTop) {
+            return 'bearish_engulfing';
+        }
+
+        return 'none';
+    }
+
+    /**
      * Runs all indicators on the provided dataset and extracts the latest feature row.
      * Used for passing the current state into the AI reasoning engine.
      * @param {Array<Object>} candles - Array of candle objects. Must be ordered oldest to newest.
@@ -85,6 +323,7 @@ class IndicatorService {
     getLatestFeatures(candles) {
         if (!candles || candles.length === 0) return {};
 
+        const openPrices = candles.map(c => parseFloat(c.open));
         const closePrices = candles.map(c => parseFloat(c.close));
         const highPrices = candles.map(c => parseFloat(c.high));
         const lowPrices = candles.map(c => parseFloat(c.low));
@@ -142,6 +381,29 @@ class IndicatorService {
             return 0;
         };
 
+        // Pattern Detection
+        const isHeadAndShoulders = this.detectHeadAndShoulders(highPrices);
+        const isDoubleTop = this.detectDoubleTop(highPrices);
+        const isDoubleBottom = this.detectDoubleBottom(lowPrices);
+        const isTripleTop = this.detectTripleTop(highPrices);
+        const isTripleBottom = this.detectTripleBottom(lowPrices);
+        const flagPattern = this.detectBullBearFlag(closePrices);
+        const engulfingPattern = this.detectEngulfing(openPrices, closePrices);
+
+        // Breakout pattern: when current price decisively breaks out of recent resistance or support
+        // E.g., current price is > current resistance by > 0.1% or < current support by < 0.1%
+        let breakout = 'none';
+        const prevClose = closePrices[closePrices.length - 2] || currentPrice;
+
+        // Did we just cross resistance? (prev below -> now above)
+        if (prevClose <= resistance && currentPrice > resistance) {
+            breakout = 'bullish_breakout';
+        }
+        // Did we just cross support? (prev above -> now below)
+        else if (prevClose >= support && currentPrice < support) {
+            breakout = 'bearish_breakdown';
+        }
+
         // Return the very last computed value for each
         return {
             currentPrice,
@@ -155,6 +417,16 @@ class IndicatorService {
                 m1: getMomentum(MOMENTUM_OFFSETS.M1_CANDLES),
                 m5: getMomentum(MOMENTUM_OFFSETS.M5_CANDLES),
                 h1: getMomentum(MOMENTUM_OFFSETS.H1_CANDLES)
+            },
+            chartPatterns: {
+                headAndShoulders: isHeadAndShoulders,
+                doubleTop: isDoubleTop,
+                doubleBottom: isDoubleBottom,
+                tripleTop: isTripleTop,
+                tripleBottom: isTripleBottom,
+                flag: flagPattern,
+                engulfing: engulfingPattern,
+                breakout: breakout
             },
             rsi: rsi.length > 0 ? rsi[rsi.length - 1] : null,
             macd: macd.length > 0 ? macd[macd.length - 1] : null,

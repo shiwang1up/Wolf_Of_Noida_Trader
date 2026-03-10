@@ -7,6 +7,7 @@ class CoinDCXService {
         this.apiKey = process.env.COINDCX_KEY;
         this.apiSecret = process.env.COINDCX_SECRET;
         this.baseUrl = 'https://public.coindcx.com';
+        this.exchangeUrl = 'https://api.coindcx.com';
     }
 
     /**
@@ -66,6 +67,71 @@ class CoinDCXService {
         } catch (error) {
             logger.error(`Error fetching orderbook for ${pair}:`, error.message);
             throw error;
+        }
+    }
+
+    /**
+     * Fetches all active markets from CoinDCX.
+     * Source of truth: `GET /exchange/v1/markets`
+     *
+     * Returns objects shaped for DB upsert:
+     * { symbol, pair, baseCoin, quoteCoin, status }
+     */
+    async getActiveMarkets() {
+        try {
+            // `symbol` is internal symbol (e.g. BTCUSDT), `pair` is used in candle/orderbook APIs (e.g. B-BTC_USDT)
+            // `base_currency_short_name` is base (e.g. BTC), `target_currency_short_name` is quote (e.g. USDT)
+            let markets = null;
+            try {
+                const response = await axios.get(`${this.exchangeUrl}/exchange/v1/markets`);
+                markets = response.data;
+            } catch (e) {
+                logger.warn('[CoinDCX] Failed to fetch /exchange/v1/markets. Falling back to markets_details.');
+            }
+
+            // Fallback for older implementation (kept for resilience)
+            if (!markets) {
+                const fallbackRes = await axios.get(`${this.exchangeUrl}/exchange/v1/markets_details`);
+                markets = fallbackRes.data;
+            }
+
+            if (!Array.isArray(markets)) {
+                logger.warn('CoinDCX returned non-array for markets:', markets);
+                return [];
+            }
+
+            const mapped = markets.map((m) => {
+                // New endpoint: { symbol, pair, base_currency_short_name, target_currency_short_name, ... }
+                if (m.symbol && m.pair && m.base_currency_short_name && m.target_currency_short_name) {
+                    return {
+                        symbol: m.symbol,
+                        pair: m.pair,
+                        baseCoin: m.base_currency_short_name,
+                        quoteCoin: m.target_currency_short_name,
+                        status: m.status || 'active'
+                    };
+                }
+
+                // Fallback endpoint: markets_details uses `coindcx_name` as internal symbol-like identifier in this codebase historically.
+                // We keep it for resilience, but prefer the `symbol` field from /markets.
+                return {
+                    symbol: m.symbol || m.coindcx_name,
+                    pair: m.pair,
+                    baseCoin: m.base_currency_short_name || m.target_currency_short_name,
+                    quoteCoin: m.target_currency_short_name || m.base_currency_short_name,
+                    status: m.status || 'active'
+                };
+            });
+
+            const activeMarkets = mapped
+                .filter(m => m.status === 'active')
+                .filter(m => (m.quoteCoin === 'USDT' || m.quoteCoin === 'INR'));
+
+            logger.info(`[CoinDCX] Fetched ${activeMarkets.length} active (USDT/INR) markets.`);
+            return activeMarkets;
+        } catch (error) {
+            logger.error('Error fetching active markets from CoinDCX:', error.message);
+            return [];
         }
     }
 }

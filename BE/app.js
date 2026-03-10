@@ -8,8 +8,32 @@ var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 var scheduler = require('./services/dataCollection/scheduler');
 
-// Start the background data polling scheduler
-scheduler.start();
+const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
+const customLogger = require('./utils/logger');
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
+// Start the background data polling scheduler after verifying DB
+async function bootstrap() {
+    try {
+        customLogger.info('Verifying PostgreSQL Database Connection...');
+        // Quick read/write test to prove connection
+        const marketCount = await prisma.market.count();
+        customLogger.info(`✅ [DB OK] Connection successful. Currently tracking ${marketCount} markets.`);
+
+        scheduler.start();
+    } catch (error) {
+        customLogger.error('❌ [DB ERROR] Database connection failed:', error.message);
+        customLogger.error('Please check your Docker container, database, and .env credentials.');
+        process.exit(1);
+    }
+}
+
+bootstrap();
 
 var app = express();
 
