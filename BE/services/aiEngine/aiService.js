@@ -68,7 +68,7 @@ class AIEngineService {
     /**
      * Generates a trading signal for a specific symbol.
      */
-    async generateSignal(symbol = 'BTCUSDT', baseCoin = 'BTC') {
+    async generateSignal(symbol = 'BTCUSDT', baseCoin = 'BTC', quoteCoin = 'USDT') {
         try {
             // 1. Fetch recent candles from DB (last 100 for 1m timeframe)
             const candles = await prisma.candle.findMany({
@@ -168,6 +168,7 @@ class AIEngineService {
             const marketStatePayload = {
                 symbol,
                 baseCoin,
+                quoteCoin,
                 currentPrice: features.currentPrice,
                 indicators: {
                     rsi: features.rsi,
@@ -215,14 +216,19 @@ class AIEngineService {
           "string explaining point 3"
         ],
         "summary": "1 sentence summarizing the overall decision."
-      }`;
+      }
+      IMPORTANT: The current market is ${symbol} (Base: ${baseCoin}, Quote: ${quoteCoin}). 
+      - All asset-specific prices, indicators, and orderbook data are denominated in **${quoteCoin}**.
+      - Global market metrics (Total Market Cap) are denominated in **USD**.
+      Evaluate the context accordingly.`;
 
             // 5. Query the LLM dynamically
+            const currencySymbol = quoteCoin === 'INR' ? '₹' : '$';
             logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             logger.info(`  [AI ENGINE] DATA BEING FED TO LLM FOR ${symbol}`);
             logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            logger.info(`  📈 Price       : $${marketStatePayload.currentPrice}`);
-            logger.info(`  🧱 Structure   : Support ${marketStatePayload.marketStructure?.support?.toFixed(1)} | Resistance ${marketStatePayload.marketStructure?.resistance?.toFixed(1)}`);
+            logger.info(`  📈 Price       : ${currencySymbol}${marketStatePayload.currentPrice}`);
+            logger.info(`  🧱 Structure   : Support ${currencySymbol}${marketStatePayload.marketStructure?.support?.toFixed(1)} | Resistance ${currencySymbol}${marketStatePayload.marketStructure?.resistance?.toFixed(1)}`);
             logger.info(`  📉 Patterns    : H&S: ${marketStatePayload.chartPatterns?.headAndShoulders} | Breakout: ${marketStatePayload.chartPatterns?.breakout}`);
             logger.info(`  📉 Tops/Bottoms: D-Top: ${marketStatePayload.chartPatterns?.doubleTop} | T-Top: ${marketStatePayload.chartPatterns?.tripleTop} | D-Bot: ${marketStatePayload.chartPatterns?.doubleBottom} | T-Bot: ${marketStatePayload.chartPatterns?.tripleBottom}`);
             logger.info(`  📉 Candle/Trend: Flag: ${marketStatePayload.chartPatterns?.flag} | Engulfing: ${marketStatePayload.chartPatterns?.engulfing}`);

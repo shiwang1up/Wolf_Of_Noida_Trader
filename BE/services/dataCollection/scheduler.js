@@ -40,7 +40,7 @@ class DataScheduler {
                 try {
                     await this.forceFetchCandles(activeMarkets[0], 100);
                     const aiEngine = require('../aiEngine/aiService');
-                    await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin);
+                    await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
                 } catch (apiError) {
                     logger.warn(`[Scheduler] Bootstrap signal for ${activeMarkets[0].symbol} failed (likely insufficient history). Proceeding...`);
                 }
@@ -191,7 +191,7 @@ class DataScheduler {
                         }
 
                         // Generate Signal dynamically parsing the baseCoin (e.g., 'BTC')
-                        await aiEngine.generateSignal(market.symbol, market.baseCoin);
+                        await aiEngine.generateSignal(market.symbol, market.baseCoin, market.quoteCoin);
                     } catch (loopError) {
                         logger.warn(`[Scheduler WARNING] API or Indicator generation failed for ${market.symbol}:`, loopError.message);
                     }
