@@ -8,14 +8,8 @@ var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 var scheduler = require('./services/dataCollection/scheduler');
 
-const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
+const { prisma } = require('./utils/db');
 const customLogger = require('./utils/logger');
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
 // Start the background data polling scheduler after verifying DB
 async function bootstrap() {

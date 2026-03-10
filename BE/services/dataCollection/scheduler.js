@@ -1,12 +1,5 @@
 const cron = require('node-cron');
-const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
-
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const { prisma } = require('../../utils/db');
 const coindcxService = require('./coindcx');
 const cryptocompareService = require('./cryptocompare');
 const sentimentService = require('./sentiment');
@@ -19,9 +12,15 @@ const logger = require('../../utils/logger');
 class DataScheduler {
     constructor() {
         this.jobs = [];
+        this.isStarted = false;
     }
 
     async start() {
+        if (this.isStarted) {
+            logger.warn('[Scheduler] Attempted to start scheduler, but it is already running.');
+            return;
+        }
+        this.isStarted = true;
         logger.info('Starting data polling scheduler...');
 
         // Immediate Bootstrap Run

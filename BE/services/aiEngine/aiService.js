@@ -5,15 +5,8 @@ const indicatorService = require('../indicators/indicatorService');
 const cryptocompareService = require('../dataCollection/cryptocompare');
 const coindcxService = require('../dataCollection/coindcx');
 const sentimentService = require('../dataCollection/sentiment');
-const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
+const { prisma } = require('../../utils/db');
 const logger = require('../../utils/logger');
-
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
 class AIEngineService {
     constructor() {
@@ -34,7 +27,7 @@ class AIEngineService {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: JSON.stringify(marketStatePayload) }
                 ],
-                model: 'qwen/qwen3-32b',
+                model: 'openai/gpt-oss-120b',
                 // model: 'openai/gpt-oss-120b',
                 response_format: { type: "json_object" }
             });
@@ -44,8 +37,19 @@ class AIEngineService {
         if (this.genAI) {
             logger.info("Using Gemini API for Market reasoning");
             const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
-            const prompt = `${systemPrompt}\n\nMarket State:\n${JSON.stringify(marketStatePayload)}`;
-            const result = await model.generateContent(prompt);
+
+            const result = await model.generateContent({
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [{ text: `${systemPrompt}\n\nMarket State:\n${JSON.stringify(marketStatePayload)}` }]
+                    }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            });
+
             return result.response.text();
         }
 

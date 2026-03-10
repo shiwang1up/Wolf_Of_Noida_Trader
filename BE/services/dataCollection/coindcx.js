@@ -38,7 +38,7 @@ class CoinDCXService {
      * Note: CoinDCX public API uses a different endpoint structure.
      * Adjust according to actual CoinDCX public API doc for candles.
      */
-    async getCandles(pair = 'B-BTC_USDT', interval = '1m', limit = 100) {
+    async getCandles(pair = 'B-BTC_USDT', interval = '1d', limit = 100) {
         try {
             // Updated to the working public endpoint
             const response = await axios.get(`${this.baseUrl}/market_data/candles`, {
