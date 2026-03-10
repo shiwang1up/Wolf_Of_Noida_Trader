@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Candle {
+  id        Int      @id @default(autoincrement())
+  symbol    String   // e.g., "BTC-USDT"
+  timeframe String   // e.g., "1m", "5m", "1h"
+  timestamp DateTime
+  open      Float
+  high      Float
+  low       Float
+  close     Float
+  volume    Float
+  
+  createdAt DateTime @default(now())
+
+  @@unique([symbol, timeframe, timestamp]) // Prevent duplicate candle entries
+}
+
+model Sentiment {
+  id          Int      @id @default(autoincrement())
+  source      String   // e.g., "CryptoPanic", "FearGreedIndex", "Twitter"
+  score       Float    // Normalized score, e.g., -1.0 to 1.0 or 0 to 100
+  label       String?  // e.g., "Bullish", "Bearish", "Neutral"
+  metadata    Json?    // Store raw API text/response if needed
+  timestamp   DateTime
+  
+  createdAt   DateTime @default(now())
+}
+
+model Signal {
+  id              Int      @id @default(autoincrement())
+  symbol          String
+  action          String   // "BUY", "SELL", "HOLD"
+  confidenceScore Float    // 0.0 to 100.0
+  riskLevel       String   // "LOW", "MEDIUM", "HIGH"
+  reasoning       String?  // AI/LLM logical explanation
+  timestamp       DateTime
+  
+  // Capturing the market state at the time of the signal
+  currentPrice    Float
+  
+  createdAt       DateTime @default(now())
+}
+
+model News {
+  id          Int      @id @default(autoincrement())
+  source      String   // e.g., "CryptoPanic"
+  headlines   Json     // Array of headline strings
+  timestamp   DateTime // Time fetched
+  createdAt   DateTime @default(now())
+}

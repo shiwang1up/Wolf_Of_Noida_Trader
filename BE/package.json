@@ -3,15 +3,34 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "db:migrate": "npx prisma migrate dev",
+    "db:push": "npx prisma db push"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
     "axios": "^1.13.6",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.6",
     "debug": "~2.6.9",
-    "dotenv": "^17.3.1",
     "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "groq-sdk": "^0.37.0",
+    "morgan": "~1.9.1",
+    "node-cron": "^4.2.1",
+    "openai": "^6.27.0",
+    "pg": "^8.20.0",
+    "technicalindicators": "^3.1.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "dotenv": "^17.3.1",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.4.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
