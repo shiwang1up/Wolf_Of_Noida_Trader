@@ -68,3 +68,25 @@ model News {
   timestamp   DateTime // Time fetched
   createdAt   DateTime @default(now())
 }
+model OrderbookSnapshot {
+  id        Int      @id @default(autoincrement())
+  symbol    String
+  asks      Json     // Object where keys are prices and values are volumes
+  bids      Json
+  timestamp DateTime
+  createdAt DateTime @default(now())
+
+  @@index([symbol, timestamp])
+}
+
+model LiquidityZone {
+  id        Int      @id @default(autoincrement())
+  symbol    String
+  type      String   // "wall", "spoofing", "moving"
+  side      String   // "bid", "ask"
+  price     Float
+  volume    Float
+  strength  Float    // Score based on persistence/weight
+  timestamp DateTime
+  createdAt DateTime @default(now())
+}

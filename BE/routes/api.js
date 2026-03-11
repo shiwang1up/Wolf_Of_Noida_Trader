@@ -56,4 +56,22 @@ router.get('/analytics/market', async function (req, res, next) {
     }
 });
 
+/**
+ * GET liquidity zones for a symbol
+ */
+router.get('/analytics/liquidity', async function (req, res, next) {
+    try {
+        const symbol = req.query.symbol || 'BTCUSDT';
+        const zones = await prisma.liquidityZone.findMany({
+            where: { symbol },
+            orderBy: { timestamp: 'desc' },
+            take: 20
+        });
+
+        res.json({ success: true, data: zones });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 module.exports = router;

@@ -3,6 +3,7 @@ const { prisma } = require('../../utils/db');
 const coindcxService = require('./coindcx');
 const cryptocompareService = require('./cryptocompare');
 const sentimentService = require('./sentiment');
+const orderbookService = require('./orderbookService');
 const logger = require('../../utils/logger');
 
 /**
@@ -50,6 +51,8 @@ class DataScheduler {
 
         this._scheduleCoinDCX();
         this._scheduleSentiment();
+        this._startOrderbookPolling();
+        this._scheduleCleanup();
     }
 
     async forceFetchMarkets() {
@@ -239,6 +242,47 @@ class DataScheduler {
         });
 
         this.jobs.push(fgiJob, newsJob, marketSyncJob);
+    }
+
+    _startOrderbookPolling() {
+        // High-frequency orderbook polling (every 10 seconds)
+        // This is sub-minute, so we use setInterval instead of cron
+        setInterval(async () => {
+            try {
+                const trackedMarkets = await prisma.market.findMany({
+                    where: { status: 'active', isTracking: true }
+                });
+
+                for (const market of trackedMarkets) {
+                    await orderbookService.captureSnapshot(market.symbol, market.pair);
+                }
+            } catch (error) {
+                logger.error('[Scheduler] Orderbook polling error:', error.message);
+            }
+        }, 10000); // 10 seconds frequency
+
+        // Analysis polling (every 5 minutes)
+        setInterval(async () => {
+            try {
+                const trackedMarkets = await prisma.market.findMany({
+                    where: { status: 'active', isTracking: true }
+                });
+
+                for (const market of trackedMarkets) {
+                    await orderbookService.analyzeLiquidity(market.symbol, 10);
+                }
+            } catch (error) {
+                logger.error('[Scheduler] Liquidity analysis error:', error.message);
+            }
+        }, 5 * 60 * 1000); // 5 minutes frequency
+    }
+
+    _scheduleCleanup() {
+        // Run cleanup every hour
+        const cleanupJob = cron.schedule('0 * * * *', async () => {
+            await orderbookService.cleanup();
+        });
+        this.jobs.push(cleanupJob);
     }
 }
 
