@@ -86,17 +86,7 @@ class IndicatorService {
         if (highs.length < 20) return false;
 
         // Simplified approach: scan last 20 periods for 3 distinct local maximums.
-        // A robust mathematical implementation requires pivot detection, but for a 1m chart 
-        // passing this into an LLM we can look for basic structural anomalies.
-        const recent = highs.slice(-20);
-
-        // Find local peaks
-        let peaks = [];
-        for (let i = 1; i < recent.length - 1; i++) {
-            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
-                peaks.push({ index: i, value: recent[i] });
-            }
-        }
+        const peaks = this._findLocalPeaks(highs, 20);
 
         if (peaks.length >= 3) {
             // Check the last 3 peaks specifically
@@ -125,13 +115,7 @@ class IndicatorService {
     detectDoubleTop(highs) {
         if (highs.length < 20) return false;
 
-        const recent = highs.slice(-20);
-        let peaks = [];
-        for (let i = 1; i < recent.length - 1; i++) {
-            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
-                peaks.push({ index: i, value: recent[i] });
-            }
-        }
+        const peaks = this._findLocalPeaks(highs, 20);
 
         if (peaks.length >= 2) {
             const last2 = peaks.slice(-2);
@@ -158,13 +142,7 @@ class IndicatorService {
     detectDoubleBottom(lows) {
         if (lows.length < 20) return false;
 
-        const recent = lows.slice(-20);
-        let valleys = [];
-        for (let i = 1; i < recent.length - 1; i++) {
-            if (recent[i] < recent[i - 1] && recent[i] < recent[i + 1]) {
-                valleys.push({ index: i, value: recent[i] });
-            }
-        }
+        const valleys = this._findLocalValleys(lows, 20);
 
         if (valleys.length >= 2) {
             const last2 = valleys.slice(-2);
@@ -191,13 +169,7 @@ class IndicatorService {
     detectTripleTop(highs) {
         if (highs.length < 20) return false;
 
-        const recent = highs.slice(-20);
-        let peaks = [];
-        for (let i = 1; i < recent.length - 1; i++) {
-            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
-                peaks.push({ index: i, value: recent[i] });
-            }
-        }
+        const peaks = this._findLocalPeaks(highs, 20);
 
         if (peaks.length >= 3) {
             const last3 = peaks.slice(-3);
@@ -223,13 +195,7 @@ class IndicatorService {
     detectTripleBottom(lows) {
         if (lows.length < 20) return false;
 
-        const recent = lows.slice(-20);
-        let valleys = [];
-        for (let i = 1; i < recent.length - 1; i++) {
-            if (recent[i] < recent[i - 1] && recent[i] < recent[i + 1]) {
-                valleys.push({ index: i, value: recent[i] });
-            }
-        }
+        const valleys = this._findLocalValleys(lows, 20);
 
         if (valleys.length >= 3) {
             const last3 = valleys.slice(-3);
@@ -246,6 +212,34 @@ class IndicatorService {
             }
         }
         return false;
+    }
+
+    /**
+     * Helper to find local peaks in a numeric array.
+     */
+    _findLocalPeaks(values, windowSize = 20) {
+        const recent = values.slice(-windowSize);
+        let peaks = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] > recent[i - 1] && recent[i] > recent[i + 1]) {
+                peaks.push({ index: i, value: recent[i] });
+            }
+        }
+        return peaks;
+    }
+
+    /**
+     * Helper to find local valleys in a numeric array.
+     */
+    _findLocalValleys(values, windowSize = 20) {
+        const recent = values.slice(-windowSize);
+        let valleys = [];
+        for (let i = 1; i < recent.length - 1; i++) {
+            if (recent[i] < recent[i - 1] && recent[i] < recent[i + 1]) {
+                valleys.push({ index: i, value: recent[i] });
+            }
+        }
+        return valleys;
     }
 
     /**
