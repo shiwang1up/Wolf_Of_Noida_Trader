@@ -8,7 +8,7 @@ class CoinDCXService {
         this.apiSecret = process.env.COINDCX_SECRET;
         this.baseUrl = 'https://public.coindcx.com';
         this.exchangeUrl = 'https://api.coindcx.com';
-        this.defaultInterval = '5m'; // Centralized default interval
+        this.defaultInterval = '4h'; // Centralized default interval
     }
 
     /**

@@ -53,6 +53,9 @@ class OrderbookService {
             const walls = this._detectPersistentWalls(snapshots);
             const spoofing = this._detectSpoofing(snapshots);
 
+            // Clear old analysis for this symbol before saving new results
+            await prisma.liquidityZone.deleteMany({ where: { symbol } });
+
             // Save results to LiquidityZone
             const results = [...walls, ...spoofing];
 
@@ -88,23 +91,25 @@ class OrderbookService {
             // Process Asks
             Object.entries(s.asks).forEach(([price, vol]) => {
                 const v = parseFloat(vol);
-                if (!priceCounts[price]) priceCounts[price] = { count: 0, totalVol: 0, side: 'ask' };
-                priceCounts[price].count++;
-                priceCounts[price].totalVol += v;
+                const key = `ask:${price}`;
+                if (!priceCounts[key]) priceCounts[key] = { count: 0, totalVol: 0, side: 'ask', price };
+                priceCounts[key].count++;
+                priceCounts[key].totalVol += v;
             });
             // Process Bids
             Object.entries(s.bids).forEach(([price, vol]) => {
                 const v = parseFloat(vol);
-                if (!priceCounts[price]) priceCounts[price] = { count: 0, totalVol: 0, side: 'bid' };
-                priceCounts[price].count++;
-                priceCounts[price].totalVol += v;
+                const key = `bid:${price}`;
+                if (!priceCounts[key]) priceCounts[key] = { count: 0, totalVol: 0, side: 'bid', price };
+                priceCounts[key].count++;
+                priceCounts[key].totalVol += v;
             });
         });
 
         return Object.entries(priceCounts)
             .filter(([_, data]) => data.count >= threshold)
-            .map(([price, data]) => ({
-                price,
+            .map(([_, data]) => ({
+                price: data.price,
                 side: data.side,
                 volume: data.totalVol / data.count,
                 strength: (data.count / snapshots.length) * 10,

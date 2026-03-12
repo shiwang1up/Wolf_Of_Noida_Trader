@@ -21,8 +21,8 @@ class DataScheduler {
             logger.warn('[Scheduler] Attempted to start scheduler, but it is already running.');
             return;
         }
-        this.isStarted = true;
         logger.info('Starting data polling scheduler...');
+        const aiEngine = require('../aiEngine/aiService');
 
         // Immediate Bootstrap Run
         try {
@@ -39,7 +39,6 @@ class DataScheduler {
             if (activeMarkets.length > 0) {
                 try {
                     await this.forceFetchCandles(activeMarkets[0], 100);
-                    const aiEngine = require('../aiEngine/aiService');
                     await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
                 } catch (apiError) {
                     if (apiError.message.includes('Not enough candle data')) {
@@ -64,6 +63,18 @@ class DataScheduler {
         this._scheduleSentiment();
         this._startOrderbookPolling();
         this._scheduleCleanup();
+        this.isStarted = true;
+    }
+
+    stop() {
+        if (!this.isStarted) return;
+        logger.info('Stopping data polling scheduler...');
+        this.jobs.forEach(job => {
+            if (job.stop) job.stop();
+            else clearInterval(job);
+        });
+        this.jobs = [];
+        this.isStarted = false;
     }
 
     async forceFetchMarkets() {
@@ -278,7 +289,7 @@ class DataScheduler {
     _startOrderbookPolling() {
         // High-frequency orderbook polling (every 10 seconds)
         // This is sub-minute, so we use setInterval instead of cron
-        setInterval(async () => {
+        const snapshotInterval = setInterval(async () => {
             try {
                 const trackedMarkets = await prisma.market.findMany({
                     where: { status: 'active', isTracking: true }
@@ -291,9 +302,10 @@ class DataScheduler {
                 logger.error('[Scheduler] Orderbook polling error:', error.message);
             }
         }, 10000); // 10 seconds frequency
+        this.jobs.push(snapshotInterval);
 
         // Analysis polling (every 5 minutes)
-        setInterval(async () => {
+        const analysisInterval = setInterval(async () => {
             try {
                 const trackedMarkets = await prisma.market.findMany({
                     where: { status: 'active', isTracking: true }
@@ -306,6 +318,7 @@ class DataScheduler {
                 logger.error('[Scheduler] Liquidity analysis error:', error.message);
             }
         }, 5 * 60 * 1000); // 5 minutes frequency
+        this.jobs.push(analysisInterval);
     }
 
     _scheduleCleanup() {
