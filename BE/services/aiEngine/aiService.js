@@ -27,7 +27,7 @@ class AIEngineService {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: JSON.stringify(marketStatePayload) }
                 ],
-                model: 'openai/gpt-oss-120b',
+                model: 'moonshotai/kimi-k2-instruct-0905',
                 // model: 'openai/gpt-oss-120b',
                 response_format: { type: "json_object" }
             });
@@ -74,9 +74,10 @@ class AIEngineService {
      */
     async generateSignal(symbol = 'BTCUSDT', baseCoin = 'BTC', quoteCoin = 'USDT') {
         try {
-            // 1. Fetch recent candles from DB (last 100 for 1m timeframe)
+            // 1. Fetch recent candles from DB (last 100 for current timeframe)
+            const timeframe = coindcxService.defaultInterval;
             const candles = await prisma.candle.findMany({
-                where: { symbol, timeframe: '1m' },
+                where: { symbol, timeframe },
                 orderBy: { timestamp: 'desc' },
                 take: 100
             });

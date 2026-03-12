@@ -8,6 +8,7 @@ class CoinDCXService {
         this.apiSecret = process.env.COINDCX_SECRET;
         this.baseUrl = 'https://public.coindcx.com';
         this.exchangeUrl = 'https://api.coindcx.com';
+        this.defaultInterval = '5m'; // Centralized default interval
     }
 
     /**
@@ -38,7 +39,7 @@ class CoinDCXService {
      * Note: CoinDCX public API uses a different endpoint structure.
      * Adjust according to actual CoinDCX public API doc for candles.
      */
-    async getCandles(pair = 'B-BTC_USDT', interval = '1d', limit = 100) {
+    async getCandles(pair = 'B-BTC_USDT', interval = this.defaultInterval, limit = 100) {
         try {
             // Updated to the working public endpoint
             const response = await axios.get(`${this.baseUrl}/market_data/candles`, {
@@ -79,21 +80,9 @@ class CoinDCXService {
      */
     async getActiveMarkets() {
         try {
-            // `symbol` is internal symbol (e.g. BTCUSDT), `pair` is used in candle/orderbook APIs (e.g. B-BTC_USDT)
-            // `base_currency_short_name` is base (e.g. BTC), `target_currency_short_name` is quote (e.g. USDT)
-            let markets = null;
-            try {
-                const response = await axios.get(`${this.exchangeUrl}/exchange/v1/markets`);
-                markets = response.data;
-            } catch (e) {
-                logger.warn('[CoinDCX] Failed to fetch /exchange/v1/markets. Falling back to markets_details.');
-            }
-
-            // Fallback for older implementation (kept for resilience)
-            if (!markets) {
-                const fallbackRes = await axios.get(`${this.exchangeUrl}/exchange/v1/markets_details`);
-                markets = fallbackRes.data;
-            }
+            // Source of truth: markets_details contains full metadata (base/target currency, pair, status)
+            const response = await axios.get(`${this.exchangeUrl}/exchange/v1/markets_details`);
+            const markets = response.data;
 
             if (!Array.isArray(markets)) {
                 logger.warn('CoinDCX returned non-array for markets:', markets);
@@ -101,24 +90,14 @@ class CoinDCXService {
             }
 
             const mapped = markets.map((m) => {
-                // New endpoint: { symbol, pair, base_currency_short_name, target_currency_short_name, ... }
-                if (m.symbol && m.pair && m.base_currency_short_name && m.target_currency_short_name) {
-                    return {
-                        symbol: m.symbol,
-                        pair: m.pair,
-                        baseCoin: m.base_currency_short_name,
-                        quoteCoin: m.target_currency_short_name,
-                        status: m.status || 'active'
-                    };
-                }
-
-                // Fallback endpoint: markets_details uses `coindcx_name` as internal symbol-like identifier in this codebase historically.
-                // We keep it for resilience, but prefer the `symbol` field from /markets.
+                // CoinDCX naming convention is swapped:
+                // base_currency_short_name = Quote (e.g. USDT, INR)
+                // target_currency_short_name = Base (e.g. BTC, ETH)
                 return {
                     symbol: m.symbol || m.coindcx_name,
                     pair: m.pair,
-                    baseCoin: m.base_currency_short_name || m.target_currency_short_name,
-                    quoteCoin: m.target_currency_short_name || m.base_currency_short_name,
+                    baseCoin: m.target_currency_short_name,
+                    quoteCoin: m.base_currency_short_name,
                     status: m.status || 'active'
                 };
             });

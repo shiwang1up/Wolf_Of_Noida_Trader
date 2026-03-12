@@ -37,15 +37,18 @@ router.post('/signals/generate', async function (req, res, next) {
     }
 });
 
+const coindcxService = require('../services/dataCollection/coindcx');
+
 /**
  * GET current market data and technical stats 
  */
 router.get('/analytics/market', async function (req, res, next) {
     try {
         const symbol = req.query.symbol || 'B-BTC_USDT';
+        const timeframe = coindcxService.defaultInterval;
 
         const candles = await prisma.candle.findMany({
-            where: { symbol, timeframe: '1m' },
+            where: { symbol, timeframe },
             orderBy: { timestamp: 'desc' },
             take: 50
         });

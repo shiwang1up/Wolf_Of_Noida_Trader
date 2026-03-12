@@ -42,7 +42,18 @@ class DataScheduler {
                     const aiEngine = require('../aiEngine/aiService');
                     await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
                 } catch (apiError) {
-                    logger.warn(`[Scheduler] Bootstrap signal for ${activeMarkets[0].symbol} failed (likely insufficient history). Proceeding...`);
+                    if (apiError.message.includes('Not enough candle data')) {
+                        logger.warn(`[Scheduler] Initial AI bootstrap for ${activeMarkets[0].symbol} lacks data. Refetching deeper history...`);
+                        await this.forceFetchCandles(activeMarkets[0], 150);
+                        // Try one more time
+                        try {
+                            await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
+                        } catch (e2) {
+                            logger.warn(`[Scheduler] Second bootstrap attempt for ${activeMarkets[0].symbol} also failed. Loop will handle it.`);
+                        }
+                    } else {
+                        logger.warn(`[Scheduler] Bootstrap signal for ${activeMarkets[0].symbol} failed: ${apiError.message}. Proceeding...`);
+                    }
                 }
             }
         } catch (e) {
@@ -76,6 +87,18 @@ class DataScheduler {
                 });
             }
             logger.info(`[Scheduler] Synced ${markets.length} active markets to database.`);
+
+            // [NEW] Auto-enable tracking for default pairs if nothing is being tracked
+            const trackedCount = await prisma.market.count({ where: { isTracking: true } });
+            if (trackedCount === 0) {
+                logger.info('[Scheduler] No markets currently tracked. Auto-enabling BTC and ETH pairs for bootstrap...');
+                const defaultPairs = ['I-BTC_INR', 'I-ETH_INR', 'I-SOL_INR'];
+                const updated = await prisma.market.updateMany({
+                    where: { symbol: { in: defaultPairs } },
+                    data: { isTracking: true }
+                });
+                logger.info(`[Scheduler] Auto-tracked ${updated.count} default markets.`);
+            }
         }
     }
 
@@ -130,13 +153,13 @@ class DataScheduler {
     async forceFetchCandles(market, limit = 100) {
         const coindcxService = require('./coindcx');
         // Fetch historical candles using 'pair' (e.g. B-BTC_USDT) per official documentation
-        const candles = await coindcxService.getCandles(market.pair, '1m', limit);
+        const candles = await coindcxService.getCandles(market.pair, coindcxService.defaultInterval, limit);
         if (candles && Array.isArray(candles) && candles.length > 0) {
             // CoinDCX returns candles in descending order (newest first)
             // We must reverse them so the database and AI engines process them chronologically
             const bulkData = candles.reverse().map(candle => ({
                 symbol: market.symbol, // Store internal symbol (e.g. BTCUSDT)
-                timeframe: '1m',
+                timeframe: coindcxService.defaultInterval,
                 timestamp: new Date(candle.time),
                 open: parseFloat(candle.open),
                 high: parseFloat(candle.high),
@@ -158,7 +181,8 @@ class DataScheduler {
     }
 
     _scheduleCoinDCX() {
-        // Run every minute to fetch the latest 1m candles for tracked coins
+        // Run every minute to fetch the latest candles for tracked coins
+        // (Note: frequency matches defaultInterval '1m')
         const marketJob = cron.schedule('* * * * *', async () => {
             try {
                 // Fetch tracked active markets from our DB.
@@ -171,7 +195,8 @@ class DataScheduler {
                     logger.info(`[Scheduler] Processing ${activeMarkets.length} tracked markets...`);
                 } else {
                     // Periodic heartbeat to show the scheduler is alive
-                    logger.info('[Scheduler] Heartbeat: Checking for tracked markets (None found).');
+                    logger.info('[Scheduler] Heartbeat: No markets are currently selected for tracking. Run "forceFetchMarkets" or update DB.');
+                    await this.forceFetchMarkets(); // This will auto-enable defaults if count is 0
                 }
 
                 const aiEngine = require('../aiEngine/aiService');
@@ -180,8 +205,9 @@ class DataScheduler {
                 for (const market of activeMarkets) {
                     try {
                         // Check if we have enough candles for AI Engine (needs 50+)
+                        const timeframe = coindcxService.defaultInterval;
                         const candleCount = await prisma.candle.count({
-                            where: { symbol: market.symbol, timeframe: '1m' }
+                            where: { symbol: market.symbol, timeframe }
                         });
 
                         if (candleCount < 50) {
@@ -195,7 +221,12 @@ class DataScheduler {
                         // Generate Signal dynamically parsing the baseCoin (e.g., 'BTC')
                         await aiEngine.generateSignal(market.symbol, market.baseCoin, market.quoteCoin);
                     } catch (loopError) {
-                        logger.warn(`[Scheduler WARNING] API or Indicator generation failed for ${market.symbol}:`, loopError.message);
+                        if (loopError.message.includes('Not enough candle data')) {
+                            logger.warn(`[Scheduler] AI Engine lacks data for ${market.symbol}. Retrying deep bootstrap...`);
+                            await this.forceFetchCandles(market, 150); // Fetch even more
+                        } else {
+                            logger.warn(`[Scheduler WARNING] API or Indicator generation failed for ${market.symbol}:`, loopError.message);
+                        }
                     }
 
                     // Simple sleep to ease off API limits
