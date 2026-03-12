@@ -1,12 +1,5 @@
 const cron = require('node-cron');
-const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
-
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const { prisma } = require('../../utils/db');
 const coindcxService = require('./coindcx');
 const cryptocompareService = require('./cryptocompare');
 const sentimentService = require('./sentiment');
@@ -19,27 +12,68 @@ const logger = require('../../utils/logger');
 class DataScheduler {
     constructor() {
         this.jobs = [];
+        this.isStarted = false;
     }
 
     async start() {
+        if (this.isStarted) {
+            logger.warn('[Scheduler] Attempted to start scheduler, but it is already running.');
+            return;
+        }
+        this.isStarted = true;
         logger.info('Starting data polling scheduler...');
 
         // Immediate Bootstrap Run
         try {
             logger.info('[Scheduler] Running initial bootstrap...');
+            await this.forceFetchMarkets();
             await this.forceFetchSentiment();
             await this.forceFetchNews();
-            await this.forceFetchCandles();
 
-            // Try to generate an initial signal
-            const aiEngine = require('../aiEngine/aiService');
-            await aiEngine.generateSignal('B-BTC_USDT');
+            // Try to generate an initial signal for a quick test
+            const activeMarkets = await prisma.market.findMany({
+                where: { status: 'active', isTracking: true },
+                take: 1
+            });
+            if (activeMarkets.length > 0) {
+                try {
+                    await this.forceFetchCandles(activeMarkets[0], 100);
+                    const aiEngine = require('../aiEngine/aiService');
+                    await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
+                } catch (apiError) {
+                    logger.warn(`[Scheduler] Bootstrap signal for ${activeMarkets[0].symbol} failed (likely insufficient history). Proceeding...`);
+                }
+            }
         } catch (e) {
             logger.error('[Scheduler] Bootstrap failed:', e.message);
         }
 
         this._scheduleCoinDCX();
         this._scheduleSentiment();
+    }
+
+    async forceFetchMarkets() {
+        const coindcxService = require('./coindcx');
+        logger.info('[Scheduler] Fetching latest active markets from CoinDCX...');
+        const markets = await coindcxService.getActiveMarkets();
+
+        if (markets && markets.length > 0) {
+            // Rate limiting the upserts to avoid overloading the DB or memory in one tick
+            logger.info(`[Scheduler] Upserting ${markets.length} markets into database...`);
+            for (const m of markets) {
+                await prisma.market.upsert({
+                    where: { symbol: m.symbol },
+                    update: {
+                        status: m.status,
+                        pair: m.pair,
+                        baseCoin: m.baseCoin,
+                        quoteCoin: m.quoteCoin
+                    },
+                    create: { ...m }
+                });
+            }
+            logger.info(`[Scheduler] Synced ${markets.length} active markets to database.`);
+        }
     }
 
     async forceFetchSentiment() {
@@ -90,13 +124,15 @@ class DataScheduler {
         }
     }
 
-    async forceFetchCandles(limit = 100) {
+    async forceFetchCandles(market, limit = 100) {
         const coindcxService = require('./coindcx');
-        // Fetch historical candles based on limit parameter
-        const candles = await coindcxService.getCandles('B-BTC_USDT', '1m', limit);
+        // Fetch historical candles using 'pair' (e.g. B-BTC_USDT) per official documentation
+        const candles = await coindcxService.getCandles(market.pair, '1m', limit);
         if (candles && Array.isArray(candles) && candles.length > 0) {
-            const bulkData = candles.map(candle => ({
-                symbol: 'B-BTC_USDT',
+            // CoinDCX returns candles in descending order (newest first)
+            // We must reverse them so the database and AI engines process them chronologically
+            const bulkData = candles.reverse().map(candle => ({
+                symbol: market.symbol, // Store internal symbol (e.g. BTCUSDT)
                 timeframe: '1m',
                 timestamp: new Date(candle.time),
                 open: parseFloat(candle.open),
@@ -114,27 +150,61 @@ class DataScheduler {
                     create: { ...c }
                 }))
             );
-            logger.info(`[Scheduler] Bootstrapped ${candles.length} historical candles for B-BTC_USDT.`);
+            logger.info(`[Scheduler] Bootstrapped ${candles.length} historical candles for ${market.symbol}.`);
         }
     }
 
     _scheduleCoinDCX() {
-        // Run every minute to fetch the latest 1m candles for B-BTC_USDT
-        const btcJob = cron.schedule('* * * * *', async () => {
+        // Run every minute to fetch the latest 1m candles for tracked coins
+        const marketJob = cron.schedule('* * * * *', async () => {
             try {
-                // Fetch only the latest 3 candles during the standard cron loop to save DB/API overhead
-                await this.forceFetchCandles(3);
+                // Fetch tracked active markets from our DB.
+                const activeMarkets = await prisma.market.findMany({
+                    where: { status: 'active', isTracking: true },
+                    take: 5
+                });
 
-                // Trigger AI prediction every 5 minutes (or 1m if preferred)
-                // We'll generate a signal every minute since it's 1m candles.
+                if (activeMarkets.length > 0) {
+                    logger.info(`[Scheduler] Processing ${activeMarkets.length} tracked markets...`);
+                } else {
+                    // Periodic heartbeat to show the scheduler is alive
+                    logger.info('[Scheduler] Heartbeat: Checking for tracked markets (None found).');
+                }
+
                 const aiEngine = require('../aiEngine/aiService');
-                await aiEngine.generateSignal('B-BTC_USDT');
+
+                // Loop through dynamic markets
+                for (const market of activeMarkets) {
+                    try {
+                        // Check if we have enough candles for AI Engine (needs 50+)
+                        const candleCount = await prisma.candle.count({
+                            where: { symbol: market.symbol, timeframe: '1m' }
+                        });
+
+                        if (candleCount < 50) {
+                            logger.info(`[Scheduler] Market ${market.symbol} has insufficient candles (${candleCount}). Bootstrapping 100 historical candles...`);
+                            await this.forceFetchCandles(market, 100);
+                        } else {
+                            // Regularly fetch the latest 5 candles to keep data fresh
+                            await this.forceFetchCandles(market, 5);
+                        }
+
+                        // Generate Signal dynamically parsing the baseCoin (e.g., 'BTC')
+                        await aiEngine.generateSignal(market.symbol, market.baseCoin, market.quoteCoin);
+                    } catch (loopError) {
+                        logger.warn(`[Scheduler WARNING] API or Indicator generation failed for ${market.symbol}:`, loopError.message);
+                    }
+
+                    // Simple sleep to ease off API limits
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+
             } catch (error) {
-                logger.error('[Scheduler ERROR] CoinDCX Job Failed:', error.message);
+                logger.error('[Scheduler ERROR] Dynamic CoinDCX Job Failed:', error.message);
             }
         });
 
-        this.jobs.push(btcJob);
+        this.jobs.push(marketJob);
     }
 
     _scheduleSentiment() {
@@ -158,7 +228,17 @@ class DataScheduler {
             }
         });
 
-        this.jobs.push(fgiJob, newsJob);
+        // Run once a day to refresh CoinDCX Available Markets list
+        const marketSyncJob = cron.schedule('0 1 * * *', async () => {
+            try {
+                logger.info('[Scheduler] Syncing dynamic markets from CoinDCX on Cron');
+                await this.forceFetchMarkets();
+            } catch (error) {
+                logger.error('[Scheduler ERROR] Market Sync Job Failed:', error.message);
+            }
+        });
+
+        this.jobs.push(fgiJob, newsJob, marketSyncJob);
     }
 }
 
