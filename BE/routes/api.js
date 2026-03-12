@@ -1,14 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
+const { prisma } = require('../utils/db');
 const aiEngine = require('../services/aiEngine/aiService');
-
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
 /**
  * GET latest signals
@@ -44,20 +37,41 @@ router.post('/signals/generate', async function (req, res, next) {
     }
 });
 
+const coindcxService = require('../services/dataCollection/coindcx');
+
 /**
  * GET current market data and technical stats 
  */
 router.get('/analytics/market', async function (req, res, next) {
     try {
         const symbol = req.query.symbol || 'B-BTC_USDT';
+        const timeframe = coindcxService.defaultInterval;
 
         const candles = await prisma.candle.findMany({
-            where: { symbol, timeframe: '1m' },
+            where: { symbol, timeframe },
             orderBy: { timestamp: 'desc' },
             take: 50
         });
 
         res.json({ success: true, count: candles.length, data: candles });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+/**
+ * GET liquidity zones for a symbol
+ */
+router.get('/analytics/liquidity', async function (req, res, next) {
+    try {
+        const symbol = req.query.symbol || 'BTCUSDT';
+        const zones = await prisma.liquidityZone.findMany({
+            where: { symbol },
+            orderBy: { timestamp: 'desc' },
+            take: 20
+        });
+
+        res.json({ success: true, data: zones });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }

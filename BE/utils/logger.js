@@ -5,7 +5,8 @@ const ENABLE_LOGS = process.env.ENABLE_LOGS === 'true';
 const logger = {
     info: (...args) => {
         if (ENABLE_LOGS) {
-            console.log(new Date().toISOString(), '[INFO]', ...args);
+            console.log('[INFO]', ...args);
+            // console.log(new Date().toISOString(), '[INFO]', ...args);
         }
     },
     warn: (...args) => {
