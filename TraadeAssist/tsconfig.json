@@ -1,0 +1,14 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"],
+      "expo-router/src/*": ["./node_modules/expo-router/build/*"],
+      "expo-router/src/layouts/*": [
+        "./node_modules/expo-router/build/layouts/*"
+      ]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}
