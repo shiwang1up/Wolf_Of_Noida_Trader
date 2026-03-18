@@ -4,17 +4,35 @@ const { prisma } = require('../utils/db');
 const aiEngine = require('../services/aiEngine/aiService');
 
 /**
+ * Helper to resolve the internal 'symbol' from either a symbol or pair string.
+ */
+async function resolveSymbol(input) {
+    if (!input) return 'BTCINR'; // Default to the currently tracked market
+
+    const market = await prisma.market.findFirst({
+        where: {
+            OR: [
+                { symbol: input },
+                { pair: input }
+            ]
+        }
+    });
+
+    return market ? market.symbol : input;
+}
+
+/**
  * GET latest signals
  */
 router.get('/signals/latest', async function (req, res, next) {
     try {
-        const symbol = req.query.symbol || 'B-BTC_USDT';
+        const symbol = await resolveSymbol(req.query.symbol);
 
         // Attempting to pull the latest 10 signals
         const signals = await prisma.signal.findMany({
             where: { symbol },
             orderBy: { timestamp: 'desc' },
-            take: 10
+            take: 20
         });
 
         res.json({ success: true, data: signals });
@@ -44,7 +62,7 @@ const coindcxService = require('../services/dataCollection/coindcx');
  */
 router.get('/analytics/market', async function (req, res, next) {
     try {
-        const symbol = req.query.symbol || 'B-BTC_USDT';
+        const symbol = await resolveSymbol(req.query.symbol);
         const timeframe = coindcxService.defaultInterval;
 
         const candles = await prisma.candle.findMany({
@@ -64,7 +82,7 @@ router.get('/analytics/market', async function (req, res, next) {
  */
 router.get('/analytics/liquidity', async function (req, res, next) {
     try {
-        const symbol = req.query.symbol || 'BTCUSDT';
+        const symbol = await resolveSymbol(req.query.symbol);
         const zones = await prisma.liquidityZone.findMany({
             where: { symbol },
             orderBy: { timestamp: 'desc' },
@@ -72,6 +90,20 @@ router.get('/analytics/liquidity', async function (req, res, next) {
         });
 
         res.json({ success: true, data: zones });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+/**
+ * GET tracked markets
+ */
+router.get('/markets/tracked', async function (req, res, next) {
+    try {
+        const tracked = await prisma.market.findMany({
+            where: { isTracking: true }
+        });
+        res.json({ success: true, data: tracked });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
