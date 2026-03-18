@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const request = require('request')
 const crypto = require('crypto')
 
@@ -8,9 +9,11 @@ const timeStamp = Math.floor(Date.now());
 console.log(timeStamp);
 
 // Place your API key and secret below. You can generate it from the website.
-const key = "baf649b6bf8e963f88707bd51872f2a257a7f40bdff5c8d3";
-const secret = "ddc3b7db09549b22b2631d97b04493a5153e1751180bb7948bcf4d6f8a160dea"
+const key = process.env.COIN_DCX_USER_KEYS || "";
+const secret = process.env.COIN_DCX_USER_SECRET || "";
 
+//testing 
+console.log("key:\n", key, "\nsecret:\n", secret)
 
 const body = {
     "timestamp": timeStamp
@@ -29,6 +32,6 @@ const options = {
     body: body
 }
 
-request.post(options, function(error, response, body) {
+request.post(options, function (error, response, body) {
     console.log(body);
 })
