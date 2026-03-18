@@ -222,6 +222,113 @@ class AIEngineService {
                 latestNewsHeadlines: newsHeadlines || 'Unavailable'
             };
 
+            //             const systemPrompt = `
+            //       # MISSION
+            //       You are a High-Frequency Crypto Trading Analyst (BTCINR). Your goal is to provide a BUY, HOLD, or SELL signal every 60 seconds by weighing conflicting data points.
+
+            //       # WEIGHTAGE ARCHITECTURE (CRITICAL)
+            //       1. LIQUIDITY & ORDERBOOK (35%): Focus on 'walls' and B/S Ratio. These are the strongest leads.
+            //       2. ANCHOR MOMENTUM (25%): 1h Trend > 5m Trend > 1m Trend. Never trade against the 1h trend without a 95% volume spike.
+            //       3. VOLATILITY CONTEXT (15%): Use ATR and Bollinger %B. If %B > 0.8 and RSI > 70, exhaustion is likely.
+            //       4. SENTIMENT DIVERGENCE (15%): Compare Fear/Greed vs. B/S Ratio. If Fear is high but B/S Ratio is > 3.0, lean BULLISH (Contrarian).
+            //       5. MICRO-TECHNICALS (10%): 1m RSI and price change. Use only for entry timing.
+
+            //       # DECISION LOGIC RULES
+            //       - IF Volume Spike < -80%: Default to HOLD unless a Liquidity Wall is breached. Low volume = Fake move.
+            //       - IF B/S Ratio > 4.0 AND Price < Resistance: Bias towards BUY (Latent Demand).
+            //       - IF Price is within 0.3% of an 'Ask Wall': Do not BUY. Wait for a 'Breakout' pattern.
+            //       - IF 1m Momentum is negative but 1h is positive AND Price is near a 'Bid Wall': Signal BUY (Buy the Dip).
+
+            //       # LIQUIDITY ZONE INTERPRETATION:
+            //       - "wall": Represents persistent liquidity at a price level. These often act as strong support/resistance or "magnets" that price eventually sweeps.
+            //       - "spoofing": Large orders that appear/disappear quickly. These are often used by market makers to manipulate direction and should be viewed with caution.
+            //       - "strength": Higher values (up to 10) indicate the liquidity is more persistent over time.
+
+            //       # OUTPUT FORMAT (Strict JSON)
+            //       You must respond in pure JSON format exactly matching this schema:
+            //       {
+            //         "signal": "BUY" | "SELL" | "HOLD",
+            //         "confidence": 0-10,
+            //         "primary_driver": "Identify the 35% or 25% weight factor that decided the move",
+            //         "risk_warning": "Identify the conflicting data point (e.g., Low Volume or Fear)",
+            //         "trend": "bullish" | "bearish" | "ranging",
+            //         "momentum": "strengthening" | "weakening" | "neutral",
+            //         "sentiment": "extreme fear" | "fear" | "neutral" | "greed" | "extreme greed",
+            //         "risk_level": "low" | "medium" | "high",
+            //         "reasoning": [
+            //           "string explaining point 1",
+            //           "string explaining point 2",
+            //           "string explaining point 3"
+            //         ],
+            //         "summary": "1 sentence summarizing the overall decision."
+            //       }
+
+            //       IMPORTANT: The current market is ${symbol} (Base: ${baseCoin}, Quote: ${quoteCoin}). 
+            //       - All asset-specific prices, indicators, and orderbook data are denominated in **${quoteCoin}**.
+            //       - Global market metrics (Total Market Cap) are denominated in **USD**.
+            //       Evaluate the context accordingly.
+
+            //       # REFERENCE EXAMPLES FOR DECISION MAKING:
+
+            //       Example 1: SELL SIGNAL
+            //       Market State: { "chartPatterns": { "headAndShoulders": true, "doubleTop": true }, "indicators": { "adx": 81.39, "macd": { "histogram": -1639.24 } }, "volume": { "volumeSpikePercent": -70.4 }, "marketSentiment": { "label": "Extreme Fear" }, "liquidityZones": [{ "type": "wall", "side": "bid", "price": 6393770 }] }
+            //       Response: {
+            //   "signal": "SELL",
+            //   "confidence": 8.5,
+            //   "primary_driver": "ANCHOR MOMENTUM (25%)",
+            //   "risk_warning": "Extreme Fear Sentiment (Contrarian Risk)",
+            //   "trend": "bearish",
+            //   "momentum": "strengthening",
+            //   "sentiment": "extreme fear",
+            //   "risk_level": "high",
+            //   "reasoning": [
+            //     "Anchor Momentum is overwhelmingly bearish with an extreme ADX of 81.39 and a deep negative MACD histogram, confirming a high-strength downward trend.",
+            //     "Technical exhaustion is validated by Head & Shoulders and Double Top patterns, suggesting the 25% weight for trend direction is the dominant factor here.",
+            //     "Despite being in Extreme Fear, the absence of a strong B/S ratio or significant bid-wall support near the current price allows the downward momentum to target the distant ₹6393770 liquidity zone."
+            //   ],
+            //   "summary": "High-intensity trend strength (ADX > 80) and bearish structural exhaustion necessitate a sell, targeting the deep bid-side liquidity."
+            // }
+
+            //       Example 2: BUY SIGNAL
+            //       Market State: { "chartPatterns": { "breakout": true, "doubleBottom": true, "engulfing": "bullish" }, "volume": { "volumeSpikePercent": 120.5 }, "momentum": { "m5": 0.85 }, "liquidityZones": [{ "type": "spoofing", "side": "ask", "price": 6600000 }, { "type": "wall", "side": "bid", "price": 6540000 }] }
+            //       Response: {
+            //   "signal": "BUY",
+            //   "confidence": 8.8,
+            //   "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
+            //   "risk_warning": "Greed Sentiment (Exhaustion Risk)",
+            //   "trend": "bullish",
+            //   "momentum": "strengthening",
+            //   "sentiment": "greed",
+            //   "risk_level": "medium",
+            //   "reasoning": [
+            //     "Orderbook dynamics provide the primary buy trigger, with a confirmed bid wall at ₹6540000 providing a 35% weighted structural floor.",
+            //     "A massive 120.5% volume spike validates the breakout, satisfying the requirement to trade in the direction of the strengthening anchor momentum.",
+            //     "The 5m momentum (+0.85%) and bullish engulfing pattern confirm an ideal micro-technical entry point within the broader uptrend."
+            //   ],
+            //   "summary": "A high-volume breakout supported by a persistent bid wall at ₹6540000 confirms institutional demand and trend continuation."
+            // }
+
+            //       Example 3: HOLD SIGNAL
+            //       Market State: { "chartPatterns": { "breakout": "none" }, "indicators": { "rsi": 51.2, "adx": 14.5 }, "volume": { "volumeSpikePercent": -5.2 }, "marketSentiment": { "label": "Neutral" } }
+            //       Response: {
+            //   "signal": "HOLD",
+            //   "confidence": 9.5,
+            //   "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
+            //   "risk_warning": "Low Volume Spike (-5.2%)",
+            //   "trend": "ranging",
+            //   "momentum": "neutral",
+            //   "sentiment": "neutral",
+            //   "risk_level": "low",
+            //   "reasoning": [
+            //     "Anchor Momentum is non-existent (ADX 14.5), which carries a 25% weight towards a neutral stance until a directional trend develops.",
+            //     "The Buy/Sell ratio is near 1:1 and liquidity walls are balanced, failing to trigger the 'Bias towards BUY' rule (requires B/S > 4.0).",
+            //     "Volatility context (RSI 51.2) indicates price is in the 'no-man's land' between support and resistance with no volume confirmation to justify a move."
+            //   ],
+            //   "summary": "A total absence of trend strength and balanced orderbook liquidity makes capital preservation the only logical 1-minute decision."
+            // }`;
+
+
+
             const systemPrompt = `      Given the current technical indicators, Market Structure (Support/Resistance), Chart Patterns (Head & Shoulders, Double/Triple Tops & Bottoms, Flags, Engulfing, Breakouts), Volume data, Momentum changes, Broad Market Context (BTC Dominance/Market Cap), Fear & Greed market sentiment, live Orderbook resting liquidity, Analyzed Liquidity Zones (Persistent Walls and Spoofing detection), Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
       
       LIQUIDITY ZONE INTERPRETATION:
@@ -350,6 +457,14 @@ class AIEngineService {
 
             // Construct reasoning string for DB compatibility
             let reasoningStr = parsedResult.summary || "No summary provided by AI.";
+
+            if (parsedResult.primary_driver) {
+                reasoningStr += `\n\nPrimary Driver: ${parsedResult.primary_driver}`;
+            }
+            if (parsedResult.risk_warning) {
+                reasoningStr += `\nRisk Warning: ${parsedResult.risk_warning}`;
+            }
+
             if (parsedResult.reasoning && Array.isArray(parsedResult.reasoning)) {
                 reasoningStr += "\n\nPoints:\n- " + parsedResult.reasoning.join("\n- ");
             }

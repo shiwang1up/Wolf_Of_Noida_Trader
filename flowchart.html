@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wolf of Noida Trader - Backend API Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #38bdf8;
+        }
+        .container {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 1200px;
+            overflow: auto;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #38bdf8;
+            border: none;
+            border-radius: 6px;
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #7dd3fc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wolf of Noida Trader - API Flowchart</h1>
+    <div class="container">
+        <pre class="mermaid">
+graph TD
+    %% EXTERNAL DATA SOURCES
+    subgraph External_APIs [External Data Sources]
+        CD_M[CoinDCX Markets]
+        CD_C[CoinDCX Candles]
+        CD_O[CoinDCX Orderbook]
+        FGI[Fear & Greed Index]
+        CP[CryptoPanic News]
+        CC[CryptoCompare Social/News]
+    end
+
+    %% DATABASE
+    subgraph Database [PostgreSQL / Prisma]
+        DB_M[(Market Table)]
+        DB_C[(Candle Table)]
+        DB_S[(Sentiment Table)]
+        DB_N[(News Table)]
+        DB_O[(Orderbook Snapshot)]
+        DB_LZ[(Liquidity Zones)]
+        DB_SIG[(Signals Table)]
+    end
+
+    %% BACKGROUND PROCESSES
+    subgraph Scheduler [Data Scheduler]
+        S_M[Market Sync] -->|Upsert| DB_M
+        S_C[Candle Polling] -->|Upsert| DB_C
+        S_S[Sentiment Polling] -->|Create| DB_S
+        S_N[News Polling] -->|Create| DB_N
+        S_O[Orderbook Snapshot] -->|Create| DB_O
+        S_LZ[Liquidity Analysis] -->|Analyze| DB_LZ
+    end
+
+    %% API FLOW
+    subgraph API_Endpoints [REST API]
+        R_L_SIG[GET /signals/latest]
+        R_G_SIG[POST /signals/generate]
+        R_A_MKT[GET /analytics/market]
+        R_A_LIQ[GET /analytics/liquidity]
+    end
+
+    %% AI ENGINE
+    subgraph AI_Engine [AI Reasoning Engine]
+        A_AGG[Data Aggregator]
+        A_IND[Indicator Processor]
+        A_LLM[LLM Reasoning - Groq/Gemini/OpenAI]
+        A_SAVE[Signal Persistence]
+    end
+
+    %% CONNECTIONS: EXTERNAL TO SCHEDULER
+    CD_M --> S_M
+    CD_C --> S_C
+    CD_O --> S_O
+    FGI --> S_S
+    CP --> S_N
+    CC --> S_N
+
+    %% CONNECTIONS: AI ENGINE FLOW
+    R_G_SIG --> A_AGG
+    S_C -->|Trigger| A_AGG
+    A_AGG -->|Fetch| DB_C
+    A_AGG -->|Fetch| DB_S
+    A_AGG -->|Fetch| DB_N
+    A_AGG -->|Fetch| DB_LZ
+    A_AGG -->|Live Fetch| CD_O
+    
+    DB_C --> A_IND -->|Technical Indicators| A_LLM
+    A_AGG -->|Context Payload| A_LLM
+    A_LLM -->|Signal Proposal| A_SAVE
+    A_SAVE -->|Create| DB_SIG
+
+    %% CONNECTIONS: FRONTEND API READS
+    DB_SIG --> R_L_SIG
+    DB_C --> R_A_MKT
+    DB_LZ --> R_A_LIQ
+
+    %% STYLING
+    classDef external fill:#cc00cc,stroke:#333,stroke-width:2px,color:#fff;
+    classDef database fill:#00d2ff,stroke:#333,stroke-width:2px,color:#000;
+    classDef process fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef api fill:#ff9a00,stroke:#333,stroke-width:2px,color:#000;
+    classDef ai fill:#a0fe00,stroke:#333,stroke-width:2px,color:#000;
+
+    class CD_M,CD_C,CD_O,FGI,CP,CC external;
+    class DB_M,DB_C,DB_S,DB_N,DB_O,DB_LZ,DB_SIG database;
+    class S_M,S_C,S_S,S_N,S_O,S_LZ process;
+    class R_L_SIG,R_G_SIG,R_A_MKT,R_A_LIQ api;
+    class A_AGG,A_IND,A_LLM,A_SAVE ai;
+        </pre>
+    </div>
+    
+    <div class="controls">
+        <button onclick="window.print()">Save as PDF</button>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+        });
+    </script>
+</body>
+</html>
