@@ -12,14 +12,11 @@ console.log(timeStamp);
 const key = process.env.COIN_DCX_USER_KEYS || "";
 const secret = process.env.COIN_DCX_USER_SECRET || "";
 
-//testing 
-console.log("key:\n", key, "\nsecret:\n", secret)
-
 const body = {
     "timestamp": timeStamp
 }
 
-const payload = new Buffer(JSON.stringify(body)).toString();
+const payload = Buffer.from(JSON.stringify(body)).toString();
 const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
 
 const options = {
