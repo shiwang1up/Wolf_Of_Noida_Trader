@@ -38,12 +38,16 @@ class DataScheduler {
             });
             if (activeMarkets.length > 0) {
                 try {
-                    await this.forceFetchCandles(activeMarkets[0], 100);
+                    // Bootstrap 1m candles (for RSI/MACD/short momentum)
+                    await this.forceFetchCandles(activeMarkets[0], 1500);
+                    // Bootstrap 1h candles (needed for 4h and 1d momentum)
+                    await this.forceFetchHourlyCandles(activeMarkets[0], 60);
                     await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
                 } catch (apiError) {
                     if (apiError.message.includes('Not enough candle data')) {
-                        logger.warn(`[Scheduler] Initial AI bootstrap for ${activeMarkets[0].symbol} lacks data. Refetching deeper history...`);
-                        await this.forceFetchCandles(activeMarkets[0], 150);
+                        logger.warn(`[Scheduler] Initial AI bootstrap for ${activeMarkets[0].symbol} lacks data. Refetching even deeper history...`);
+                        await this.forceFetchCandles(activeMarkets[0], 2000);
+                        await this.forceFetchHourlyCandles(activeMarkets[0], 60);
                         // Try one more time
                         try {
                             await aiEngine.generateSignal(activeMarkets[0].symbol, activeMarkets[0].baseCoin, activeMarkets[0].quoteCoin);
@@ -191,6 +195,37 @@ class DataScheduler {
         }
     }
 
+    async forceFetchHourlyCandles(market, limit = 60) {
+        const coindcxService = require('./coindcx');
+        try {
+            // Fetch 1h candles — needed to compute 4h and 1d momentum
+            const candles = await coindcxService.getCandles(market.pair, '1h', limit);
+            if (candles && Array.isArray(candles) && candles.length > 0) {
+                const bulkData = candles.reverse().map(candle => ({
+                    symbol: market.symbol,
+                    timeframe: '1h',
+                    timestamp: new Date(candle.time),
+                    open: parseFloat(candle.open),
+                    high: parseFloat(candle.high),
+                    low: parseFloat(candle.low),
+                    close: parseFloat(candle.close),
+                    volume: parseFloat(candle.volume)
+                }));
+                await prisma.$transaction(
+                    bulkData.map(c => prisma.candle.upsert({
+                        where: { symbol_timeframe_timestamp: { symbol: c.symbol, timeframe: c.timeframe, timestamp: c.timestamp } },
+                        update: { ...c },
+                        create: { ...c }
+                    }))
+                );
+                logger.info(`[Scheduler] Bootstrapped ${candles.length} 1h candles for ${market.symbol}.`);
+            }
+        } catch (e) {
+            logger.warn(`[Scheduler] Failed to fetch 1h candles for ${market.symbol}:`, e.message);
+        }
+    }
+
+
     _scheduleCoinDCX() {
         // Run every minute to fetch the latest candles for tracked coins
         // (Note: frequency matches defaultInterval '1m')
@@ -221,20 +256,23 @@ class DataScheduler {
                             where: { symbol: market.symbol, timeframe }
                         });
 
-                        if (candleCount < 50) {
-                            logger.info(`[Scheduler] Market ${market.symbol} has insufficient candles (${candleCount}). Bootstrapping 100 historical candles...`);
-                            await this.forceFetchCandles(market, 100);
+                        if (candleCount < 1440) {
+                            logger.info(`[Scheduler] Market ${market.symbol} has insufficient candles (${candleCount}) for 1D momentum. Bootstrapping 1500 historical candles...`);
+                            await this.forceFetchCandles(market, 1500);
                         } else {
                             // Regularly fetch the latest 5 candles to keep data fresh
                             await this.forceFetchCandles(market, 5);
                         }
 
+                        // Always refresh the latest 3 hourly candles to keep 4h/1d momentum accurate
+                        await this.forceFetchHourlyCandles(market, 3);
+
                         // Generate Signal dynamically parsing the baseCoin (e.g., 'BTC')
                         await aiEngine.generateSignal(market.symbol, market.baseCoin, market.quoteCoin);
                     } catch (loopError) {
                         if (loopError.message.includes('Not enough candle data')) {
-                            logger.warn(`[Scheduler] AI Engine lacks data for ${market.symbol}. Retrying deep bootstrap...`);
-                            await this.forceFetchCandles(market, 150); // Fetch even more
+                            logger.warn(`[Scheduler] AI Engine lacks data for ${market.symbol}. Retrying deep bootstrap (1500)...`);
+                            await this.forceFetchCandles(market, 1500); // Fetch even more
                         } else {
                             logger.warn(`[Scheduler WARNING] API or Indicator generation failed for ${market.symbol}:`, loopError.message);
                         }

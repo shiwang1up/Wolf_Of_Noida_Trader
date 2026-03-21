@@ -72,6 +72,33 @@ class CoinDCXService {
     }
 
     /**
+     * Fetches a multi-timeframe context bundle for AI signal generation.
+     * Retrieves 1m (micro/entry) and 1h (macro/anchor) candles plus the live orderbook
+     * in a single parallel request to minimize latency.
+     *
+     * @param {string} pair - The CoinDCX market pair (e.g. 'B-BTC_USDT').
+     * @returns {{ micro: Object, macro: Object, orderbook: Object }}
+     */
+    async getAiContext(pair = 'B-BTC_USDT') {
+        try {
+            const [m1Candles, h1Candles, book] = await Promise.all([
+                this.getCandles(pair, '1m', 30),
+                this.getCandles(pair, '1h', 24),
+                this.getOrderbook(pair)
+            ]);
+
+            return {
+                micro: m1Candles?.[0] || null,   // Most recent 1m candle state
+                macro: h1Candles?.[0] || null,   // Most recent 1h candle state (anchor trend)
+                orderbook: book
+            };
+        } catch (error) {
+            logger.error(`Error fetching AI context for ${pair}:`, error.message);
+            throw error;
+        }
+    }
+
+    /**
      * Fetches all active markets from CoinDCX.
      * Source of truth: `GET /exchange/v1/markets`
      *

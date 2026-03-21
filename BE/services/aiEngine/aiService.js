@@ -27,7 +27,8 @@ class AIEngineService {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: JSON.stringify(marketStatePayload) }
                 ],
-                model: 'moonshotai/kimi-k2-instruct-0905',
+                // model: 'qwen/qwen3-32b',
+                model: 'llama-3.1-8b-instant',
                 // model: 'openai/gpt-oss-120b',
                 response_format: { type: "json_object" }
             });
@@ -79,7 +80,7 @@ class AIEngineService {
             const candles = await prisma.candle.findMany({
                 where: { symbol, timeframe },
                 orderBy: { timestamp: 'desc' },
-                take: 100
+                take: 1500 // Increased to support 4h (240) and 1d (1440) momentum
             });
 
             if (candles.length < 50) {
@@ -89,8 +90,41 @@ class AIEngineService {
             // Reverse to get oldest to newest for indicator calculation
             candles.reverse();
 
-            // 2. Extract technical features for the current state
-            const features = indicatorService.getLatestFeatures(candles);
+            // 2. Extract technical features for the current (1m) state
+            const features = indicatorService.getLatestFeatures(candles, '1m');
+
+            // 2a. Fetch 1h macro candles from DB for Anchor Momentum (25% weight)
+            let macroFeatures = null;
+            try {
+                const h1Candles = await prisma.candle.findMany({
+                    where: { symbol, timeframe: '1h' },
+                    orderBy: { timestamp: 'desc' },
+                    take: 60
+                });
+                if (h1Candles.length >= 24) {
+                    h1Candles.reverse();
+                    const mf = indicatorService.getLatestFeatures(h1Candles, '1h');
+
+                    // 🚨 CRITICAL FIX: Since 1m candles are limited to 1000 by API (not enough for 1440 mins/1d),
+                    // we pull 4h and 1d momentum from the 1h candles instead.
+                    if (features.momentum && mf.momentum) {
+                        features.momentum.h4 = mf.momentum.h4;
+                        features.momentum.d1 = mf.momentum.d1;
+                    }
+
+                    macroFeatures = {
+                        trend: mf.momentum?.h1 >= 0 ? 'bullish' : 'bearish',
+                        momentum_h1_pct: mf.momentum?.h1,
+                        rsi: mf.rsi,
+                        macd_histogram: mf.macd?.histogram,
+                        ema20: mf.ema20,
+                        ema50: mf.ema50,
+                        atr: mf.atr
+                    };
+                }
+            } catch (e) {
+                logger.warn('[AI Engine] Failed to fetch 1h macro candles for multiTimeframeContext:', e.message);
+            }
 
             // 3. Fetch latest Sentiment Data
             const latestSentiment = await prisma.sentiment.findFirst({
@@ -219,117 +253,120 @@ class AIEngineService {
                     strength: z.strength
                 })) : 'No significant persistent liquidity zones detected.',
                 socialStats: socialSummary || 'Unavailable',
-                latestNewsHeadlines: newsHeadlines || 'Unavailable'
+                latestNewsHeadlines: newsHeadlines || 'Unavailable',
+                // Multi-Timeframe Context Bundle (Anchor + Micro)
+                multiTimeframeContext: {
+                    macro_1h: macroFeatures || 'Unavailable (no 1h candles stored yet)',
+                    micro_1m: {
+                        momentum_1m_pct: features.momentum?.m1,
+                        rsi: features.rsi,
+                        note: 'Use only for precise entry timing (10% weight).'
+                    }
+                }
             };
 
-            //             const systemPrompt = `
-            //       # MISSION
-            //       You are a High-Frequency Crypto Trading Analyst (BTCINR). Your goal is to provide a BUY, HOLD, or SELL signal every 60 seconds by weighing conflicting data points.
+            const systemPrompt_weighted = `
+                  # MISSION
+You are a High-Frequency Crypto Trading Analyst (BTCINR). Your goal is to provide a BUY, HOLD, or SELL signal every 60 seconds by weighing conflicting data points across multiple timeframes.
 
-            //       # WEIGHTAGE ARCHITECTURE (CRITICAL)
-            //       1. LIQUIDITY & ORDERBOOK (35%): Focus on 'walls' and B/S Ratio. These are the strongest leads.
-            //       2. ANCHOR MOMENTUM (25%): 1h Trend > 5m Trend > 1m Trend. Never trade against the 1h trend without a 95% volume spike.
-            //       3. VOLATILITY CONTEXT (15%): Use ATR and Bollinger %B. If %B > 0.8 and RSI > 70, exhaustion is likely.
-            //       4. SENTIMENT DIVERGENCE (15%): Compare Fear/Greed vs. B/S Ratio. If Fear is high but B/S Ratio is > 3.0, lean BULLISH (Contrarian).
-            //       5. MICRO-TECHNICALS (10%): 1m RSI and price change. Use only for entry timing.
+# WEIGHTAGE ARCHITECTURE (CRITICAL)
+1. LIQUIDITY & ORDERBOOK (35%): Focus on 'walls' and B/S Ratio. These are the primary leads for immediate price pressure.
+2. ANCHOR MOMENTUM (25%): HIERARCHY: 1d > 4h > 1h > 5m > 1m. Higher timeframes (HTF) determine the 'Master Bias'. Never fight the 1d/4h trend without extreme volume.
+3. VOLATILITY CONTEXT (15%): Use ATR, Bollinger %B, and ADX. ADX > 25 indicates a strong trend that HTF momentum will likely continue.
+4. SENTIMENT DIVERGENCE (15%): Compare Fear/Greed vs. B/S Ratio. 
+5. MICRO-TECHNICALS (10%): 1m RSI and price change. Use ONLY for precision entry timing once the HTF Bias is confirmed.
 
-            //       # DECISION LOGIC RULES
-            //       - IF Volume Spike < -80%: Default to HOLD unless a Liquidity Wall is breached. Low volume = Fake move.
-            //       - IF B/S Ratio > 4.0 AND Price < Resistance: Bias towards BUY (Latent Demand).
-            //       - IF Price is within 0.3% of an 'Ask Wall': Do not BUY. Wait for a 'Breakout' pattern.
-            //       - IF 1m Momentum is negative but 1h is positive AND Price is near a 'Bid Wall': Signal BUY (Buy the Dip).
+# DECISION LOGIC RULES (HTF CONFLUENCE)
+- [HTF MASTER BIAS] If 1d, 4h, and 1h momentum are ALL negative (<-1%), you are STRICTLY FORBIDDEN from signaling BUY. Any 1m/5m green candles are "Dead Cat Bounces" or liquidity grabs. Signal SELL or HOLD.
+- [CONFLUENCE BONUS] If 1m, 5m, 1h, and 4h momentum are all aligned (all positive or all negative), increase 'confidence' by 1.5. These are high-probability trend-following trades.
+- [VOLUME VALIDATION] If Volume Spike < -80%, treat the HTF (1d/4h) trend as the absolute truth. Ignore LTF wiggles; they lack the conviction to flip the trend.
+- [B/S RATIO TRAP] If B/S Ratio is high (>10) but 1h/4h momentum is negative, do NOT BUY. This indicates passive "limit-order" buying that is being run over by active market sellers.
+- [SPOOF FILTER] IF B/S Ratio > 1000 AND Volume Spike < 10%: FLAG as "Potential Orderbook Spoofing." Lower confidence by 1.5.
+- [VOLATILITY SQUEEZE] IF ATR is low AND price is pinched between EMA20 and Resistance (within 0.5%): Signal HOLD for "Volatility Squeeze Breakout."
 
-            //       # LIQUIDITY ZONE INTERPRETATION:
-            //       - "wall": Represents persistent liquidity at a price level. These often act as strong support/resistance or "magnets" that price eventually sweeps.
-            //       - "spoofing": Large orders that appear/disappear quickly. These are often used by market makers to manipulate direction and should be viewed with caution.
-            //       - "strength": Higher values (up to 10) indicate the liquidity is more persistent over time.
+# LIQUIDITY ZONE INTERPRETATION:
+- "wall": Persistent liquidity. "strength": (1-10). Strength 10 walls are the only levels capable of reversing an HTF trend.
 
-            //       # OUTPUT FORMAT (Strict JSON)
-            //       You must respond in pure JSON format exactly matching this schema:
-            //       {
-            //         "signal": "BUY" | "SELL" | "HOLD",
-            //         "confidence": 0-10,
-            //         "primary_driver": "Identify the 35% or 25% weight factor that decided the move",
-            //         "risk_warning": "Identify the conflicting data point (e.g., Low Volume or Fear)",
-            //         "trend": "bullish" | "bearish" | "ranging",
-            //         "momentum": "strengthening" | "weakening" | "neutral",
-            //         "sentiment": "extreme fear" | "fear" | "neutral" | "greed" | "extreme greed",
-            //         "risk_level": "low" | "medium" | "high",
-            //         "reasoning": [
-            //           "string explaining point 1",
-            //           "string explaining point 2",
-            //           "string explaining point 3"
-            //         ],
-            //         "summary": "1 sentence summarizing the overall decision."
-            //       }
+# OUTPUT FORMAT (Strict JSON)
+{
+  "signal": "BUY" | "SELL" | "HOLD",
+  "confidence": 0-10,
+  "primary_driver": "Identify the 35% or 25% weight factor that decided the move",
+  "risk_warning": "Identify the conflicting data point (e.g., HTF Bearish Bias or Low Volume)",
+  "trend": "bullish" | "bearish" | "ranging",
+  "momentum": "strengthening" | "weakening" | "neutral",
+  "sentiment": "extreme fear" | "fear" | "neutral" | "greed" | "extreme greed",
+  "risk_level": "low" | "medium" | "high",
+  "reasoning": [
+    "Point 1: HTF Bias (1d/4h) analysis",
+    "Point 2: Orderbook & Liquidity analysis",
+    "Point 3: Technical/Volatility confluence"
+  ],
+  "summary": "1 sentence summarizing why the HTF bias and orderbook led to this decision."
+}
 
-            //       IMPORTANT: The current market is ${symbol} (Base: ${baseCoin}, Quote: ${quoteCoin}). 
-            //       - All asset-specific prices, indicators, and orderbook data are denominated in **${quoteCoin}**.
-            //       - Global market metrics (Total Market Cap) are denominated in **USD**.
-            //       Evaluate the context accordingly.
+                  # REFERENCE EXAMPLES FOR DECISION MAKING:
 
-            //       # REFERENCE EXAMPLES FOR DECISION MAKING:
+                  Example 1: SELL SIGNAL
+                  Market State: { "chartPatterns": { "headAndShoulders": true, "doubleTop": true }, "indicators": { "adx": 81.39, "macd": { "histogram": -1639.24 } }, "volume": { "volumeSpikePercent": -70.4 }, "marketSentiment": { "label": "Extreme Fear" }, "liquidityZones": [{ "type": "wall", "side": "bid", "price": 6393770 }] }
+                  Response: {
+              "signal": "SELL",
+              "confidence": 8.5,
+              "primary_driver": "ANCHOR MOMENTUM (25%)",
+              "risk_warning": "Extreme Fear Sentiment (Contrarian Risk)",
+              "trend": "bearish",
+              "momentum": "strengthening",
+              "sentiment": "extreme fear",
+              "risk_level": "high",
+              "reasoning": [
+                "Anchor Momentum is overwhelmingly bearish with an extreme ADX of 81.39 and a deep negative MACD histogram, confirming a high-strength downward trend.",
+                "Technical exhaustion is validated by Head & Shoulders and Double Top patterns, suggesting the 25% weight for trend direction is the dominant factor here.",
+                "Despite being in Extreme Fear, the absence of a strong B/S ratio or significant bid-wall support near the current price allows the downward momentum to target the distant ₹6393770 liquidity zone."
+              ],
+              "summary": "High-intensity trend strength (ADX > 80) and bearish structural exhaustion necessitate a sell, targeting the deep bid-side liquidity."
+            }
 
-            //       Example 1: SELL SIGNAL
-            //       Market State: { "chartPatterns": { "headAndShoulders": true, "doubleTop": true }, "indicators": { "adx": 81.39, "macd": { "histogram": -1639.24 } }, "volume": { "volumeSpikePercent": -70.4 }, "marketSentiment": { "label": "Extreme Fear" }, "liquidityZones": [{ "type": "wall", "side": "bid", "price": 6393770 }] }
-            //       Response: {
-            //   "signal": "SELL",
-            //   "confidence": 8.5,
-            //   "primary_driver": "ANCHOR MOMENTUM (25%)",
-            //   "risk_warning": "Extreme Fear Sentiment (Contrarian Risk)",
-            //   "trend": "bearish",
-            //   "momentum": "strengthening",
-            //   "sentiment": "extreme fear",
-            //   "risk_level": "high",
-            //   "reasoning": [
-            //     "Anchor Momentum is overwhelmingly bearish with an extreme ADX of 81.39 and a deep negative MACD histogram, confirming a high-strength downward trend.",
-            //     "Technical exhaustion is validated by Head & Shoulders and Double Top patterns, suggesting the 25% weight for trend direction is the dominant factor here.",
-            //     "Despite being in Extreme Fear, the absence of a strong B/S ratio or significant bid-wall support near the current price allows the downward momentum to target the distant ₹6393770 liquidity zone."
-            //   ],
-            //   "summary": "High-intensity trend strength (ADX > 80) and bearish structural exhaustion necessitate a sell, targeting the deep bid-side liquidity."
-            // }
+                  Example 2: BUY SIGNAL
+                  Market State: { "chartPatterns": { "breakout": true, "doubleBottom": true, "engulfing": "bullish" }, "volume": { "volumeSpikePercent": 120.5 }, "momentum": { "m5": 0.85 }, "liquidityZones": [{ "type": "spoofing", "side": "ask", "price": 6600000 }, { "type": "wall", "side": "bid", "price": 6540000 }] }
+                  Response: {
+              "signal": "BUY",
+              "confidence": 8.8,
+              "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
+              "risk_warning": "Greed Sentiment (Exhaustion Risk)",
+              "trend": "bullish",
+              "momentum": "strengthening",
+              "sentiment": "greed",
+              "risk_level": "medium",
+              "reasoning": [
+                "Orderbook dynamics provide the primary buy trigger, with a confirmed bid wall at ₹6540000 providing a 35% weighted structural floor.",
+                "A massive 120.5% volume spike validates the breakout, satisfying the requirement to trade in the direction of the strengthening anchor momentum.",
+                "The 5m momentum (+0.85%) and bullish engulfing pattern confirm an ideal micro-technical entry point within the broader uptrend."
+              ],
+              "summary": "A high-volume breakout supported by a persistent bid wall at ₹6540000 confirms institutional demand and trend continuation."
+            }
 
-            //       Example 2: BUY SIGNAL
-            //       Market State: { "chartPatterns": { "breakout": true, "doubleBottom": true, "engulfing": "bullish" }, "volume": { "volumeSpikePercent": 120.5 }, "momentum": { "m5": 0.85 }, "liquidityZones": [{ "type": "spoofing", "side": "ask", "price": 6600000 }, { "type": "wall", "side": "bid", "price": 6540000 }] }
-            //       Response: {
-            //   "signal": "BUY",
-            //   "confidence": 8.8,
-            //   "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
-            //   "risk_warning": "Greed Sentiment (Exhaustion Risk)",
-            //   "trend": "bullish",
-            //   "momentum": "strengthening",
-            //   "sentiment": "greed",
-            //   "risk_level": "medium",
-            //   "reasoning": [
-            //     "Orderbook dynamics provide the primary buy trigger, with a confirmed bid wall at ₹6540000 providing a 35% weighted structural floor.",
-            //     "A massive 120.5% volume spike validates the breakout, satisfying the requirement to trade in the direction of the strengthening anchor momentum.",
-            //     "The 5m momentum (+0.85%) and bullish engulfing pattern confirm an ideal micro-technical entry point within the broader uptrend."
-            //   ],
-            //   "summary": "A high-volume breakout supported by a persistent bid wall at ₹6540000 confirms institutional demand and trend continuation."
-            // }
-
-            //       Example 3: HOLD SIGNAL
-            //       Market State: { "chartPatterns": { "breakout": "none" }, "indicators": { "rsi": 51.2, "adx": 14.5 }, "volume": { "volumeSpikePercent": -5.2 }, "marketSentiment": { "label": "Neutral" } }
-            //       Response: {
-            //   "signal": "HOLD",
-            //   "confidence": 9.5,
-            //   "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
-            //   "risk_warning": "Low Volume Spike (-5.2%)",
-            //   "trend": "ranging",
-            //   "momentum": "neutral",
-            //   "sentiment": "neutral",
-            //   "risk_level": "low",
-            //   "reasoning": [
-            //     "Anchor Momentum is non-existent (ADX 14.5), which carries a 25% weight towards a neutral stance until a directional trend develops.",
-            //     "The Buy/Sell ratio is near 1:1 and liquidity walls are balanced, failing to trigger the 'Bias towards BUY' rule (requires B/S > 4.0).",
-            //     "Volatility context (RSI 51.2) indicates price is in the 'no-man's land' between support and resistance with no volume confirmation to justify a move."
-            //   ],
-            //   "summary": "A total absence of trend strength and balanced orderbook liquidity makes capital preservation the only logical 1-minute decision."
-            // }`;
+                  Example 3: HOLD SIGNAL
+                  Market State: { "chartPatterns": { "breakout": "none" }, "indicators": { "rsi": 51.2, "adx": 14.5 }, "volume": { "volumeSpikePercent": -5.2 }, "marketSentiment": { "label": "Neutral" } }
+                  Response: {
+              "signal": "HOLD",
+              "confidence": 9.5,
+              "primary_driver": "LIQUIDITY & ORDERBOOK (35%)",
+              "risk_warning": "Low Volume Spike (-5.2%)",
+              "trend": "ranging",
+              "momentum": "neutral",
+              "sentiment": "neutral",
+              "risk_level": "low",
+              "reasoning": [
+                "Anchor Momentum is non-existent (ADX 14.5), which carries a 25% weight towards a neutral stance until a directional trend develops.",
+                "The Buy/Sell ratio is near 1:1 and liquidity walls are balanced, failing to trigger the 'Bias towards BUY' rule (requires B/S > 4.0).",
+                "Volatility context (RSI 51.2) indicates price is in the 'no-man's land' between support and resistance with no volume confirmation to justify a move."
+              ],
+              "summary": "A total absence of trend strength and balanced orderbook liquidity makes capital preservation the only logical 1-minute decision."
+            }`;
 
 
 
-            const systemPrompt = `      Given the current technical indicators, Market Structure (Support/Resistance), Chart Patterns (Head & Shoulders, Double/Triple Tops & Bottoms, Flags, Engulfing, Breakouts), Volume data, Momentum changes, Broad Market Context (BTC Dominance/Market Cap), Fear & Greed market sentiment, live Orderbook resting liquidity, Analyzed Liquidity Zones (Persistent Walls and Spoofing detection), Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
+            const systemPrompt = `Given the current technical indicators, Market Structure (Support/Resistance), Chart Patterns (Head & Shoulders, Double/Triple Tops & Bottoms, Flags, Engulfing, Breakouts), Volume data, Momentum changes, Broad Market Context (BTC Dominance/Market Cap), Fear & Greed market sentiment, live Orderbook resting liquidity, Analyzed Liquidity Zones (Persistent Walls and Spoofing detection), Social Media statistics, and the latest Crypto news headlines, determine the best trading action.
       
       LIQUIDITY ZONE INTERPRETATION:
       - "wall": Represents persistent liquidity at a price level. These often act as strong support/resistance or "magnets" that price eventually sweeps.
@@ -426,7 +463,7 @@ class AIEngineService {
             logger.info(`  📊 ADX         : ${marketStatePayload.indicators.adx?.toFixed(2)}`);
             logger.info(`  📊 ATR         : ${marketStatePayload.indicators.atr?.toFixed(2)}`);
             logger.info(`  🔊 Volume      : ${marketStatePayload.volume?.lastVolume?.toFixed(2)} BTC (Spike: ${marketStatePayload.volume?.volumeSpikePercent?.toFixed(1)}%) | B/S Ratio: ${marketStatePayload.volume?.buySellRatio?.toFixed(2)}`);
-            logger.info(`  🚀 Momentum    : 1m ${marketStatePayload.momentum?.m1?.toFixed(2)}% | 5m ${marketStatePayload.momentum?.m5?.toFixed(2)}% | 1h ${marketStatePayload.momentum?.h1?.toFixed(2)}%`);
+            logger.info(`  🚀 Momentum    : 1m ${marketStatePayload.momentum?.m1?.toFixed(2)}% | 5m ${marketStatePayload.momentum?.m5?.toFixed(2)}% | 1h ${marketStatePayload.momentum?.h1?.toFixed(2)}% | 4h ${marketStatePayload.momentum?.h4?.toFixed(2)}% | 1d ${marketStatePayload.momentum?.d1?.toFixed(2)}%`);
             logger.info(`  🌍 Market Ctx  : BTC Dom. ${marketStatePayload.marketContext?.btcDominance?.toFixed(1)}% | MCap $${(marketStatePayload.marketContext?.totalMarketCap / 1e12).toFixed(2)}T`);
             logger.info(`  😱 Fear & Greed: ${marketStatePayload.marketSentiment?.score} (${marketStatePayload.marketSentiment?.label})`);
             logger.info(`  📖 Orderbook   : Top Bid ${marketStatePayload.orderbook?.topBids?.[0]?.[0]} | Top Ask ${marketStatePayload.orderbook?.topAsks?.[0]?.[0]}`);
@@ -439,7 +476,8 @@ class AIEngineService {
                 marketStatePayload.latestNewsHeadlines.forEach((h, i) => logger.info(`     ${i + 1}. ${h}`));
             }
             logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-            const resultStr = await this._queryLLM(systemPrompt, marketStatePayload);
+            const resultStr = await this._queryLLM(systemPrompt_weighted, marketStatePayload);
+            // const resultStr = await this._queryLLM(systemPrompt, marketStatePayload);
 
             if (!resultStr) {
                 throw new Error("LLM returned an empty or undefined response.");
@@ -455,35 +493,42 @@ class AIEngineService {
                 throw new Error("LLM output is not valid JSON.");
             }
 
-            // Construct reasoning string for DB compatibility
-            let reasoningStr = parsedResult.summary || "No summary provided by AI.";
+            // Extract structured fields from LLM response
+            const reasoningStr = parsedResult.reasoning && Array.isArray(parsedResult.reasoning)
+                ? parsedResult.reasoning.join('\n- ')
+                : null;
 
-            if (parsedResult.primary_driver) {
-                reasoningStr += `\n\nPrimary Driver: ${parsedResult.primary_driver}`;
-            }
-            if (parsedResult.risk_warning) {
-                reasoningStr += `\nRisk Warning: ${parsedResult.risk_warning}`;
-            }
-
-            if (parsedResult.reasoning && Array.isArray(parsedResult.reasoning)) {
-                reasoningStr += "\n\nPoints:\n- " + parsedResult.reasoning.join("\n- ");
-            }
-
-            logger.info(`[AI Engine] LLM Reasoning for ${symbol}:`, reasoningStr);
-            logger.info(`[AI Engine] Trend: ${parsedResult.trend} | Momentum: ${parsedResult.momentum} | Sub-sentiment: ${parsedResult.sentiment}`);
+            logger.info(`[AI Engine] LLM Reasoning for ${symbol}:`, parsedResult.summary);
+            logger.info(`[AI Engine] Primary Driver: ${parsedResult.primary_driver} | Risk Warning: ${parsedResult.risk_warning}`);
+            logger.info(`[AI Engine] Trend: ${parsedResult.trend} | Momentum: ${parsedResult.momentum} | Sentiment: ${parsedResult.sentiment}`);
 
             // Ensure risk_level is a valid string before calling toUpperCase()
             const riskLevelStr = typeof parsedResult.risk_level === 'string'
                 ? parsedResult.risk_level.toUpperCase()
                 : 'UNKNOWN';
 
-            // 6. Save the Signal to database
+            // 6. Save the Signal to database with all structured AI fields
+            // Resolve pair from DB market record for storage
+            let marketPair = null;
+            try {
+                const marketRec = await prisma.market.findUnique({ where: { symbol } });
+                marketPair = marketRec?.pair || null;
+            } catch (_) {}
+
             const signalRecord = await prisma.signal.create({
                 data: {
                     symbol,
-                    action: parsedResult.signal,              // mapped from "signal"
-                    confidenceScore: parsedResult.confidence, // mapped from "confidence"
-                    riskLevel: riskLevelStr,                  // securely casted
+                    baseCoin: baseCoin || null,
+                    pair: marketPair,
+                    action: parsedResult.signal,
+                    confidenceScore: parsedResult.confidence,
+                    riskLevel: riskLevelStr,
+                    summary: parsedResult.summary || null,
+                    primaryDriver: parsedResult.primary_driver || null,
+                    riskWarning: parsedResult.risk_warning || null,
+                    trend: parsedResult.trend || null,
+                    momentum: parsedResult.momentum || null,
+                    sentiment: parsedResult.sentiment || null,
                     reasoning: reasoningStr,
                     currentPrice: features.currentPrice,
                     timestamp: new Date()

@@ -314,7 +314,7 @@ class IndicatorService {
      * Used for passing the current state into the AI reasoning engine.
      * @param {Array<Object>} candles - Array of candle objects. Must be ordered oldest to newest.
      */
-    getLatestFeatures(candles) {
+    getLatestFeatures(candles, timeframe = '1m') {
         if (!candles || candles.length === 0) return {};
 
         const openPrices = candles.map(c => parseFloat(c.open));
@@ -358,14 +358,22 @@ class IndicatorService {
             buySellRatio = sellPressure === 0 ? 5.0 : (buyPressure / sellPressure);
         }
 
-        // Momentum changes
-        // NOTE: Offsets are in "number of candles" and currently tuned for 1m candles.
-        // If you use a different timeframe, update these offsets or derive them from timeframe.
-        const MOMENTUM_OFFSETS = {
-            M1_CANDLES: 1,   // 1 candle @ 1m -> ~1 minute momentum
-            M5_CANDLES: 5,   // 5 candles @ 1m -> ~5 minute momentum
-            H1_CANDLES: 60,  // 60 candles @ 1m -> ~1 hour momentum
-        };
+        // Momentum changes - Adapt offsets based on timeframe
+        const MOMENTUM_OFFSETS = timeframe === '1h' 
+            ? {
+                M1_CANDLES: 1,   // 1h
+                M5_CANDLES: 5,   // 5h
+                H1_CANDLES: 1,   // 1h (redundant but kept for structure)
+                H4_CANDLES: 4,   // 4h
+                D1_CANDLES: 24,  // 1d
+            }
+            : {
+                M1_CANDLES: 1,   // 1m
+                M5_CANDLES: 5,   // 5m
+                H1_CANDLES: 60,  // 1h
+                H4_CANDLES: 240, // 4h
+                D1_CANDLES: 1440,// 1d
+            };
 
         const getMomentum = (candleOffset) => {
             if (closePrices.length > candleOffset) {
@@ -410,7 +418,9 @@ class IndicatorService {
                 // These labels (m1, m5, h1) assume 1m candles; see MOMENTUM_OFFSETS above.
                 m1: getMomentum(MOMENTUM_OFFSETS.M1_CANDLES),
                 m5: getMomentum(MOMENTUM_OFFSETS.M5_CANDLES),
-                h1: getMomentum(MOMENTUM_OFFSETS.H1_CANDLES)
+                h1: getMomentum(MOMENTUM_OFFSETS.H1_CANDLES),
+                h4: getMomentum(MOMENTUM_OFFSETS.H4_CANDLES),
+                d1: getMomentum(MOMENTUM_OFFSETS.D1_CANDLES)
             },
             chartPatterns: {
                 headAndShoulders: isHeadAndShoulders,

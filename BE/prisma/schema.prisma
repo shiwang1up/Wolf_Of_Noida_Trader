@@ -49,10 +49,21 @@ model Sentiment {
 model Signal {
   id              Int      @id @default(autoincrement())
   symbol          String
+  baseCoin        String?  // e.g. "BTC"
+  pair            String?  // e.g. "I-BTC_INR"
   action          String   // "BUY", "SELL", "HOLD"
-  confidenceScore Float    // 0.0 to 100.0
+  confidenceScore Float    // 0.0 to 10.0
   riskLevel       String   // "LOW", "MEDIUM", "HIGH"
-  reasoning       String?  // AI/LLM logical explanation
+  
+  // Structured AI Response Fields
+  summary         String?  // 1-sentence summary from AI
+  primaryDriver   String?  // e.g. "LIQUIDITY & ORDERBOOK (35%)"
+  riskWarning     String?  // e.g. "Low Volume or Potential Spoofing"
+  trend           String?  // "bullish" | "bearish" | "ranging"
+  momentum        String?  // "strengthening" | "weakening" | "neutral"
+  sentiment       String?  // "fear" | "greed" | "neutral" etc.
+  reasoning       String?  // Bullet-point reasoning from AI (joined array)
+  
   timestamp       DateTime
   
   // Capturing the market state at the time of the signal
