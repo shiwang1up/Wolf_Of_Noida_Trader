@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Backtest Visualizer</title>
+    <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { margin: 0; padding: 0; background: #131722; color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        #chart-container { width: 100vw; height: 80vh; }
+        #panel { height: 20vh; padding: 20px; box-sizing: border-box; background: #1e222d; overflow-y: auto; border-top: 1px solid #2a2e39; }
+        .log-entry { margin-bottom: 8px; font-size: 14px; }
+        .buy { color: #26a69a; }
+        .sell { color: #ef5350; }
+        .hold { color: #888; }
+        .win { color: #2196F3; font-weight: bold; }
+        .loss { color: #FF9800; font-weight: bold; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #131722; border-bottom: 1px solid #2a2e39;}
+        h2 { margin: 0; font-size: 18px; }
+        .pagination { display: flex; gap: 8px; }
+        .pagination button { background: #2b2b43; color: #d1d4dc; border: 1px solid #3b3b53; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.2s; }
+        .pagination button:hover { background: #3b3b53; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>AI Backtest Visualizer</h2>
+        <div class="pagination">
+            <button onclick="requestHistory('1M')">1 Month</button>
+            <button onclick="requestHistory('3M')">3 Months</button>
+            <button onclick="requestHistory('5M')">5 Months</button>
+            <button onclick="requestHistory('1Y')">1 Year</button>
+            <button onclick="requestHistory('ALL')">All Data</button>
+        </div>
+        <div style="text-align: right;">
+            <div id="wallet-info" style="color: #26a69a; font-weight: bold; font-family: monospace; font-size: 16px;">Wallet: $100,000.00</div>
+            <div id="status" style="font-size: 12px; margin-top: 4px; color: #888;">Connecting...</div>
+        </div>
+    </div>
+    <div id="chart-container"></div>
+    <div id="panel"></div>
+
+    <script>
+        const chart = LightweightCharts.createChart(document.getElementById('chart-container'), {
+            layout: { background: { type: 'solid', color: '#131722' }, textColor: '#d1d4dc', },
+            grid: { vertLines: { color: '#2b2b43' }, horzLines: { color: '#2b2b43' } },
+            crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+            timeScale: { timeVisible: true, secondsVisible: false },
+        });
+
+        const candlestickSeries = chart.addCandlestickSeries({
+            upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
+            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+        });
+
+        let markers = [];
+        const panel = document.getElementById('panel');
+        const statusEl = document.getElementById('status');
+        const socket = io();
+
+        function requestHistory(range) {
+            statusEl.innerText = `Loading ${range}...`;
+            socket.emit('request_history', range);
+        }
+
+        socket.on('connect', () => {
+            // Fetch default 1 Month range on initial load
+            requestHistory('1M');
+        });
+
+        socket.on('init_chart', (data) => {
+            candlestickSeries.setData(data);
+            statusEl.innerHTML = `Chart loaded <strong>(${data.length} candles)</strong>. Waiting for AI...`;
+            chart.timeScale().fitContent();
+        });
+
+        socket.on('ai_step', (data) => {
+            const { time, signal, reasoning, price, outcome, portfolioValue, wallet, pnl } = data;
+            
+            // Add Marker
+            if (signal === 'BUY' || signal === 'SELL') {
+                markers.push({
+                    time: time,
+                    position: signal === 'BUY' ? 'belowBar' : 'aboveBar',
+                    color: signal === 'BUY' ? '#26a69a' : '#ef5350',
+                    shape: signal === 'BUY' ? 'arrowUp' : 'arrowDown',
+                    text: signal + (outcome ? ` (${outcome})` : '')
+                });
+                candlestickSeries.setMarkers(markers);
+            }
+
+            // Scroll to center the currently evaluated time
+            // Showing roughly 30 days before and 5 days after
+            chart.timeScale().setVisibleRange({
+                from: time - (30 * 24 * 60 * 60), 
+                to: time + (5 * 24 * 60 * 60)
+            });
+
+            // Log panel
+            let cssClass = signal.toLowerCase();
+            let outcomeStr = outcome ? ` - <span class="${outcome.toLowerCase()}">[${outcome}]</span>` : '';
+            panel.innerHTML = `<div class="log-entry"><strong class="${cssClass}">${new Date(time * 1000).toLocaleString()} | ${signal}</strong> @ ${price} ${outcomeStr} <br> ${reasoning}</div>` + panel.innerHTML;
+            
+            // Update Wallet display
+            if (portfolioValue && wallet) {
+                const pnl = data.pnl ?? 0;
+                const pnlColor = pnl >= 0 ? '#26a69a' : '#ef5350';
+                const pnlStr = (pnl >= 0 ? '+' : '') + pnl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('wallet-info').innerHTML = `
+                    <div style="display:flex;gap:16px;align-items:center;font-family:monospace;font-size:13px;">
+                        <span style="color:#888;">💵 Cash: <strong style="color:#d1d4dc;">$${wallet.quote.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:#888;">📈 Holdings: <strong style="color:#d1d4dc;">$${(wallet.baseValue ?? 0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:#888;">🏦 Total: <strong style="color:white;font-size:15px;">$${portfolioValue.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:${pnlColor};font-weight:bold;font-size:14px;">P&amp;L: ${pnlStr}</span>
+                    </div>`;
+            }
+        });
+    </script>
+</body>
+</html>

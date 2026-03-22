@@ -22,6 +22,22 @@ model Candle {
   @@unique([symbol, timeframe, timestamp]) // Prevent duplicate candle entries
 }
 
+model TestCandle {
+  id        Int      @id @default(autoincrement())
+  symbol    String
+  timeframe String
+  timestamp DateTime
+  open      Float
+  high      Float
+  low       Float
+  close     Float
+  volume    Float
+  
+  createdAt DateTime @default(now())
+
+  @@unique([symbol, timeframe, timestamp])
+}
+
 model Market {
   id         Int      @id @default(autoincrement())
   symbol     String   @unique // Internal symbol, e.g., "BTCUSDT"
