@@ -7,114 +7,356 @@
     <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { margin: 0; padding: 0; background: #131722; color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        #chart-container { width: 100vw; height: 80vh; }
-        #panel { height: 20vh; padding: 20px; box-sizing: border-box; background: #1e222d; overflow-y: auto; border-top: 1px solid #2a2e39; }
-        .log-entry { margin-bottom: 8px; font-size: 14px; }
-        .buy { color: #26a69a; }
-        .sell { color: #ef5350; }
-        .hold { color: #888; }
-        .win { color: #2196F3; font-weight: bold; }
-        .loss { color: #FF9800; font-weight: bold; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #131722; border-bottom: 1px solid #2a2e39;}
-        h2 { margin: 0; font-size: 18px; }
-        .pagination { display: flex; gap: 8px; }
-        .pagination button { background: #2b2b43; color: #d1d4dc; border: 1px solid #3b3b53; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.2s; }
-        .pagination button:hover { background: #3b3b53; color: white; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; background: #131722; color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+
+        /* ── Header ── */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: #1e222d; border-bottom: 1px solid #2a2e39; height: 48px; flex-shrink: 0; }
+        h2 { margin: 0; font-size: 16px; color: #d1d4dc; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .pagination { display: flex; gap: 6px; }
+        .btn { background: #2b2b43; color: #d1d4dc; border: 1px solid #3b3b53; padding: 5px 11px; cursor: pointer; border-radius: 4px; font-size: 12px; transition: 0.2s; }
+        .btn:hover { background: #3b3b53; color: white; }
+        .btn.active { background: #3b4c68; border-color: #5b8cf0; color: white; }
+        .btn-data { background: #2b3a52; border-color: #5b8cf0; color: #90b4f0; }
+        .btn-data:hover { background: #3b4c68; }
+
+        /* ── Layout ── */
+        .main-area { display: flex; flex-direction: column; height: calc(100vh - 48px); }
+        #chart-container { flex: 1; min-height: 0; }
+        #panel { height: 120px; padding: 10px 16px; background: #1e222d; overflow-y: auto; border-top: 1px solid #2a2e39; font-size: 12px; }
+        .log-entry { margin-bottom: 6px; }
+        .buy { color: #26a69a; } .sell { color: #ef5350; } .hold { color: #888; }
+        .win { color: #2196F3; font-weight: bold; } .loss { color: #FF9800; font-weight: bold; }
+
+        /* ── Wallet strip ── */
+        #wallet-info { font-family: monospace; font-size: 12px; }
+        #status { font-size: 11px; color: #888; }
+
+        /* ── Data Panel Overlay ── */
+        #data-panel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
+        #data-panel-overlay.open { display: flex; }
+        #data-panel { background: #1e222d; border: 1px solid #2a2e39; border-radius: 10px; width: 520px; max-width: 95vw; padding: 24px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
+        #data-panel h3 { margin: 0 0 18px; font-size: 16px; color: #d1d4dc; border-bottom: 1px solid #2a2e39; padding-bottom: 12px; }
+        .form-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .form-row label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: #888; flex: 1; min-width: 120px; }
+        .form-row input, .form-row select {
+            background: #131722; border: 1px solid #3b3b53; color: #d1d4dc;
+            padding: 7px 10px; border-radius: 5px; font-size: 13px; outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-row input:focus, .form-row select:focus { border-color: #5b8cf0; }
+        .form-section { background: #131722; border-radius: 6px; padding: 14px; margin-bottom: 14px; border: 1px solid #2a2e39; }
+        .form-section-title { font-size: 11px; font-weight: 600; color: #5b8cf0; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .progress-bar-wrap { background: #131722; border-radius: 4px; height: 8px; margin: 8px 0; overflow: hidden; display: none; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #5b8cf0, #26a69a); border-radius: 4px; transition: width 0.3s; width: 0%; }
+        #fetch-log { font-size: 11px; color: #888; height: 48px; overflow-y: auto; font-family: monospace; margin-top: 4px; }
+        .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+        .btn-primary { background: #3b4c68; border: 1px solid #5b8cf0; color: #90b4f0; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; flex: 1; transition: 0.2s; }
+        .btn-primary:hover { background: #4a5e80; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-cancel { background: transparent; border: 1px solid #3b3b53; color: #888; padding: 8px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+        .btn-cancel:hover { border-color: #888; color: #d1d4dc; }
+        .table-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin-left: 6px; }
+        .badge-test { background: #2b3a2b; color: #4caf50; border: 1px solid #4caf50; }
+        .badge-binance { background: #2b2b12; color: #f0b90b; border: 1px solid #f0b90b; }
+        .hint { font-size: 10px; color: #555; margin-top: 2px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>AI Backtest Visualizer</h2>
-        <div class="pagination">
-            <button onclick="requestHistory('1M')">1 Month</button>
-            <button onclick="requestHistory('3M')">3 Months</button>
-            <button onclick="requestHistory('5M')">5 Months</button>
-            <button onclick="requestHistory('1Y')">1 Year</button>
-            <button onclick="requestHistory('ALL')">All Data</button>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <h2>🐺 AI Backtest Visualizer</h2>
+            <span id="active-table-badge" class="table-badge badge-test">TestCandle</span>
         </div>
-        <div style="text-align: right;">
-            <div id="wallet-info" style="color: #26a69a; font-weight: bold; font-family: monospace; font-size: 16px;">Wallet: $100,000.00</div>
-            <div id="status" style="font-size: 12px; margin-top: 4px; color: #888;">Connecting...</div>
+        <div class="pagination">
+            <button class="btn" onclick="requestHistory('1M')">1 Month</button>
+            <button class="btn" onclick="requestHistory('3M')">3 Months</button>
+            <button class="btn" onclick="requestHistory('5M')">5 Months</button>
+            <button class="btn" onclick="requestHistory('1Y')">1 Year</button>
+            <button class="btn" onclick="requestHistory('ALL')">All Data</button>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-data" onclick="openDataPanel()">⚙️ Data Manager</button>
+            <div style="text-align:right;">
+                <div id="wallet-info" style="color:#26a69a;font-weight:bold;">Wallet: $100,000.00</div>
+                <div id="status">Connecting...</div>
+            </div>
         </div>
     </div>
-    <div id="chart-container"></div>
-    <div id="panel"></div>
+
+    <div class="main-area">
+        <div id="chart-container"></div>
+        <div id="panel"></div>
+    </div>
+
+    <!-- ── Data Manager Modal ── -->
+    <div id="data-panel-overlay" onclick="closeDataPanelIfBg(event)">
+        <div id="data-panel">
+            <h3>⚙️ Data Manager & Backtest Config</h3>
+
+            <!-- Table selection -->
+            <div class="form-section">
+                <div class="form-section-title">📦 Data Source</div>
+                <div class="form-row">
+                    <label>Active Table
+                        <select id="sel-table" onchange="onTableChange()">
+                            <option value="testCandle">TestCandle (local CSV import)</option>
+                            <option value="binanceCandle">BinanceCandle (Binance API)</option>
+                        </select>
+                        <span class="hint">Backtest will query this table for candle data</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Binance fetch (shown only when binanceCandle selected) -->
+            <div class="form-section" id="fetch-section" style="display:none;">
+                <div class="form-section-title">🌐 Fetch from Binance API</div>
+                <div class="form-row">
+                    <label>Symbol
+                        <input id="fetch-symbol" type="text" value="BTCUSDT" placeholder="BTCUSDT">
+                    </label>
+                    <label>Interval
+                        <select id="fetch-interval">
+                            <optgroup label="Minutes">
+                                <option value="1m">1m</option><option value="3m">3m</option>
+                                <option value="5m">5m</option><option value="15m">15m</option>
+                                <option value="30m">30m</option>
+                            </optgroup>
+                            <optgroup label="Hours">
+                                <option value="1h">1h</option><option value="2h">2h</option>
+                                <option value="4h">4h</option><option value="6h">6h</option>
+                                <option value="8h">8h</option><option value="12h">12h</option>
+                            </optgroup>
+                            <optgroup label="Days / Weeks / Months">
+                                <option value="1d" selected>1d</option><option value="3d">3d</option>
+                                <option value="1w">1w</option><option value="1M">1M</option>
+                            </optgroup>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Start Date
+                        <input id="fetch-start" type="date" value="2020-01-01">
+                    </label>
+                    <label>End Date <span style="color:#555">(leave blank = today)</span>
+                        <input id="fetch-end" type="date">
+                    </label>
+                </div>
+                <div class="progress-bar-wrap" id="progress-wrap">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div id="fetch-log">Ready to fetch…</div>
+                <div class="btn-row" style="margin-top:10px;">
+                    <button class="btn-primary" id="btn-fetch" onclick="startFetch()">⬇️ Fetch &amp; Store Data</button>
+                </div>
+            </div>
+
+            <!-- Backtest params -->
+            <div class="form-section">
+                <div class="form-section-title">🚀 Backtest Parameters</div>
+                <div class="form-row">
+                    <label>Symbol
+                        <input id="bt-symbol" type="text" value="BTCUSDT">
+                    </label>
+                    <label>Interval
+                        <select id="bt-interval">
+                            <optgroup label="Minutes"><option value="1m">1m</option><option value="3m">3m</option><option value="5m">5m</option><option value="15m">15m</option><option value="30m">30m</option></optgroup>
+                            <optgroup label="Hours"><option value="1h">1h</option><option value="2h">2h</option><option value="4h">4h</option><option value="6h">6h</option><option value="8h">8h</option><option value="12h">12h</option></optgroup>
+                            <optgroup label="Days/Weeks/Months"><option value="1d" selected>1d</option><option value="3d">3d</option><option value="1w">1w</option><option value="1M">1M</option></optgroup>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Start Date <input id="bt-start" type="date" value="2020-01-01"></label>
+                    <label>End Date   <input id="bt-end"   type="date" value="2021-01-01"></label>
+                </div>
+                <div class="form-row">
+                    <label>Cash ($)
+                        <input id="bt-cash" type="number" value="100000" min="0">
+                    </label>
+                    <label>Already Invested ($)
+                        <input id="bt-stocks" type="number" value="0" min="0">
+                    </label>
+                </div>
+                <div id="bt-cmd-preview" style="font-size:11px;color:#555;font-family:monospace;margin-top:6px;word-break:break-all;"></div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-cancel" onclick="closeDataPanel()">Cancel</button>
+                <button class="btn-primary" onclick="copyCommand()">📋 Copy CLI Command</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // ── Chart setup ──────────────────────────────────────────────────────────
         const chart = LightweightCharts.createChart(document.getElementById('chart-container'), {
-            layout: { background: { type: 'solid', color: '#131722' }, textColor: '#d1d4dc', },
+            layout: { background: { type: 'solid', color: '#131722' }, textColor: '#d1d4dc' },
             grid: { vertLines: { color: '#2b2b43' }, horzLines: { color: '#2b2b43' } },
             crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
             timeScale: { timeVisible: true, secondsVisible: false },
         });
-
         const candlestickSeries = chart.addCandlestickSeries({
             upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
             wickUpColor: '#26a69a', wickDownColor: '#ef5350',
         });
 
         let markers = [];
-        const panel = document.getElementById('panel');
+        const panel    = document.getElementById('panel');
         const statusEl = document.getElementById('status');
-        const socket = io();
+        const socket   = io();
 
         function requestHistory(range) {
             statusEl.innerText = `Loading ${range}...`;
             socket.emit('request_history', range);
         }
 
-        socket.on('connect', () => {
-            // Fetch default 1 Month range on initial load
-            requestHistory('1M');
-        });
+        socket.on('connect', () => requestHistory('1M'));
 
         socket.on('init_chart', (data) => {
             candlestickSeries.setData(data);
-            statusEl.innerHTML = `Chart loaded <strong>(${data.length} candles)</strong>. Waiting for AI...`;
+            statusEl.innerHTML = `Chart loaded <strong>(${data.length} candles)</strong>. Waiting for AI…`;
             chart.timeScale().fitContent();
         });
 
         socket.on('ai_step', (data) => {
             const { time, signal, reasoning, price, outcome, portfolioValue, wallet, pnl } = data;
-            
-            // Add Marker
             if (signal === 'BUY' || signal === 'SELL') {
                 markers.push({
-                    time: time,
-                    position: signal === 'BUY' ? 'belowBar' : 'aboveBar',
+                    time, position: signal === 'BUY' ? 'belowBar' : 'aboveBar',
                     color: signal === 'BUY' ? '#26a69a' : '#ef5350',
                     shape: signal === 'BUY' ? 'arrowUp' : 'arrowDown',
                     text: signal + (outcome ? ` (${outcome})` : '')
                 });
                 candlestickSeries.setMarkers(markers);
             }
+            chart.timeScale().setVisibleRange({ from: time - (30*24*60*60), to: time + (5*24*60*60) });
 
-            // Scroll to center the currently evaluated time
-            // Showing roughly 30 days before and 5 days after
-            chart.timeScale().setVisibleRange({
-                from: time - (30 * 24 * 60 * 60), 
-                to: time + (5 * 24 * 60 * 60)
-            });
-
-            // Log panel
             let cssClass = signal.toLowerCase();
             let outcomeStr = outcome ? ` - <span class="${outcome.toLowerCase()}">[${outcome}]</span>` : '';
-            panel.innerHTML = `<div class="log-entry"><strong class="${cssClass}">${new Date(time * 1000).toLocaleString()} | ${signal}</strong> @ ${price} ${outcomeStr} <br> ${reasoning}</div>` + panel.innerHTML;
-            
-            // Update Wallet display
+            panel.innerHTML = `<div class="log-entry"><strong class="${cssClass}">${new Date(time*1000).toLocaleString()} | ${signal}</strong> @ ${price} ${outcomeStr}<br>${reasoning}</div>` + panel.innerHTML;
+
             if (portfolioValue && wallet) {
-                const pnl = data.pnl ?? 0;
-                const pnlColor = pnl >= 0 ? '#26a69a' : '#ef5350';
-                const pnlStr = (pnl >= 0 ? '+' : '') + pnl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                const p = data.pnl ?? 0;
+                const pnlColor = p >= 0 ? '#26a69a' : '#ef5350';
+                const pnlStr = (p >= 0 ? '+' : '') + p.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
                 document.getElementById('wallet-info').innerHTML = `
-                    <div style="display:flex;gap:16px;align-items:center;font-family:monospace;font-size:13px;">
-                        <span style="color:#888;">💵 Cash: <strong style="color:#d1d4dc;">$${wallet.quote.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
-                        <span style="color:#888;">📈 Holdings: <strong style="color:#d1d4dc;">$${(wallet.baseValue ?? 0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
-                        <span style="color:#888;">🏦 Total: <strong style="color:white;font-size:15px;">$${portfolioValue.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
-                        <span style="color:${pnlColor};font-weight:bold;font-size:14px;">P&amp;L: ${pnlStr}</span>
+                    <div style="display:flex;gap:12px;align-items:center;font-size:12px;">
+                        <span style="color:#888">💵 Cash: <strong style="color:#d1d4dc">$${wallet.quote.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:#888">📈 Holdings: <strong style="color:#d1d4dc">$${(wallet.baseValue??0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:#888">🏦 Total: <strong style="color:white;font-size:14px">$${portfolioValue.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:${pnlColor};font-weight:bold">P&L: ${pnlStr}</span>
                     </div>`;
             }
+        });
+
+        // ── Binance fetch socket events ───────────────────────────────────────────
+        socket.on('fetch_progress', ({ pct, message }) => {
+            document.getElementById('progress-fill').style.width = pct + '%';
+            const logEl = document.getElementById('fetch-log');
+            logEl.innerText = message;
+            logEl.scrollTop = logEl.scrollHeight;
+        });
+
+        socket.on('fetch_complete', ({ total, symbol, interval }) => {
+            document.getElementById('fetch-log').innerText = `✅ Done! Stored ${total} candles for ${symbol} ${interval}`;
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('btn-fetch').disabled = false;
+            document.getElementById('btn-fetch').textContent = '⬇️ Fetch & Store Data';
+        });
+
+        socket.on('fetch_error', ({ message }) => {
+            document.getElementById('fetch-log').innerText = `❌ Error: ${message}`;
+            document.getElementById('btn-fetch').disabled = false;
+            document.getElementById('btn-fetch').textContent = '⬇️ Fetch & Store Data';
+        });
+
+        // ── Data Panel logic ──────────────────────────────────────────────────────
+        function openDataPanel() {
+            updateCmdPreview();
+            document.getElementById('data-panel-overlay').classList.add('open');
+        }
+        function closeDataPanel() {
+            document.getElementById('data-panel-overlay').classList.remove('open');
+        }
+        function closeDataPanelIfBg(e) {
+            if (e.target === document.getElementById('data-panel-overlay')) closeDataPanel();
+        }
+
+        function onTableChange() {
+            const t = document.getElementById('sel-table').value;
+            document.getElementById('fetch-section').style.display = t === 'binanceCandle' ? 'block' : 'none';
+            const badge = document.getElementById('active-table-badge');
+            if (t === 'binanceCandle') {
+                badge.className = 'table-badge badge-binance'; badge.textContent = 'BinanceCandle';
+            } else {
+                badge.className = 'table-badge badge-test'; badge.textContent = 'TestCandle';
+            }
+            updateCmdPreview();
+        }
+
+        function startFetch() {
+            const symbol   = document.getElementById('fetch-symbol').value.trim().toUpperCase();
+            const interval = document.getElementById('fetch-interval').value;
+            const startD   = document.getElementById('fetch-start').value;
+            const endD     = document.getElementById('fetch-end').value;
+            if (!symbol || !startD) { alert('Please fill in Symbol and Start Date'); return; }
+
+            document.getElementById('btn-fetch').disabled = true;
+            document.getElementById('btn-fetch').textContent = '⏳ Fetching…';
+            document.getElementById('progress-wrap').style.display = 'block';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('fetch-log').innerText = 'Starting fetch…';
+
+            socket.emit('fetch_binance', {
+                symbol,
+                interval,
+                startMs: new Date(startD).getTime(),
+                endMs:   endD ? new Date(endD).getTime() : Date.now(),
+            });
+        }
+
+        // ── CLI command preview ───────────────────────────────────────────────────
+        const INTERVAL_MINS = {
+            '1m':1,'3m':3,'5m':5,'15m':15,'30m':30,
+            '1h':60,'2h':120,'4h':240,'6h':360,'8h':480,'12h':720,
+            '1d':1440,'3d':4320,'1w':10080,'1M':43200
+        };
+
+        function updateCmdPreview() {
+            const sym   = document.getElementById('bt-symbol').value.trim() || 'BTCUSDT';
+            const ivl   = document.getElementById('bt-interval').value;
+            const start = document.getElementById('bt-start').value;
+            const end   = document.getElementById('bt-end').value;
+            const table = document.getElementById('sel-table').value;
+            const mins  = INTERVAL_MINS[ivl] || 1440;
+            const look  = mins * 2;
+            const startISO = start ? new Date(start).toISOString() : '2020-01-01T00:00:00Z';
+            const endISO   = end   ? new Date(end).toISOString()   : '2021-01-01T00:00:00Z';
+            const cmd = `node scripts/backtest.js ${sym} ${ivl} ${startISO} ${endISO} ${mins} ${look} --ai --table=${table}`;
+            document.getElementById('bt-cmd-preview').innerText = cmd;
+        }
+
+        function copyCommand() {
+            updateCmdPreview();
+            const cmd = document.getElementById('bt-cmd-preview').innerText;
+            navigator.clipboard.writeText(cmd).then(() => {
+                const btn = event.target;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy CLI Command', 1500);
+            });
+        }
+
+        // Live update preview on change
+        ['bt-symbol','bt-interval','bt-start','bt-end','sel-table'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', updateCmdPreview);
+            document.getElementById(id)?.addEventListener('input', updateCmdPreview);
+        });
+
+        // Resize chart on window resize
+        window.addEventListener('resize', () => {
+            chart.resize(document.getElementById('chart-container').offsetWidth, document.getElementById('chart-container').offsetHeight);
         });
     </script>
 </body>

@@ -9,6 +9,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const { fetchAndStore } = require('./fetch-binance');
 
 // AI setup (copied from aiService)
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -98,9 +99,12 @@ You are a High-Frequency Crypto Trading Analyst (BTCINR). Your goal is to provid
 }
 `;
 
-async function getHistoricalPayload(symbol, targetTime, timeframe) {
+async function getHistoricalPayload(symbol, targetTime, timeframe, tableArg = 'testCandle') {
+    // Select DB table based on tableArg
+    const candleTable = tableArg === 'binanceCandle' ? prisma.binanceCandle : prisma.testCandle;
+
     // 1. Fetch main resolution candles
-    const candlesMain = await prisma.testCandle.findMany({
+    const candlesMain = await candleTable.findMany({
         where: { symbol, timeframe: timeframe, timestamp: { lte: targetTime } },
         orderBy: { timestamp: 'desc' },
         take: 1500
@@ -174,10 +178,11 @@ async function getHistoricalPayload(symbol, targetTime, timeframe) {
 }
 
 // Evaluate trade outcome
-async function evaluateSignal(symbol, signalDetails, timestamp, lookaheadMins = 30, timeframe) {
+async function evaluateSignal(symbol, signalDetails, timestamp, lookaheadMins = 30, timeframe, tableArg = 'testCandle') {
     const endTargetTime = new Date(timestamp.getTime() + lookaheadMins * 60000);
-    
-    const futureCandles = await prisma.testCandle.findMany({
+    const candleTable = tableArg === 'binanceCandle' ? prisma.binanceCandle : prisma.testCandle;
+
+    const futureCandles = await candleTable.findMany({
         where: {
             symbol,
             timeframe: timeframe, // Use the provided timeframe
@@ -430,6 +435,9 @@ function computeSignal(payload) {
 
 
 async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, intervalMins, lookaheadMins, walletConfig = {}) {
+    const tableArg = walletConfig.tableArg || 'testCandle';
+    const candleTable = tableArg === 'binanceCandle' ? prisma.binanceCandle : prisma.testCandle;
+
     const startTime = new Date(startTimeStr);
     const endTime = new Date(endTimeStr);
     
@@ -458,7 +466,8 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
             if (rangeStart < startTime) rangeStart = startTime;
 
             try {
-                const fullCandles = await prisma.testCandle.findMany({
+                // Use selected table for chart data
+                const fullCandles = await candleTable.findMany({
                     where: { symbol, timeframe, timestamp: { gte: rangeStart, lte: endTime } },
                     orderBy: { timestamp: 'asc' }
                 });
@@ -475,6 +484,24 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
                 console.log(`[UI] Sent ${uiData.length} candles for range ${range}.`);
             } catch (err) {
                 console.error("Error fetching chunk:", err);
+            }
+        });
+
+        // ── Binance fetch handler ────────────────────────────────────────────
+        socket.on('fetch_binance', async ({ symbol: sym, interval, startMs, endMs }) => {
+            console.log(`[FETCH] Binance request: ${sym} ${interval} from ${new Date(startMs).toISOString()}`);
+            try {
+                const total = await fetchAndStore(
+                    sym, interval, startMs, endMs || Date.now(),
+                    (stored, pct, message) => {
+                        socket.emit('fetch_progress', { pct: parseFloat(pct), message, stored });
+                    }
+                );
+                socket.emit('fetch_complete', { total, symbol: sym, interval });
+                console.log(`[FETCH] Complete: ${total} candles stored`);
+            } catch (err) {
+                console.error('[FETCH] Error:', err.message);
+                socket.emit('fetch_error', { message: err.message });
             }
         });
     });
@@ -518,7 +545,7 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
     while (currentTestTime <= endTime) {
         console.log(`\nEvaluating time: ${currentTestTime.toISOString()}`);
         
-        const payload = await getHistoricalPayload(symbol, currentTestTime, timeframe);
+        const payload = await getHistoricalPayload(symbol, currentTestTime, timeframe, tableArg);
         if (!payload) {
             process.stdout.write(`\r⏳ Warming up indicators... (${currentTestTime.toISOString().slice(0, 10)}) — need 50+ candles`);
             currentTestTime = new Date(currentTestTime.getTime() + intervalMins * 60000);
@@ -637,7 +664,7 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
 
             if (parsedResult.signal === 'BUY' || parsedResult.signal === 'SELL') {
                 stats.TOTAL_TRADES++;
-                const evalResult = await evaluateSignal(symbol, { ...parsedResult, currentPrice: payload.currentPrice }, currentTestTime, lookaheadMins, timeframe);
+                const evalResult = await evaluateSignal(symbol, { ...parsedResult, currentPrice: payload.currentPrice }, currentTestTime, lookaheadMins, timeframe, tableArg);
                 
                 console.log(`OUTCOME: ${evalResult.outcome}`);
                 console.log(`Max Move: +${evalResult.maxMovePct.toFixed(2)}%, Min Move: ${evalResult.minMovePct.toFixed(2)}%`);
@@ -715,9 +742,15 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
 }
 
 const args = process.argv.slice(2);
-if (args.length < 6) {
-    console.log("Usage: node backtest.js <symbol> <timeframe> <start_iso> <end_iso> <step_interval_mins> <lookahead_mins> [--ai] [--llm]");
-    console.log("Example: node backtest.js BTCUSDT 12h 2020-01-01T00:00:00Z 2020-12-31T00:00:00Z 720 1440 --ai");
+const flagIndex = args.findIndex(a => a === '--ai' || a === '--llm');
+const tableFlag = args.find(a => a.startsWith('--table='));
+const tableArg  = tableFlag ? tableFlag.split('=')[1] : 'testCandle';
+const useLLM    = args.includes('--llm');
+const posArgs   = args.filter(a => !a.startsWith('--'));
+
+if (posArgs.length < 6) {
+    console.log("Usage: node backtest.js <symbol> <timeframe> <start_iso> <end_iso> <step_mins> <lookahead_mins> [--ai] [--table=testCandle|binanceCandle]");
+    console.log("Example: node backtest.js BTCUSDT 1d 2020-01-01T00:00:00Z 2021-01-01T00:00:00Z 1440 2880 --ai --table=binanceCandle");
     process.exit(1);
 }
 
@@ -755,8 +788,8 @@ const ask = (q) => new Promise(resolve => rl.question(q, resolve));
     console.log('');
 
     runBacktest(
-        args[0], args[1], args[2], args[3],
-        parseInt(args[4]), parseInt(args[5]),
-        { totalBalance, stocksAmount, cashAmount }
+        posArgs[0], posArgs[1], posArgs[2], posArgs[3],
+        parseInt(posArgs[4]), parseInt(posArgs[5]),
+        { totalBalance, stocksAmount, cashAmount, tableArg }
     ).catch(console.error);
 })();

@@ -38,6 +38,26 @@ model TestCandle {
   @@unique([symbol, timeframe, timestamp])
 }
 
+model BinanceCandle {
+  id           Int      @id @default(autoincrement())
+  symbol       String
+  timeframe    String
+  timestamp    DateTime // openTime from Binance (index [0])
+  open         Float
+  high         Float
+  low          Float
+  close        Float
+  volume       Float    // base asset volume
+  quoteVolume  Float    @default(0) // quote asset volume (index [7])
+  trades       Int      @default(0) // number of trades (index [8])
+  closeTime    DateTime? // Binance close time (index [6])
+
+  createdAt    DateTime @default(now())
+
+  @@unique([symbol, timeframe, timestamp])
+  @@index([symbol, timeframe, timestamp])
+}
+
 model Market {
   id         Int      @id @default(autoincrement())
   symbol     String   @unique // Internal symbol, e.g., "BTCUSDT"
