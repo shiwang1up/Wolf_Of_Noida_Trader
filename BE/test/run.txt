@@ -1,0 +1,84 @@
+# 🐺 Wolf of Noida — Backtesting Guide
+
+## 1. Fetching Real Data (Binance)
+The `fetch-binance.js` script auto-paginates the Binance API to fetch historical data perfectly aligned for the backend.
+
+```bash
+# Fetch 1 year of BTC daily candles
+node scripts/fetch-binance.js BTCUSDT 1d 2023-01-01 2024-01-01
+
+# Fetch 6 months of BTC 4-hour candles
+node scripts/fetch-binance.js BTCUSDT 4h 2023-07-01 2024-01-01
+```
+*(Supports: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M)*
+
+---
+
+## 2. Running AI Backtests
+Commands have been heavily simplified. `step_mins`, `lookahead_mins`, and precise timestamp formatting (`T00:00:00Z`) are now **auto-calculated** behind the scenes.
+
+#### A. Backtesting the Real Crypto Data (Binance)
+Use the `--table=binanceCandle` flag to specifically target the real crypto data you fetched using the script above:
+```bash
+node scripts/backtest.js BTCUSDT 1d 2023-01-01 2024-12-31 --ai --table=binanceCandle
+```
+
+#### B. Backtesting the Legacy Test Data (12h SPX Data)
+If you omit the table flag, it defaults to the 12h test dataset:
+```bash
+node scripts/backtest.js BTCUSDT 12h 2020-01-01 2021-02-03 --ai
+```
+
+---
+
+## 3. Database Management (Clean Slate)
+Sometimes you want to wipe the `BinanceCandle` database before pulling fresh data:
+
+```bash
+# 1. Nuke ALL Binance data globally (total reset)
+node scripts/fetch-binance.js BTCUSDT 1d --clear-all --clear-only
+
+# 2. Wipe just one specific pair + timeframe (e.g. only clear BTCUSDT 1d)
+node scripts/fetch-binance.js BTCUSDT 1d --clear --clear-only
+
+# 3. Clear existing BTC 1d data and immediately start fetching fresh data
+node scripts/fetch-binance.js BTCUSDT 1d 2024-01-01 2024-12-31 --clear
+```
+
+---
+
+## 4. UI Visualizer Config
+Whenever a backtest finishes, the local visualizer chart stays active at `http://localhost:4000`.
+Click the **"⚙️ Data Manager"** button in the header to:
+- Toggle the UI between displaying data from `TestCandle` or `BinanceCandle`
+- Perform live Binance data fetches straight from your browser
+- Configure backtests visually and hit "📋 Copy CLI Command"
+
+
+
+
+
+
+
+
+
+
+node scripts/clear-binance.js //binance candles clear
+
+
+
+node scripts/fetch-binance.js BTCUSDT 1d 2023-01-01 2024-01-01          //fetch btc 1d candles
+
+
+node scripts/fetch-binance.js ETHUSDT 4h 2023-07-01 2024-01-01          //fetch eth 4h candles
+
+
+
+
+node scripts/fetch-binance.js BTCUSDT 1d 2020-01-01 2024-01-01
+# Output:
+# 🔄  Fetching BTCUSDT 1d candles...
+#   Batch 1: stored 1000 candles | total 1000 | 68.4% done
+#   Batch 2: stored 462 candles | total 1462 | 100.0% done
+# ✅  Done! Stored 1462 candles for BTCUSDT 1d.
+

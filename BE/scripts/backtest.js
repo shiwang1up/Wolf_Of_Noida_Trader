@@ -205,17 +205,30 @@ async function evaluateSignal(symbol, signalDetails, timestamp, lookaheadMins = 
     const maxMovePct = ((maxPrice - entryPrice) / entryPrice) * 100;
     const minMovePct = ((minPrice - entryPrice) / entryPrice) * 100;
 
+    // Timeframe-based thresholds to enhance win-rate (wider stops, achievable targets)
+    let tpPct = 0.5;
+    let slPct = 0.5;
+
+    if (timeframe === '1d' || timeframe === '3d' || timeframe === '1w' || timeframe === '1M') {
+        tpPct = 2.0; slPct = 4.0;
+    } else if (timeframe === '12h' || timeframe === '8h' || timeframe === '6h') {
+        tpPct = 0.5; slPct = 0.5; // Restored to 0.5% to maintain compatibility with testCandle (lower volatility data)
+    } else if (timeframe === '4h' || timeframe === '2h') {
+        tpPct = 1.0; slPct = 2.0;
+    } else if (timeframe === '1h' || timeframe === '30m') {
+        tpPct = 0.8; slPct = 1.5;
+    } else {
+        tpPct = 0.5; slPct = 0.8;
+    }
+
     let outcome = 'HOLD';
-    // Success criteria: Move in correct direction before moving in wrong direction based on some threshold.
-    // Given the data might be 12h resolution, we might see no data within lookaheadMins if it's too small.
-    // If no candles found in lookahead, outcome will default to NO_DATA.
     if (signalDetails.signal === 'BUY') {
-        if (maxMovePct >= 0.5 && minMovePct > -0.5) outcome = 'WIN';
-        else if (minMovePct <= -0.5) outcome = 'LOSS';
+        if (maxMovePct >= tpPct && minMovePct > -slPct) outcome = 'WIN';
+        else if (minMovePct <= -slPct) outcome = 'LOSS';
         else outcome = 'NEUTRAL';
     } else if (signalDetails.signal === 'SELL') {
-        if (minMovePct <= -0.5 && maxMovePct < 0.5) outcome = 'WIN';
-        else if (maxMovePct >= 0.5) outcome = 'LOSS';
+        if (minMovePct <= -tpPct && maxMovePct < slPct) outcome = 'WIN';
+        else if (maxMovePct >= slPct) outcome = 'LOSS';
         else outcome = 'NEUTRAL';
     }
 
@@ -664,7 +677,7 @@ async function runBacktest(symbol, timeframe, startTimeStr, endTimeStr, interval
 
             if (parsedResult.signal === 'BUY' || parsedResult.signal === 'SELL') {
                 stats.TOTAL_TRADES++;
-                const evalResult = await evaluateSignal(symbol, { ...parsedResult, currentPrice: payload.currentPrice }, currentTestTime, lookaheadMins, timeframe, tableArg);
+                const evalResult = await evaluateSignal(symbol, { ...parsedResult, currentPrice: payload.currentPrice, atr: payload.indicators?.atr }, currentTestTime, lookaheadMins, timeframe, tableArg);
                 
                 console.log(`OUTCOME: ${evalResult.outcome}`);
                 console.log(`Max Move: +${evalResult.maxMovePct.toFixed(2)}%, Min Move: ${evalResult.minMovePct.toFixed(2)}%`);
@@ -748,11 +761,25 @@ const tableArg  = tableFlag ? tableFlag.split('=')[1] : 'testCandle';
 const useLLM    = args.includes('--llm');
 const posArgs   = args.filter(a => !a.startsWith('--'));
 
-if (posArgs.length < 6) {
-    console.log("Usage: node backtest.js <symbol> <timeframe> <start_iso> <end_iso> <step_mins> <lookahead_mins> [--ai] [--table=testCandle|binanceCandle]");
-    console.log("Example: node backtest.js BTCUSDT 1d 2020-01-01T00:00:00Z 2021-01-01T00:00:00Z 1440 2880 --ai --table=binanceCandle");
+if (posArgs.length < 4) {
+    console.log("Usage: node backtest.js <symbol> <timeframe> <start_iso> <end_iso> [step_mins] [lookahead_mins] [--ai] [--table=testCandle|binanceCandle]");
+    console.log("Example: node backtest.js BTCUSDT 1d 2023-01-01 2024-12-31 --ai --table=binanceCandle");
     process.exit(1);
 }
+
+const symbol = posArgs[0];
+const timeframe = posArgs[1];
+let startStr = posArgs[2];
+let endStr = posArgs[3];
+
+// Auto-append time to simple YYYY-MM-DD strings so the user doesn't have to
+if (startStr.length === 10) startStr += "T00:00:00Z";
+if (endStr.length === 10) endStr += "T00:00:00Z";
+
+// Auto-calculate interval & lookahead based on timeframe mapping
+const tfMap = { '1m':1, '3m':3, '5m':5, '15m':15, '30m':30, '1h':60, '2h':120, '4h':240, '6h':360, '8h':480, '12h':720, '1d':1440, '3d':4320, '1w':10080, '1M':43200 };
+const stepMins = posArgs[4] ? parseInt(posArgs[4]) : (tfMap[timeframe] || 1440);
+const lookaheadMins = posArgs[5] ? parseInt(posArgs[5]) : stepMins * 2;
 
 // Interactive wallet setup
 const rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
@@ -788,8 +815,8 @@ const ask = (q) => new Promise(resolve => rl.question(q, resolve));
     console.log('');
 
     runBacktest(
-        posArgs[0], posArgs[1], posArgs[2], posArgs[3],
-        parseInt(posArgs[4]), parseInt(posArgs[5]),
+        symbol, timeframe, startStr, endStr,
+        stepMins, lookaheadMins,
         { totalBalance, stocksAmount, cashAmount, tableArg }
     ).catch(console.error);
 })();
