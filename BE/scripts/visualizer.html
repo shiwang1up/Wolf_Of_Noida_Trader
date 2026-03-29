@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,62 +8,373 @@
     <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background: #131722; color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #131722;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+        }
 
         /* ── Header ── */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: #1e222d; border-bottom: 1px solid #2a2e39; height: 48px; flex-shrink: 0; }
-        h2 { margin: 0; font-size: 16px; color: #d1d4dc; }
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .pagination { display: flex; gap: 6px; }
-        .btn { background: #2b2b43; color: #d1d4dc; border: 1px solid #3b3b53; padding: 5px 11px; cursor: pointer; border-radius: 4px; font-size: 12px; transition: 0.2s; }
-        .btn:hover { background: #3b3b53; color: white; }
-        .btn.active { background: #3b4c68; border-color: #5b8cf0; color: white; }
-        .btn-data { background: #2b3a52; border-color: #5b8cf0; color: #90b4f0; }
-        .btn-data:hover { background: #3b4c68; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: #1e222d;
+            border-bottom: 1px solid #2a2e39;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #d1d4dc;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            background: #2b2b43;
+            color: #d1d4dc;
+            border: 1px solid #3b3b53;
+            padding: 5px 11px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #3b3b53;
+            color: white;
+        }
+
+        .btn.active {
+            background: #3b4c68;
+            border-color: #5b8cf0;
+            color: white;
+        }
+
+        .btn-data {
+            background: #2b3a52;
+            border-color: #5b8cf0;
+            color: #90b4f0;
+        }
+
+        .btn-data:hover {
+            background: #3b4c68;
+        }
 
         /* ── Layout ── */
-        .main-area { display: flex; flex-direction: column; height: calc(100vh - 48px); }
-        #chart-container { flex: 1; min-height: 0; }
-        #panel { height: 120px; padding: 10px 16px; background: #1e222d; overflow-y: auto; border-top: 1px solid #2a2e39; font-size: 12px; }
-        .log-entry { margin-bottom: 6px; }
-        .buy { color: #26a69a; } .sell { color: #ef5350; } .hold { color: #888; }
-        .win { color: #2196F3; font-weight: bold; } .loss { color: #FF9800; font-weight: bold; }
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 48px);
+        }
+
+        #chart-container {
+            flex: 1;
+            min-height: 0;
+        }
+
+        #panel {
+            height: 120px;
+            padding: 10px 16px;
+            background: #1e222d;
+            overflow-y: auto;
+            border-top: 1px solid #2a2e39;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin-bottom: 6px;
+        }
+
+        .buy {
+            color: #26a69a;
+        }
+
+        .sell {
+            color: #ef5350;
+        }
+
+        .hold {
+            color: #888;
+        }
+
+        .win {
+            color: #2196F3;
+            font-weight: bold;
+        }
+
+        .loss {
+            color: #FF9800;
+            font-weight: bold;
+        }
 
         /* ── Wallet strip ── */
-        #wallet-info { font-family: monospace; font-size: 12px; }
-        #status { font-size: 11px; color: #888; }
+        #wallet-info {
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        #status {
+            font-size: 11px;
+            color: #888;
+        }
 
         /* ── Data Panel Overlay ── */
-        #data-panel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
-        #data-panel-overlay.open { display: flex; }
-        #data-panel { background: #1e222d; border: 1px solid #2a2e39; border-radius: 10px; width: 520px; max-width: 95vw; padding: 24px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
-        #data-panel h3 { margin: 0 0 18px; font-size: 16px; color: #d1d4dc; border-bottom: 1px solid #2a2e39; padding-bottom: 12px; }
-        .form-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-        .form-row label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: #888; flex: 1; min-width: 120px; }
-        .form-row input, .form-row select {
-            background: #131722; border: 1px solid #3b3b53; color: #d1d4dc;
-            padding: 7px 10px; border-radius: 5px; font-size: 13px; outline: none;
+        #data-panel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #data-panel-overlay.open {
+            display: flex;
+        }
+
+        #data-panel {
+            background: #1e222d;
+            border: 1px solid #2a2e39;
+            border-radius: 10px;
+            width: 520px;
+            max-width: 95vw;
+            padding: 24px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+        }
+
+        #data-panel h3 {
+            margin: 0 0 18px;
+            font-size: 16px;
+            color: #d1d4dc;
+            border-bottom: 1px solid #2a2e39;
+            padding-bottom: 12px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-row label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11px;
+            color: #888;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .form-row input,
+        .form-row select {
+            background: #131722;
+            border: 1px solid #3b3b53;
+            color: #d1d4dc;
+            padding: 7px 10px;
+            border-radius: 5px;
+            font-size: 13px;
+            outline: none;
             transition: border-color 0.2s;
         }
-        .form-row input:focus, .form-row select:focus { border-color: #5b8cf0; }
-        .form-section { background: #131722; border-radius: 6px; padding: 14px; margin-bottom: 14px; border: 1px solid #2a2e39; }
-        .form-section-title { font-size: 11px; font-weight: 600; color: #5b8cf0; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
-        .progress-bar-wrap { background: #131722; border-radius: 4px; height: 8px; margin: 8px 0; overflow: hidden; display: none; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #5b8cf0, #26a69a); border-radius: 4px; transition: width 0.3s; width: 0%; }
-        #fetch-log { font-size: 11px; color: #888; height: 48px; overflow-y: auto; font-family: monospace; margin-top: 4px; }
-        .btn-row { display: flex; gap: 10px; margin-top: 6px; }
-        .btn-primary { background: #3b4c68; border: 1px solid #5b8cf0; color: #90b4f0; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; flex: 1; transition: 0.2s; }
-        .btn-primary:hover { background: #4a5e80; }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-cancel { background: transparent; border: 1px solid #3b3b53; color: #888; padding: 8px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; }
-        .btn-cancel:hover { border-color: #888; color: #d1d4dc; }
-        .table-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin-left: 6px; }
-        .badge-test { background: #2b3a2b; color: #4caf50; border: 1px solid #4caf50; }
-        .badge-binance { background: #2b2b12; color: #f0b90b; border: 1px solid #f0b90b; }
-        .hint { font-size: 10px; color: #555; margin-top: 2px; }
+
+        .form-row input:focus,
+        .form-row select:focus {
+            border-color: #5b8cf0;
+        }
+
+        .form-section {
+            background: #131722;
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #2a2e39;
+        }
+
+        .form-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #5b8cf0;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar-wrap {
+            background: #131722;
+            border-radius: 4px;
+            height: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5b8cf0, #26a69a);
+            border-radius: 4px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        #fetch-log {
+            font-size: 11px;
+            color: #888;
+            height: 48px;
+            overflow-y: auto;
+            font-family: monospace;
+            margin-top: 4px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn-primary {
+            background: #3b4c68;
+            border: 1px solid #5b8cf0;
+            color: #90b4f0;
+            padding: 8px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            flex: 1;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #4a5e80;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid #3b3b53;
+            color: #888;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-cancel:hover {
+            border-color: #888;
+            color: #d1d4dc;
+        }
+
+        .table-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .badge-test {
+            background: #2b3a2b;
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .badge-binance {
+            background: #2b2b12;
+            color: #f0b90b;
+            border: 1px solid #f0b90b;
+        }
+
+        .hint {
+            font-size: 10px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        /* ── Signal Filter Buttons ── */
+        .filter-bar {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .filter-bar span {
+            font-size: 11px;
+            color: #555;
+        }
+
+        .btn-filter {
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 12px;
+            border: 1px solid #3b3b53;
+            background: #1e222d;
+            color: #555;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-filter.active-buy {
+            background: #0d2e2b;
+            color: #26a69a;
+            border-color: #26a69a;
+        }
+
+        .btn-filter.active-sell {
+            background: #2e1414;
+            color: #ef5350;
+            border-color: #ef5350;
+        }
+
+        .btn-filter.active-win {
+            background: #0d1e34;
+            color: #5b8cf0;
+            border-color: #5b8cf0;
+        }
+
+        .btn-filter.active-loss {
+            background: #2e1a0a;
+            color: #FF9800;
+            border-color: #FF9800;
+        }
+
+        .btn-filter.active-neutral {
+            background: #1e222d;
+            color: #888;
+            border-color: #555;
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -77,7 +389,15 @@
             <button class="btn" onclick="requestHistory('ALL')">All Data</button>
         </div>
         <div class="header-right">
-            <button class="btn btn-data" onclick="openDataPanel()">⚙️ Data Manager</button>
+            <div class="filter-bar">
+                <span>Show:</span>
+                <button id="f-buy" class="btn-filter active-buy" onclick="toggleFilter('buy')">🟢 BUY</button>
+                <button id="f-sell" class="btn-filter active-sell" onclick="toggleFilter('sell')">🔴 SELL</button>
+                <button id="f-win" class="btn-filter active-win" onclick="toggleFilter('win')">WIN</button>
+                <button id="f-loss" class="btn-filter active-loss" onclick="toggleFilter('loss')">LOSS</button>
+                <button id="f-neutral" class="btn-filter active-neutral"
+                    onclick="toggleFilter('neutral')">NEUTRAL</button>
+            </div>
             <div style="text-align:right;">
                 <div id="wallet-info" style="color:#26a69a;font-weight:bold;">Wallet: $100,000.00</div>
                 <div id="status">Connecting...</div>
@@ -119,18 +439,25 @@
                     <label>Interval
                         <select id="fetch-interval">
                             <optgroup label="Minutes">
-                                <option value="1m">1m</option><option value="3m">3m</option>
-                                <option value="5m">5m</option><option value="15m">15m</option>
+                                <option value="1m">1m</option>
+                                <option value="3m">3m</option>
+                                <option value="5m">5m</option>
+                                <option value="15m">15m</option>
                                 <option value="30m">30m</option>
                             </optgroup>
                             <optgroup label="Hours">
-                                <option value="1h">1h</option><option value="2h">2h</option>
-                                <option value="4h">4h</option><option value="6h">6h</option>
-                                <option value="8h">8h</option><option value="12h">12h</option>
+                                <option value="1h">1h</option>
+                                <option value="2h">2h</option>
+                                <option value="4h">4h</option>
+                                <option value="6h">6h</option>
+                                <option value="8h">8h</option>
+                                <option value="12h">12h</option>
                             </optgroup>
                             <optgroup label="Days / Weeks / Months">
-                                <option value="1d" selected>1d</option><option value="3d">3d</option>
-                                <option value="1w">1w</option><option value="1M">1M</option>
+                                <option value="1d" selected>1d</option>
+                                <option value="3d">3d</option>
+                                <option value="1w">1w</option>
+                                <option value="1M">1M</option>
                             </optgroup>
                         </select>
                     </label>
@@ -161,15 +488,33 @@
                     </label>
                     <label>Interval
                         <select id="bt-interval">
-                            <optgroup label="Minutes"><option value="1m">1m</option><option value="3m">3m</option><option value="5m">5m</option><option value="15m">15m</option><option value="30m">30m</option></optgroup>
-                            <optgroup label="Hours"><option value="1h">1h</option><option value="2h">2h</option><option value="4h">4h</option><option value="6h">6h</option><option value="8h">8h</option><option value="12h">12h</option></optgroup>
-                            <optgroup label="Days/Weeks/Months"><option value="1d" selected>1d</option><option value="3d">3d</option><option value="1w">1w</option><option value="1M">1M</option></optgroup>
+                            <optgroup label="Minutes">
+                                <option value="1m">1m</option>
+                                <option value="3m">3m</option>
+                                <option value="5m">5m</option>
+                                <option value="15m">15m</option>
+                                <option value="30m">30m</option>
+                            </optgroup>
+                            <optgroup label="Hours">
+                                <option value="1h">1h</option>
+                                <option value="2h">2h</option>
+                                <option value="4h">4h</option>
+                                <option value="6h">6h</option>
+                                <option value="8h">8h</option>
+                                <option value="12h">12h</option>
+                            </optgroup>
+                            <optgroup label="Days/Weeks/Months">
+                                <option value="1d" selected>1d</option>
+                                <option value="3d">3d</option>
+                                <option value="1w">1w</option>
+                                <option value="1M">1M</option>
+                            </optgroup>
                         </select>
                     </label>
                 </div>
                 <div class="form-row">
                     <label>Start Date <input id="bt-start" type="date" value="2020-01-01"></label>
-                    <label>End Date   <input id="bt-end"   type="date" value="2021-01-01"></label>
+                    <label>End Date <input id="bt-end" type="date" value="2021-01-01"></label>
                 </div>
                 <div class="form-row">
                     <label>Cash ($)
@@ -179,7 +524,8 @@
                         <input id="bt-stocks" type="number" value="0" min="0">
                     </label>
                 </div>
-                <div id="bt-cmd-preview" style="font-size:11px;color:#555;font-family:monospace;margin-top:6px;word-break:break-all;"></div>
+                <div id="bt-cmd-preview"
+                    style="font-size:11px;color:#555;font-family:monospace;margin-top:6px;word-break:break-all;"></div>
             </div>
 
             <div class="btn-row">
@@ -202,17 +548,39 @@
             wickUpColor: '#26a69a', wickDownColor: '#ef5350',
         });
 
-        let markers = [];
-        const panel    = document.getElementById('panel');
+        let allMarkers = []; // raw store — never mutated by filter
+        let activeFilters = { buy: true, sell: true, win: true, loss: true, neutral: true };
+        const panel = document.getElementById('panel');
         const statusEl = document.getElementById('status');
-        const socket   = io();
+        const socket = io();
+
+        // ── Signal Filter logic ────────────────────────────────────────────────────
+        const filterClassMap = { buy: 'active-buy', sell: 'active-sell', win: 'active-win', loss: 'active-loss', neutral: 'active-neutral' };
+        function toggleFilter(key) {
+            activeFilters[key] = !activeFilters[key];
+            const btn = document.getElementById('f-' + key);
+            if (activeFilters[key]) btn.classList.add(filterClassMap[key]);
+            else btn.classList.remove(filterClassMap[key]);
+            filterMarkers();
+        }
+        function filterMarkers() {
+            const visible = allMarkers.filter(m => {
+                const sigMatch = m._signal === 'BUY' ? activeFilters.buy : activeFilters.sell;
+                const outcome = (m._outcome || '').toLowerCase();
+                const outMatch = outcome === 'win' ? activeFilters.win
+                    : outcome === 'loss' ? activeFilters.loss
+                        : activeFilters.neutral; // NEUTRAL / no outcome
+                return sigMatch && outMatch;
+            });
+            candlestickSeries.setMarkers(visible);
+        }
 
         function requestHistory(range) {
             statusEl.innerText = `Loading ${range}...`;
             socket.emit('request_history', range);
         }
 
-        socket.on('connect', () => requestHistory('1M'));
+        socket.on('connect', () => requestHistory('ALL'));
 
         socket.on('init_chart', (data) => {
             candlestickSeries.setData(data);
@@ -223,29 +591,34 @@
         socket.on('ai_step', (data) => {
             const { time, signal, reasoning, price, outcome, portfolioValue, wallet, pnl } = data;
             if (signal === 'BUY' || signal === 'SELL') {
-                markers.push({
-                    time, position: signal === 'BUY' ? 'belowBar' : 'aboveBar',
+                allMarkers.push({
+                    time,
+                    position: signal === 'BUY' ? 'belowBar' : 'aboveBar',
                     color: signal === 'BUY' ? '#26a69a' : '#ef5350',
                     shape: signal === 'BUY' ? 'arrowUp' : 'arrowDown',
-                    text: signal + (outcome ? ` (${outcome})` : '')
+                    text: signal + (outcome ? ` (${outcome})` : ''),
+                    _signal: signal,     // meta for filtering
+                    _outcome: outcome    // meta for filtering
                 });
-                candlestickSeries.setMarkers(markers);
+                filterMarkers();
             }
-            chart.timeScale().setVisibleRange({ from: time - (30*24*60*60), to: time + (5*24*60*60) });
+            chart.timeScale().setVisibleRange({ from: time - (30 * 24 * 60 * 60), to: time + (5 * 24 * 60 * 60) });
 
             let cssClass = signal.toLowerCase();
             let outcomeStr = outcome ? ` - <span class="${outcome.toLowerCase()}">[${outcome}]</span>` : '';
-            panel.innerHTML = `<div class="log-entry"><strong class="${cssClass}">${new Date(time*1000).toLocaleString()} | ${signal}</strong> @ ${price} ${outcomeStr}<br>${reasoning}</div>` + panel.innerHTML;
+            panel.innerHTML = `<div class="log-entry"><strong class="${cssClass}">${new Date(time * 1000).toLocaleString()} | ${signal}</strong> @ ${price} ${outcomeStr}<br>${reasoning}</div>` + panel.innerHTML;
 
             if (portfolioValue && wallet) {
                 const p = data.pnl ?? 0;
                 const pnlColor = p >= 0 ? '#26a69a' : '#ef5350';
-                const pnlStr = (p >= 0 ? '+' : '') + p.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+                const pnlStr = (p >= 0 ? '+' : '') + p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('wallet-info').innerHTML = `
                     <div style="display:flex;gap:12px;align-items:center;font-size:12px;">
-                        <span style="color:#888">💵 Cash: <strong style="color:#d1d4dc">$${wallet.quote.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
-                        <span style="color:#888">📈 Holdings: <strong style="color:#d1d4dc">$${(wallet.baseValue??0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
-                        <span style="color:#888">🏦 Total: <strong style="color:white;font-size:14px">$${portfolioValue.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                        <span style="color:#888">💵 Cash: <strong style="color:#d1d4dc">$${wallet.quote.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
+                        <span style="color:#888">📈 Holdings: <strong style="color:#d1d4dc">$${(wallet.baseValue ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
+                        <span style="color:#ef5350">💸 Fees Paid: <strong>$${(data.feesTotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
+                        <span style="color:#f0b90b">🏛️ TDS Tax: <strong>$${(data.tdsTotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
+                        <span style="color:#888">🏦 Total: <strong style="color:white;font-size:14px">$${portfolioValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
                         <span style="color:${pnlColor};font-weight:bold">P&L: ${pnlStr}</span>
                     </div>`;
             }
@@ -273,16 +646,8 @@
         });
 
         // ── Data Panel logic ──────────────────────────────────────────────────────
-        function openDataPanel() {
-            updateCmdPreview();
-            document.getElementById('data-panel-overlay').classList.add('open');
-        }
-        function closeDataPanel() {
-            document.getElementById('data-panel-overlay').classList.remove('open');
-        }
-        function closeDataPanelIfBg(e) {
-            if (e.target === document.getElementById('data-panel-overlay')) closeDataPanel();
-        }
+
+
 
         function onTableChange() {
             const t = document.getElementById('sel-table').value;
@@ -297,10 +662,10 @@
         }
 
         function startFetch() {
-            const symbol   = document.getElementById('fetch-symbol').value.trim().toUpperCase();
+            const symbol = document.getElementById('fetch-symbol').value.trim().toUpperCase();
             const interval = document.getElementById('fetch-interval').value;
-            const startD   = document.getElementById('fetch-start').value;
-            const endD     = document.getElementById('fetch-end').value;
+            const startD = document.getElementById('fetch-start').value;
+            const endD = document.getElementById('fetch-end').value;
             if (!symbol || !startD) { alert('Please fill in Symbol and Start Date'); return; }
 
             document.getElementById('btn-fetch').disabled = true;
@@ -313,27 +678,27 @@
                 symbol,
                 interval,
                 startMs: new Date(startD).getTime(),
-                endMs:   endD ? new Date(endD).getTime() : Date.now(),
+                endMs: endD ? new Date(endD).getTime() : Date.now(),
             });
         }
 
         // ── CLI command preview ───────────────────────────────────────────────────
         const INTERVAL_MINS = {
-            '1m':1,'3m':3,'5m':5,'15m':15,'30m':30,
-            '1h':60,'2h':120,'4h':240,'6h':360,'8h':480,'12h':720,
-            '1d':1440,'3d':4320,'1w':10080,'1M':43200
+            '1m': 1, '3m': 3, '5m': 5, '15m': 15, '30m': 30,
+            '1h': 60, '2h': 120, '4h': 240, '6h': 360, '8h': 480, '12h': 720,
+            '1d': 1440, '3d': 4320, '1w': 10080, '1M': 43200
         };
 
         function updateCmdPreview() {
-            const sym   = document.getElementById('bt-symbol').value.trim() || 'BTCUSDT';
-            const ivl   = document.getElementById('bt-interval').value;
+            const sym = document.getElementById('bt-symbol').value.trim() || 'BTCUSDT';
+            const ivl = document.getElementById('bt-interval').value;
             const start = document.getElementById('bt-start').value;
-            const end   = document.getElementById('bt-end').value;
+            const end = document.getElementById('bt-end').value;
             const table = document.getElementById('sel-table').value;
-            const mins  = INTERVAL_MINS[ivl] || 1440;
-            const look  = mins * 2;
+            const mins = INTERVAL_MINS[ivl] || 1440;
+            const look = mins * 2;
             const startISO = start ? new Date(start).toISOString() : '2020-01-01T00:00:00Z';
-            const endISO   = end   ? new Date(end).toISOString()   : '2021-01-01T00:00:00Z';
+            const endISO = end ? new Date(end).toISOString() : '2021-01-01T00:00:00Z';
             const cmd = `node scripts/backtest.js ${sym} ${ivl} ${startISO} ${endISO} ${mins} ${look} --ai --table=${table}`;
             document.getElementById('bt-cmd-preview').innerText = cmd;
         }
@@ -349,7 +714,7 @@
         }
 
         // Live update preview on change
-        ['bt-symbol','bt-interval','bt-start','bt-end','sel-table'].forEach(id => {
+        ['bt-symbol', 'bt-interval', 'bt-start', 'bt-end', 'sel-table'].forEach(id => {
             document.getElementById(id)?.addEventListener('change', updateCmdPreview);
             document.getElementById(id)?.addEventListener('input', updateCmdPreview);
         });
@@ -360,4 +725,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -82,3 +82,53 @@ node scripts/fetch-binance.js BTCUSDT 1d 2020-01-01 2024-01-01
 #   Batch 2: stored 462 candles | total 1462 | 100.0% done
 # ✅  Done! Stored 1462 candles for BTCUSDT 1d.
 
+
+
+
+
+
+Here are the commands you need for everything:
+
+1. Run with Different Engines (Full 7-Year Backtest)
+The 
+
+run_yearly_backtests.js
+ script runs all years (2019–2026) sequentially. By default, it uses the Moderate engine (formerly index.js), but you can pass flags to switch:
+
+Moderate (Default): node scripts/run_yearly_backtests.js (or add --balanced)
+Passive Engine: node scripts/run_yearly_backtests.js --passive
+Aggressive Engine: node scripts/run_yearly_backtests.js --aggressive
+2. Fetch Data from Binance (>1000 records)
+The 
+
+fetch-binance.js
+ script automatically paginates for you! Binance limits each request to 1000 bars, but this script will recursively keep fetching 1000-candle batches until it covers your entire requested date range.
+
+Fetch a massive multi-year range:
+bash
+node scripts/fetch-binance.js BTCUSDT 1d 2018-01-01 2026-01-01
+Fetch data for a shorter timeframe (e.g., 1h) which requires many batches:
+bash
+node scripts/fetch-binance.js BTCUSDT 1h 2024-01-01 2025-01-01
+(Optional flag: add --clear-all at the end to wipe the Binance table before fetching fresh data)
+
+3. Run a Specific Year or Custom Date Range
+To run a single, specific date range, you bypass the yearly runner and run the core 
+
+backtest.js
+ script directly. Note that we must specify --table=binanceCandle so it uses the data we fetched.
+
+Example (Run 2021-2022 using the Passive engine):
+bash
+node scripts/backtest.js BTCUSDT 1d 2021-01-01 2022-01-01 --table=binanceCandle --fees --passive
+4. Run a Specific Year WITH the Visualizer UI
+To boot up the web UI so you can see exactly where the engine bought/sold on the chart, just append the --ui flag to the direct 
+
+backtest.js
+ command:
+
+Example (Run 2024-2025 with UI & Moderate engine):
+bash
+node scripts/backtest.js BTCUSDT 1d 2024-01-01 2025-01-01 --table=binanceCandle --fees --ui
+Once it says it's waiting for a UI connection, open a browser and go to http://localhost:3000 to watch the backtest play out!
+
