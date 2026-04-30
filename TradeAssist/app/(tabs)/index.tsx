@@ -1,8 +1,18 @@
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { NativeModules } from 'react-native';
+
+
+const { MyModule } = NativeModules;
 
 export default function HomeScreen() {
+
+  useEffect(() => {
+    MyModule?.showToast("Hello from Native! 🎉");  // ?. = safe call
+  }, []);
+
 
   return (
     <>

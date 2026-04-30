@@ -130,5 +130,5 @@ backtest.js
 Example (Run 2024-2025 with UI & Moderate engine):
 bash
 node scripts/backtest.js BTCUSDT 1d 2024-01-01 2025-01-01 --table=binanceCandle --fees --ui
-Once it says it's waiting for a UI connection, open a browser and go to http://localhost:3000 to watch the backtest play out!
+Once it says it's waiting for a UI connection, open a browser and go to http://localhost:4000 to watch the backtest play out!
 

@@ -10,11 +10,11 @@
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║ MODE 2 — MOMENTUM         (ADX 18–28)                            ║
  * ║   Trend building. Buy accelerating strength, sell weakness.      ║
- * ║   Primary: EMA cross, MACD histogram expansion, RSI 50–68 zone  ║
+ * ║   Primary: EMA cross, MACD histogram expansion, RSI 50–68 zone   ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║ MODE 3 — TREND FOLLOWING  (ADX > 28)                             ║
  * ║   Strong trend. Trade WITH the EMA regime. Regime Gate active.   ║
- * ║   Primary: EMA alignment, ADX strength, h1 momentum             ║
+ * ║   Primary: EMA alignment, ADX strength, h1 momentum              ║
  * ╚══════════════════════════════════════════════════════════════════╝
  *
  * Smooth linear blending is applied at mode boundaries (18-22, 24-28)
@@ -199,9 +199,19 @@ function computeModerateSignal(payload) {
         else if (rsi > 82) { bullScore -= 0.28 * w; reasoning.push(`[TRD-RSI] Extreme blow-off top (${rsi.toFixed(1)}) → reversal`); }
         else if (rsi > 70) { bullScore -= 0.15 * w; reasoning.push(`[TRD-RSI] Overbought in trend (${rsi.toFixed(1)})`); }
         // Trend continuation patterns
-        if (cp.headAndShoulders) { bullScore -= 0.20 * w; reasoning.push('[TRD-PAT] H&S — trend reversal'); }
+        if (cp.headAndShoulders) { bullScore -= 0.20 * w; reasoning.push('[TRD-PAT] H&S \u2014 trend reversal'); }
         if (cp.doubleTop)        { bullScore -= 0.15 * w; }
         if (cp.doubleBottom)     { bullScore += 0.15 * w; }
+
+        // MACD momentum check in trend mode \u2014 catches divergence when trend is weakening
+        // This is critical: momWeight=0 when ADX>28, so MACD is otherwise invisible to the engine
+        if (macdLine > macdSig && macdHist > 0) {
+            bullScore += 0.12 * w;
+            reasoning.push(`[TRD-MACD] Bullish histogram expanding (hist=${macdHist.toFixed(3)}) \u2014 trend confirmed`);
+        } else if (macdLine < macdSig && macdHist < 0) {
+            bullScore -= 0.18 * w;
+            reasoning.push(`[TRD-MACD] Bearish histogram in trend (hist=${macdHist.toFixed(3)}) \u2014 momentum diverging`);
+        }
     }
 
     // ── GLOBAL REGIME GATE (Diamond Hand Filter) ───────────────────────────

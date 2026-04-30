@@ -1,0 +1,2855 @@
+{
+  "stats": {
+    "WIN": 71,
+    "LOSS": 45,
+    "NEUTRAL": 45,
+    "NO_DATA": 0,
+    "TOTAL_TRADES": 161
+  },
+  "summary": {
+    "cash": 674.54,
+    "holdingsValue": 221.47,
+    "feesPaid": 366.33,
+    "tdsTax": 182.78,
+    "totalPortfolioValue": 896.01,
+    "pnl": -103.99
+  },
+  "results": [
+    {
+      "timestamp": "2021-01-01T00:00:00.000Z",
+      "price": 29331.69,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 18.568381160444563,
+      "minMovePct": -1.3131190190541353,
+      "portfolioValue": 996.25,
+      "pnl": -3.75,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=49.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=49.5",
+        "[TRD-MOM] h1=26.9% bullish",
+        "[TRD-RSI] Extreme blow-off top (82.7) → reversal",
+        "[TRD-MACD] Bullish histogram expanding (hist=435.697) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-04T00:00:00.000Z",
+      "price": 31988.71,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "LOSS",
+      "maxMovePct": 15.475772546001387,
+      "minMovePct": -6.529522447138378,
+      "portfolioValue": 1015.744130644194,
+      "pnl": 15.744130644194001,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=52.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=52.7",
+        "[TRD-MOM] h1=40.8% bullish",
+        "[TRD-RSI] Overbought in trend (80.3)",
+        "[TRD-MACD] Bullish histogram expanding (hist=581.686) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-07T00:00:00.000Z",
+      "price": 39432.28,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "LOSS",
+      "maxMovePct": 6.384921186398558,
+      "minMovePct": -7.436242591095414,
+      "portfolioValue": 1119.1017911557606,
+      "pnl": 119.10179115576057,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=52.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=52.1",
+        "[TRD-MOM] h1=66.2% bullish",
+        "[TRD-RSI] Extreme blow-off top (88.8) → reversal",
+        "[TRD-MACD] Bullish histogram expanding (hist=945.537) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-10T00:00:00.000Z",
+      "price": 38150.02,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "LOSS",
+      "maxMovePct": 0.3007075749894788,
+      "minMovePct": -20.262165000175617,
+      "portfolioValue": 1094.8473193259263,
+      "pnl": 94.84731932592626,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=52.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=52.1",
+        "[TRD-MOM] h1=45.2% bullish",
+        "[TRD-RSI] Overbought in trend (76.5)",
+        "[TRD-MACD] Bullish histogram expanding (hist=778.806) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-11T00:00:00.000Z",
+      "price": 35404.47,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 6.907404629980335,
+      "minMovePct": -8.542621877971909,
+      "portfolioValue": 1027.9888149221656,
+      "pnl": 27.988814922165602
+    },
+    {
+      "timestamp": "2021-01-13T00:00:00.000Z",
+      "price": 37371.38,
+      "signal": "BUY",
+      "confidence": 4.1,
+      "outcome": "LOSS",
+      "maxMovePct": 7.30136270054786,
+      "minMovePct": -7.929543945125916,
+      "portfolioValue": 1024.1338568662075,
+      "pnl": 24.133856866207452,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=43.3) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=43.3",
+        "[TRD-MOM] h1=29.4% bullish",
+        "[TRD-MACD] Bearish histogram in trend (hist=-83.547) — momentum diverging",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.405, conf: 4.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-16T00:00:00.000Z",
+      "price": 35994.98,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 4.097376912002725,
+      "minMovePct": -5.959108742385752,
+      "portfolioValue": 1011.1532621437308,
+      "pnl": 11.153262143730785
+    },
+    {
+      "timestamp": "2021-01-18T00:00:00.000Z",
+      "price": 36631.27,
+      "signal": "BUY",
+      "confidence": 4.1,
+      "outcome": "LOSS",
+      "maxMovePct": 3.3270208758800974,
+      "minMovePct": -8.821070085749135,
+      "portfolioValue": 1007.3614374106918,
+      "pnl": 7.361437410691792,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=32.4) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=32.4",
+        "[TRD-MOM] h1=14.5% bullish",
+        "[TRD-MACD] Bearish histogram in trend (hist=-552.280) — momentum diverging",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.405, conf: 4.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-01-21T00:00:00.000Z",
+      "price": 30850.13,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 9.647933412274107,
+      "minMovePct": -6.483376245092002,
+      "portfolioValue": 964.9193603409523,
+      "pnl": -35.08063965904773
+    },
+    {
+      "timestamp": "2021-02-06T00:00:00.000Z",
+      "price": 39186.94,
+      "signal": "BUY",
+      "confidence": 6.5,
+      "outcome": "LOSS",
+      "maxMovePct": 19.41338109074093,
+      "minMovePct": -4.685081305149119,
+      "portfolioValue": 961.3009127396738,
+      "pnl": -38.69908726032622,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.1) [rev=0.22 mom=0.78 trend=0.00]",
+        "[REV-BB] Upper band extreme (PB=1.00) → SELL",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (64.6) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=453.046)",
+        "[MOM-H1] Strong upward momentum h1=22.2%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.646, conf: 6.5/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2021-02-09T00:00:00.000Z",
+      "price": 46420.42,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "LOSS",
+      "maxMovePct": 4.865272653715764,
+      "minMovePct": -5.802231000925882,
+      "portfolioValue": 1002.4475380827481,
+      "pnl": 2.4475380827481104,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.5) [rev=0.00 mom=0.63 trend=0.37]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=1160.752)",
+        "[MOM-H1] Strong upward momentum h1=43.0%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=43.0% bullish",
+        "[TRD-RSI] Overbought in trend (75.3)",
+        "[TRD-MACD] Bullish histogram expanding (hist=1160.752) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.602, conf: 6/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-02-14T00:00:00.000Z",
+      "price": 48577.79,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "LOSS",
+      "maxMovePct": 4.346410159869355,
+      "minMovePct": -6.190071635617841,
+      "portfolioValue": 1021.7756194575159,
+      "pnl": 21.77561945751586,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=32.4) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=32.4",
+        "[TRD-MOM] h1=46.8% bullish",
+        "[TRD-RSI] Overbought in trend (73.1)",
+        "[TRD-MACD] Bullish histogram expanding (hist=972.541) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-02-17T00:00:00.000Z",
+      "price": 52119.71,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "WIN",
+      "maxMovePct": 8.15102386410055,
+      "minMovePct": -2.7043703811859316,
+      "portfolioValue": 1065.0683172313663,
+      "pnl": 65.06831723136634,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=35.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=35.1",
+        "[TRD-MOM] h1=38.5% bullish",
+        "[TRD-RSI] Overbought in trend (76.3)",
+        "[TRD-MACD] Bullish histogram expanding (hist=776.700) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-02-20T00:00:00.000Z",
+      "price": 55841.19,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "LOSS",
+      "maxMovePct": 4.497773059635728,
+      "minMovePct": -14.7188661273157,
+      "portfolioValue": 1118.1723448653142,
+      "pnl": 118.17234486531424,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=39.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=39.5",
+        "[TRD-MOM] h1=42.5% bullish",
+        "[TRD-RSI] Overbought in trend (78.8)",
+        "[TRD-MACD] Bullish histogram expanding (hist=889.495) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-02-23T00:00:00.000Z",
+      "price": 48891,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 6.444396719232586,
+      "minMovePct": -4.533881491481057,
+      "portfolioValue": 995.8225318772497,
+      "pnl": -4.17746812275027
+    },
+    {
+      "timestamp": "2021-03-09T00:00:00.000Z",
+      "price": 54884.5,
+      "signal": "BUY",
+      "confidence": 4.6,
+      "outcome": "WIN",
+      "maxMovePct": 5.949767238473521,
+      "minMovePct": -3.4244641018866893,
+      "portfolioValue": 992.0881973827101,
+      "pnl": -7.911802617289936,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.0) [rev=0.50 mom=0.50 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (64.9) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=34.184)",
+        "[MOM-H1] Strong upward momentum h1=12.3%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.461, conf: 4.6/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2021-03-12T00:00:00.000Z",
+      "price": 57221.72,
+      "signal": "BUY",
+      "confidence": 7.5,
+      "outcome": "WIN",
+      "maxMovePct": 8.07784177057243,
+      "minMovePct": -1.998349577747747,
+      "portfolioValue": 999.730032728701,
+      "pnl": -0.26996727129903775,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.3) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (67.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=559.756)",
+        "[MOM-H1] Strong upward momentum h1=23.7%",
+        "[DECISION] BUY (score: 0.750, conf: 7.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2021-03-15T00:00:00.000Z",
+      "price": 55605.2,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 6.059739017214229,
+      "minMovePct": -4.197197384417286,
+      "portfolioValue": 980.9044273082873,
+      "pnl": -19.095572691712732
+    },
+    {
+      "timestamp": "2021-03-16T00:00:00.000Z",
+      "price": 56900.75,
+      "signal": "BUY",
+      "confidence": 8.6,
+      "outcome": "LOSS",
+      "maxMovePct": 5.675180028382757,
+      "minMovePct": -4.880533209140473,
+      "portfolioValue": 977.2260357058811,
+      "pnl": -22.773964294118855,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.3) [rev=0.00 mom=0.66 trend=0.34]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (59.9) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=283.407)",
+        "[MOM-H1] Strong upward momentum h1=17.5%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=17.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=283.407) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.863, conf: 8.6/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-03-19T00:00:00.000Z",
+      "price": 58030.01,
+      "signal": "BUY",
+      "confidence": 9.2,
+      "outcome": "LOSS",
+      "maxMovePct": 3.1879884218527583,
+      "minMovePct": -4.4458031284157995,
+      "portfolioValue": 979.2610307132695,
+      "pnl": -20.73896928673048,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=24.8) [rev=0.00 mom=0.80 trend=0.20]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (60.5) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=54.030)",
+        "[MOM-H1] Strong upward momentum h1=19.0%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=19.0% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=54.030) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.924, conf: 9.2/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-03-22T00:00:00.000Z",
+      "price": 54083.25,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 5.76287482723394,
+      "minMovePct": -4.4066323676924,
+      "portfolioValue": 944.2091732667249,
+      "pnl": -55.79082673327514
+    },
+    {
+      "timestamp": "2021-04-14T00:00:00.000Z",
+      "price": 62959.53,
+      "signal": "BUY",
+      "confidence": 7.1,
+      "outcome": "LOSS",
+      "maxMovePct": 1.3349369031185607,
+      "minMovePct": -4.700686298007623,
+      "portfolioValue": 940.6683888669746,
+      "pnl": -59.331611133025376,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.9) [rev=0.03 mom=0.97 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.03) 🔴 FADE",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (65.2) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=359.236)",
+        "[MOM-H1] Strong upward momentum h1=7.2%",
+        "[DECISION] BUY (score: 0.708, conf: 7.1/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2021-04-17T00:00:00.000Z",
+      "price": 60006.66,
+      "signal": "BUY",
+      "confidence": 6.5,
+      "outcome": "LOSS",
+      "maxMovePct": 0.8204755938757406,
+      "minMovePct": -15.123921244741833,
+      "portfolioValue": 927.1077595140356,
+      "pnl": -72.89224048596441,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.4) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=71.012)",
+        "[MOM-H1] Strong upward momentum h1=5.2%",
+        "[DECISION] BUY (score: 0.650, conf: 6.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2021-04-18T00:00:00.000Z",
+      "price": 56150.01,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 2.452003125199792,
+      "minMovePct": -5.022349951496007,
+      "portfolioValue": 896.0992358238141,
+      "pnl": -103.90076417618593
+    },
+    {
+      "timestamp": "2021-05-01T00:00:00.000Z",
+      "price": 57800.37,
+      "signal": "BUY",
+      "confidence": 4,
+      "outcome": "WIN",
+      "maxMovePct": 2.0433606220859826,
+      "minMovePct": -3.053821281766886,
+      "portfolioValue": 892.7388636894748,
+      "pnl": -107.26113631052522,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=24.5) [rev=0.00 mom=0.88 trend=0.12]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=272.460)",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MACD] Bullish histogram expanding (hist=272.460) — trend confirmed",
+        "[DECISION] BUY (score: 0.403, conf: 4/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-05-05T00:00:00.000Z",
+      "price": 57436.11,
+      "signal": "BUY",
+      "confidence": 6.2,
+      "outcome": "WIN",
+      "maxMovePct": 2.113461374734465,
+      "minMovePct": -3.8932128237793275,
+      "portfolioValue": 888.8279494118756,
+      "pnl": -111.17205058812442,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.8) [rev=0.29 mom=0.71 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=297.700)",
+        "[MOM-H1] Strong upward momentum h1=6.8%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.624, conf: 6.2/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2021-05-12T00:00:00.000Z",
+      "price": 49631.32,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 3.7308699426088205,
+      "minMovePct": -7.316589605112256,
+      "portfolioValue": 831.5553225426238,
+      "pnl": -168.4446774573762
+    },
+    {
+      "timestamp": "2021-07-25T00:00:00.000Z",
+      "price": 35381.02,
+      "signal": "BUY",
+      "confidence": 6.2,
+      "outcome": "WIN",
+      "maxMovePct": 14.609471405855468,
+      "minMovePct": -0.4952938044182954,
+      "portfolioValue": 828.436990083089,
+      "pnl": -171.56300991691103,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.6) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-RSI] Bull momentum zone (58.3) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=469.371)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.621, conf: 6.2/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-01T00:00:00.000Z",
+      "price": 39845.44,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "LOSS",
+      "maxMovePct": 1.5925787241902702,
+      "minMovePct": -5.52989250463793,
+      "portfolioValue": 851.936430464665,
+      "pnl": -148.06356953533498,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=32.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=25.4% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=928.619) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-03T00:00:00.000Z",
+      "price": 38207.05,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 8.226099633444605,
+      "minMovePct": -2.288452000350736,
+      "portfolioValue": 830.6133644365191,
+      "pnl": -169.38663556348092
+    },
+    {
+      "timestamp": "2021-08-04T00:00:00.000Z",
+      "price": 39723.18,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "LOSS",
+      "maxMovePct": 9.237050004556533,
+      "minMovePct": -6.017846506749971,
+      "portfolioValue": 827.4985643198821,
+      "pnl": -172.50143568011788,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=30.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=23.6% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=359.175) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-07T00:00:00.000Z",
+      "price": 44572.54,
+      "signal": "BUY",
+      "confidence": 3.6,
+      "outcome": "LOSS",
+      "maxMovePct": 4.221455631651238,
+      "minMovePct": -4.023867609967933,
+      "portfolioValue": 850.1322934139391,
+      "pnl": -149.86770658606088,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=31.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=30.1% bullish",
+        "[TRD-RSI] Overbought in trend (71.5)",
+        "[TRD-MACD] Bullish histogram expanding (hist=554.139) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.365, conf: 3.6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-10T00:00:00.000Z",
+      "price": 45584.99,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "WIN",
+      "maxMovePct": 2.5413628477268575,
+      "minMovePct": -3.9815518222116495,
+      "portfolioValue": 857.0779397201346,
+      "pnl": -142.92206027986538,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=35.2) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=35.2",
+        "[TRD-MOM] h1=15.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=614.993) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-13T00:00:00.000Z",
+      "price": 47800,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "LOSS",
+      "maxMovePct": 0.7196652719665272,
+      "minMovePct": -4.811715481171548,
+      "portfolioValue": 880.3830277718407,
+      "pnl": -119.61697222815928,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=36.6) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=36.6",
+        "[TRD-MOM] h1=13.3% bullish",
+        "[TRD-RSI] Overbought in trend (71.2)",
+        "[TRD-MACD] Bullish histogram expanding (hist=446.378) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-08-16T00:00:00.000Z",
+      "price": 45901.29,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "WIN",
+      "maxMovePct": 2.742210513037867,
+      "minMovePct": -3.699264225471663,
+      "portfolioValue": 854.8663204535551,
+      "pnl": -145.1336795464449,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=37.3) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=37.3",
+        "[TRD-MOM] h1=17.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=160.501) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-09-07T00:00:00.000Z",
+      "price": 46863.73,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.1442537757877955,
+      "minMovePct": -5.231572476198557,
+      "portfolioValue": 858.5846838693324,
+      "pnl": -141.41531613066763
+    },
+    {
+      "timestamp": "2021-10-01T00:00:00.000Z",
+      "price": 48141.61,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 2.256821074326349,
+      "minMovePct": -2.1885641132483946,
+      "portfolioValue": 855.3649913048224,
+      "pnl": -144.6350086951776,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-MACD] Bullish histogram expanding (hist=198.911) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-04T00:00:00.000Z",
+      "price": 49224.94,
+      "signal": "BUY",
+      "confidence": 9.1,
+      "outcome": "WIN",
+      "maxMovePct": 13.25559767061168,
+      "minMovePct": -0.4114580942099693,
+      "portfolioValue": 857.70794907104,
+      "pnl": -142.29205092895995,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.7) [rev=0.00 mom=0.56 trend=0.44]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (60.2) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=741.575)",
+        "[MOM-H1] Strong upward momentum h1=14.4%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=14.4% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=741.575) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.907, conf: 9.1/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-07T00:00:00.000Z",
+      "price": 53785.22,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "WIN",
+      "maxMovePct": 4.303747386363761,
+      "minMovePct": -0.3116283618436451,
+      "portfolioValue": 890.6147094407279,
+      "pnl": -109.38529055927211,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=27.6) [rev=0.00 mom=0.10 trend=0.90]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (65.8) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=1303.728)",
+        "[MOM-H1] Strong upward momentum h1=19.9%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=19.9% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=1303.728) — trend confirmed",
+        "[DECISION] BUY (score: 0.454, conf: 4.5/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-10T00:00:00.000Z",
+      "price": 54659,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "WIN",
+      "maxMovePct": 5.817962275197132,
+      "minMovePct": -1.4270294004646993,
+      "portfolioValue": 897.840632341384,
+      "pnl": -102.15936765861602,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=30.8) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=26.6% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=1122.312) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-13T00:00:00.000Z",
+      "price": 57367,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "WIN",
+      "maxMovePct": 9.702442170585877,
+      "minMovePct": -0.9569090243519743,
+      "portfolioValue": 927.8450253597357,
+      "pnl": -72.1549746402643,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.0",
+        "[TRD-MOM] h1=38.2% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=942.564) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-16T00:00:00.000Z",
+      "price": 60875.57,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "WIN",
+      "maxMovePct": 2.990050031564385,
+      "minMovePct": -3.141769350167891,
+      "portfolioValue": 971.3669172327811,
+      "pnl": -28.633082767218866,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=38.6) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=38.6",
+        "[TRD-MOM] h1=27.8% bullish",
+        "[TRD-RSI] Overbought in trend (71.7)",
+        "[TRD-MACD] Bullish histogram expanding (hist=930.283) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-10-22T00:00:00.000Z",
+      "price": 60688.22,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.745676508554705,
+      "minMovePct": -1.9403930449764448,
+      "portfolioValue": 956.6071625170645,
+      "pnl": -43.39283748293553
+    },
+    {
+      "timestamp": "2021-10-23T00:00:00.000Z",
+      "price": 61286.75,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "WIN",
+      "maxMovePct": 3.9549821127731484,
+      "minMovePct": -2.898048925746597,
+      "portfolioValue": 953.0198856576255,
+      "pnl": -46.98011434237446,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=42.2) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=42.2",
+        "[TRD-MOM] h1=11.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=23.186) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-11-09T00:00:00.000Z",
+      "price": 66947.66,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "LOSS",
+      "maxMovePct": 3.065588849557993,
+      "minMovePct": -6.161171279175407,
+      "portfolioValue": 972.0879567593863,
+      "pnl": -27.912043240613684,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=32.6) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=32.6",
+        "[TRD-MOM] h1=11.0% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=131.200) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2021-11-16T00:00:00.000Z",
+      "price": 60058.87,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.527051707766059,
+      "minMovePct": -5.968493912722635,
+      "portfolioValue": 921.5904445570319,
+      "pnl": -78.4095554429681
+    },
+    {
+      "timestamp": "2022-02-15T00:00:00.000Z",
+      "price": 44544.86,
+      "signal": "BUY",
+      "confidence": 4.9,
+      "outcome": "LOSS",
+      "maxMovePct": 0.011471581681928245,
+      "minMovePct": -10.038531942854915,
+      "portfolioValue": 918.1344803899431,
+      "pnl": -81.86551961005694,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=26.1) [rev=0.00 mom=0.47 trend=0.53]",
+        "[MOM-RSI] Bull momentum zone (62.6) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=453.009)",
+        "[MOM-H1] Strong upward momentum h1=15.1%",
+        "[TRD-MOM] h1=15.1% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=453.009) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.495, conf: 4.9/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2022-02-17T00:00:00.000Z",
+      "price": 40515.7,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.096315749203396,
+      "minMovePct": -2.6303383626594066,
+      "portfolioValue": 894.5109983179859,
+      "pnl": -105.48900168201408
+    },
+    {
+      "timestamp": "2022-02-28T00:00:00.000Z",
+      "price": 43160,
+      "signal": "BUY",
+      "confidence": 5.1,
+      "outcome": "WIN",
+      "maxMovePct": 5.189990732159407,
+      "minMovePct": -0.8109823911028655,
+      "portfolioValue": 891.1565820742935,
+      "pnl": -108.84341792570649,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.5) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-RSI] Bull momentum zone (58.5) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=76.736)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.513, conf: 5.1/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2022-03-04T00:00:00.000Z",
+      "price": 39148.66,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.3926658026098442,
+      "minMovePct": -2.707857689126534,
+      "portfolioValue": 867.687112184333,
+      "pnl": -132.31288781566695
+    },
+    {
+      "timestamp": "2022-03-29T00:00:00.000Z",
+      "price": 47434.8,
+      "signal": "BUY",
+      "confidence": 7.4,
+      "outcome": "LOSS",
+      "maxMovePct": 0.5595469992494925,
+      "minMovePct": -4.71130899677031,
+      "portfolioValue": 864.4332855136417,
+      "pnl": -135.56671448635825,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.7) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=683.678)",
+        "[MOM-H1] Strong upward momentum h1=20.8%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.743, conf: 7.4/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2022-04-01T00:00:00.000Z",
+      "price": 46283.49,
+      "signal": "BUY",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 2.50763285136882,
+      "minMovePct": -1.6260009778864986,
+      "portfolioValue": 856.806890712416,
+      "pnl": -143.19310928758398,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.7) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (62.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=347.473)",
+        "[MOM-H1] Strong upward momentum h1=10.8%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 1.013, conf: 10/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2022-04-04T00:00:00.000Z",
+      "price": 46580.51,
+      "signal": "BUY",
+      "confidence": 7.5,
+      "outcome": "LOSS",
+      "maxMovePct": 1.329933914420426,
+      "minMovePct": -7.426947450768577,
+      "portfolioValue": 857.342922298341,
+      "pnl": -142.65707770165898,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.9) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (62.5) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=112.509)",
+        "[MOM-H1] Strong upward momentum h1=13.6%",
+        "[DECISION] BUY (score: 0.750, conf: 7.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2022-04-06T00:00:00.000Z",
+      "price": 43170.47,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.8534660382432746,
+      "minMovePct": -2.463095722608537,
+      "portfolioValue": 814.5472037975621,
+      "pnl": -185.45279620243787
+    },
+    {
+      "timestamp": "2022-04-11T00:00:00.000Z",
+      "price": 39530.45,
+      "signal": "BUY",
+      "confidence": 4.4,
+      "outcome": "WIN",
+      "maxMovePct": 5.137457327199667,
+      "minMovePct": -0.6977406024975676,
+      "portfolioValue": 811.4926517833212,
+      "pnl": -188.5073482166788,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=18.6) [rev=0.85 mom=0.15 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.12) 🟢 BOUNCE",
+        "[MOM-RSI] Bear momentum zone (35.4) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-788.700)",
+        "[MOM-H1] Strong downward momentum h1=-16.1%",
+        "[DECISION] BUY (score: 0.445, conf: 4.4/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2022-04-23T00:00:00.000Z",
+      "price": 39441.6,
+      "signal": "SELL",
+      "confidence": 6.8,
+      "outcome": "WIN",
+      "maxMovePct": 2.9775668329885234,
+      "minMovePct": -3.147945316620012,
+      "portfolioValue": 808.039845016338,
+      "pnl": -191.96015498366205,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.8) [rev=0.30 mom=0.70 trend=0.00]",
+        "[MOM-EMA] Bearish alignment — price < EMA20 < EMA50",
+        "[MOM-RSI] Bear momentum zone (39.6) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-181.313)",
+        "[MOM-H1] Strong downward momentum h1=-7.7%",
+        "[CONF] m1+m5+h1 all bearish → 1.35x",
+        "[DECISION] SELL (score: -0.678, conf: 6.8/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2022-08-14T00:00:00.000Z",
+      "price": 24305.24,
+      "signal": "BUY",
+      "confidence": 5.6,
+      "outcome": "WIN",
+      "maxMovePct": 3.7279203990579726,
+      "minMovePct": -2.60857329530587,
+      "portfolioValue": 805.0096955975266,
+      "pnl": -194.99030440247338,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.5) [rev=0.14 mom=0.86 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (60.5) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=91.190)",
+        "[DECISION] BUY (score: 0.565, conf: 5.6/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2022-08-19T00:00:00.000Z",
+      "price": 20834.39,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 4.634692928374676,
+      "minMovePct": -0.34793435276961776,
+      "portfolioValue": 774.0363982782244,
+      "pnl": -225.9636017217756
+    },
+    {
+      "timestamp": "2022-09-10T00:00:00.000Z",
+      "price": 21648.34,
+      "signal": "BUY",
+      "confidence": 4.7,
+      "outcome": "WIN",
+      "maxMovePct": 3.878634574290684,
+      "minMovePct": -1.37811952325213,
+      "portfolioValue": 771.133761784681,
+      "pnl": -228.86623821531896,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.6) [rev=0.00 mom=0.60 trend=0.40]",
+        "[MOM-MACD] Bullish histogram expanding (hist=225.134)",
+        "[MOM-H1] Strong upward momentum h1=8.0%",
+        "[TRD-MOM] h1=8.0% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=225.134) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.468, conf: 4.7/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2022-09-13T00:00:00.000Z",
+      "price": 20173.57,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.8237228214936667,
+      "minMovePct": -3.3537445281127716,
+      "portfolioValue": 755.4845764000115,
+      "pnl": -244.51542359998848
+    },
+    {
+      "timestamp": "2022-12-13T00:00:00.000Z",
+      "price": 17774.7,
+      "signal": "BUY",
+      "confidence": 6.2,
+      "outcome": "WIN",
+      "maxMovePct": 3.4501285535058255,
+      "minMovePct": -2.8084299594367406,
+      "portfolioValue": 752.6515092385115,
+      "pnl": -247.3484907614885,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=24.9) [rev=0.00 mom=0.78 trend=0.22]",
+        "[MOM-RSI] Bull momentum zone (58.8) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=150.353)",
+        "[MOM-H1] Strong upward momentum h1=8.1%",
+        "[TRD-MOM] h1=8.1% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=150.353) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.622, conf: 6.2/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2022-12-19T00:00:00.000Z",
+      "price": 16438.88,
+      "signal": "SELL",
+      "confidence": 5.1,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 3.786085183418818,
+      "minMovePct": -0.2535452536912508,
+      "portfolioValue": 736.0893592011363,
+      "pnl": -263.9106407988637,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.9) [rev=0.26 mom=0.74 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.01) → BUY",
+        "[MOM-EMA] Bearish alignment — price < EMA20 < EMA50",
+        "[MOM-RSI] Bear momentum zone (40.5) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-32.551)",
+        "[CONF] m1+m5+h1 all bearish → 1.35x",
+        "[DECISION] SELL (score: -0.509, conf: 5.1/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2023-01-16T00:00:00.000Z",
+      "price": 21185.65,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 2.1918137984909527,
+      "minMovePct": -3.674657138204398,
+      "portfolioValue": 733.329024104132,
+      "pnl": -266.67097589586797,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=36.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=36.7",
+        "[TRD-MOM] h1=27.1% bullish",
+        "[TRD-RSI] Extreme blow-off top (88.6) → reversal",
+        "[TRD-MACD] Bullish histogram expanding (hist=485.637) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-01-19T00:00:00.000Z",
+      "price": 21071.59,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "WIN",
+      "maxMovePct": 10.916167218515541,
+      "minMovePct": -0.9980737096726033,
+      "portfolioValue": 730.2828884324703,
+      "pnl": -269.71711156752974,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=43.3) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=43.3",
+        "[TRD-MOM] h1=25.2% bullish",
+        "[TRD-RSI] Overbought in trend (80.1)",
+        "[TRD-MACD] Bullish histogram expanding (hist=344.859) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-01-23T00:00:00.000Z",
+      "price": 22916.45,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 3.9285316879359535,
+      "minMovePct": -2.6899890689875647,
+      "portfolioValue": 756.417000912455,
+      "pnl": -243.58299908754498,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=51.4) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=51.4",
+        "[TRD-MOM] h1=33.4% bullish",
+        "[TRD-RSI] Extreme blow-off top (85.4) → reversal",
+        "[TRD-MACD] Bullish histogram expanding (hist=337.057) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-01-26T00:00:00.000Z",
+      "price": 23009.65,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "WIN",
+      "maxMovePct": 2.131062402079121,
+      "minMovePct": -2.063351680707879,
+      "portfolioValue": 757.0658522767574,
+      "pnl": -242.93414772324263,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=56.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=56.1",
+        "[TRD-MOM] h1=22.1% bullish",
+        "[TRD-RSI] Overbought in trend (81.2)",
+        "[TRD-MACD] Bullish histogram expanding (hist=176.869) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-01-29T00:00:00.000Z",
+      "price": 23742.3,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "LOSS",
+      "maxMovePct": 0.24517422490659765,
+      "minMovePct": -5.232433252043817,
+      "portfolioValue": 772.8823196094006,
+      "pnl": -227.1176803905994,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=58.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=58.1",
+        "[TRD-MOM] h1=13.8% bullish",
+        "[TRD-RSI] Extreme blow-off top (83.5) → reversal",
+        "[TRD-MACD] Bullish histogram expanding (hist=69.583) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-02-09T00:00:00.000Z",
+      "price": 21796.35,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.6506135201536097,
+      "minMovePct": -1.5844395965379459,
+      "portfolioValue": 715.6150373964098,
+      "pnl": -284.3849626035902
+    },
+    {
+      "timestamp": "2023-02-17T00:00:00.000Z",
+      "price": 24569.97,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "WIN",
+      "maxMovePct": 2.5316677228340074,
+      "minMovePct": -1.5360214115035609,
+      "portfolioValue": 712.9314810061733,
+      "pnl": -287.06851899382673,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=38.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=38.5",
+        "[TRD-MOM] h1=4.9% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=34.654) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-02-20T00:00:00.000Z",
+      "price": 24842.2,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "LOSS",
+      "maxMovePct": 1.6415615364178668,
+      "minMovePct": -5.102245372793078,
+      "portfolioValue": 712.8712957821142,
+      "pnl": -287.1287042178858,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=39.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=39.7",
+        "[TRD-MOM] h1=9.1% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=134.894) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-02-23T00:00:00.000Z",
+      "price": 23940.2,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "LOSS",
+      "maxMovePct": 0.8026248736434859,
+      "minMovePct": -5.088512209588895,
+      "portfolioValue": 700.0936818123339,
+      "pnl": -299.9063181876661,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=38.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=38.1",
+        "[TRD-MOM] h1=9.8% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=25.061) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-03-03T00:00:00.000Z",
+      "price": 22354.34,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.3766901639681601,
+      "minMovePct": -0.882423726220494,
+      "portfolioValue": 668.1390780047741,
+      "pnl": -331.8609219952259
+    },
+    {
+      "timestamp": "2023-03-13T00:00:00.000Z",
+      "price": 24113.48,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 9.427880173247493,
+      "minMovePct": -0.8979624674663252,
+      "portfolioValue": 665.6335564622561,
+      "pnl": -334.36644353774386,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.7) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (60.5) — trend has room",
+        "[MOM-MACD] Bearish histogram expanding (hist=-23.376)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2023-03-16T00:00:00.000Z",
+      "price": 24998.78,
+      "signal": "BUY",
+      "confidence": 8.4,
+      "outcome": "WIN",
+      "maxMovePct": 11.032778399585906,
+      "minMovePct": -0.4351412348922581,
+      "portfolioValue": 669.7949263895338,
+      "pnl": -330.20507361046623,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.5) [rev=0.00 mom=0.62 trend=0.38]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (63.5) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=332.205)",
+        "[MOM-H1] Strong upward momentum h1=6.5%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=6.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=332.205) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.842, conf: 8.4/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-03-19T00:00:00.000Z",
+      "price": 27972.87,
+      "signal": "BUY",
+      "confidence": 3.6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.784336037024449,
+      "minMovePct": -3.0329387009627466,
+      "portfolioValue": 703.3586135250775,
+      "pnl": -296.64138647492246,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=31.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=24.7% bullish",
+        "[TRD-RSI] Overbought in trend (71.9)",
+        "[TRD-MACD] Bullish histogram expanding (hist=658.281) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.365, conf: 3.6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-03-22T00:00:00.000Z",
+      "price": 27250.97,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "WIN",
+      "maxMovePct": 5.500831713513313,
+      "minMovePct": -0.9209580429614107,
+      "portfolioValue": 691.4242078211736,
+      "pnl": -308.5757921788264,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=35.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=35.0",
+        "[TRD-MOM] h1=25.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=526.625) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-03-25T00:00:00.000Z",
+      "price": 27462.95,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "WIN",
+      "maxMovePct": 2.6634065167798826,
+      "minMovePct": -3.4767204542847776,
+      "portfolioValue": 694.3654338825165,
+      "pnl": -305.6345661174835,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=36.4) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=36.4",
+        "[TRD-MOM] h1=34.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=285.797) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-04-21T00:00:00.000Z",
+      "price": 27262.84,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 2.2737176317654395,
+      "minMovePct": -0.44929288364675724,
+      "portfolioValue": 682.4825793781956,
+      "pnl": -317.5174206218044
+    },
+    {
+      "timestamp": "2023-05-11T00:00:00.000Z",
+      "price": 26968.62,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "LOSS",
+      "maxMovePct": 0.4542316217885824,
+      "minMovePct": -4.290764599745926,
+      "portfolioValue": 679.9232697055274,
+      "pnl": -320.07673029447255,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=18.2) [rev=0.96 mom=0.04 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.02) → BUY",
+        "[MOM-RSI] Bear momentum zone (38.5) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-231.159)",
+        "[MOM-H1] Strong downward momentum h1=-8.5%",
+        "[DECISION] BUY (score: 0.427, conf: 4.3/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2023-05-16T00:00:00.000Z",
+      "price": 27033.84,
+      "signal": "SELL",
+      "confidence": 6.6,
+      "outcome": "WIN",
+      "maxMovePct": 1.7243573240057641,
+      "minMovePct": -2.4881407894697882,
+      "portfolioValue": 679.3188969496567,
+      "pnl": -320.68110305034327,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.7) [rev=0.06 mom=0.94 trend=0.00]",
+        "[MOM-RSI] Bear momentum zone (40.7) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-165.802)",
+        "[MOM-H1] Strong downward momentum h1=-5.7%",
+        "[CONF] m1+m5+h1 all bearish → 1.35x",
+        "[DECISION] SELL (score: -0.664, conf: 6.6/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2023-05-19T00:00:00.000Z",
+      "price": 26880.26,
+      "signal": "SELL",
+      "confidence": 7.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.4779990967349308,
+      "minMovePct": -0.7969788982695837,
+      "portfolioValue": 677.2370585989468,
+      "pnl": -322.76294140105324,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.1) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bearish alignment — price < EMA20 < EMA50",
+        "[MOM-RSI] Bear momentum zone (40.8) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-90.495)",
+        "[MOM-H1] Strong downward momentum h1=-8.9%",
+        "[DECISION] SELL (score: -0.750, conf: 7.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2023-05-28T00:00:00.000Z",
+      "price": 28065,
+      "signal": "BUY",
+      "confidence": 4.4,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.361624799572419,
+      "minMovePct": -1.9255300195973684,
+      "portfolioValue": 674.6974196292007,
+      "pnl": -325.3025803707993,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.0) [rev=0.00 mom=0.74 trend=0.26]",
+        "[MOM-MACD] Bullish histogram expanding (hist=104.807)",
+        "[TRD-MOM] h1=4.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=104.807) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.438, conf: 4.4/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-06-05T00:00:00.000Z",
+      "price": 25728.2,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 6.465940096858698,
+      "minMovePct": -1.4660178325728201,
+      "portfolioValue": 658.5182820720904,
+      "pnl": -341.4817179279096
+    },
+    {
+      "timestamp": "2023-06-19T00:00:00.000Z",
+      "price": 26844.35,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "WIN",
+      "maxMovePct": 14.73550300156272,
+      "minMovePct": -0.7165381169594293,
+      "portfolioValue": 656.0488385143201,
+      "pnl": -343.9511614856799,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=24.8) [rev=0.00 mom=0.80 trend=0.20]",
+        "[MOM-MACD] Bullish histogram expanding (hist=95.763)",
+        "[TRD-MOM] h1=4.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=95.763) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.449, conf: 4.5/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-06-22T00:00:00.000Z",
+      "price": 29884.92,
+      "signal": "BUY",
+      "confidence": 4.4,
+      "outcome": "WIN",
+      "maxMovePct": 5.176590735394307,
+      "minMovePct": -0.2841566917361608,
+      "portfolioValue": 672.5640926312576,
+      "pnl": -327.4359073687424,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=27.4) [rev=0.00 mom=0.16 trend=0.84]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=477.906)",
+        "[MOM-H1] Strong upward momentum h1=12.8%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=12.8% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=477.906) — trend confirmed",
+        "[DECISION] BUY (score: 0.440, conf: 4.4/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-06-25T00:00:00.000Z",
+      "price": 30462.66,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.747417986479189,
+      "minMovePct": -1.7485669340760128,
+      "portfolioValue": 677.0161950272009,
+      "pnl": -322.98380497279913,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=32.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=32.5",
+        "[TRD-MOM] h1=17.5% bullish",
+        "[TRD-RSI] Overbought in trend (70.5)",
+        "[TRD-MACD] Bullish histogram expanding (hist=536.864) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-06-28T00:00:00.000Z",
+      "price": 30077.41,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "WIN",
+      "maxMovePct": 4.004965853110358,
+      "minMovePct": -1.9197464143355423,
+      "portfolioValue": 670.9258157059141,
+      "pnl": -329.07418429408585,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.9) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.9",
+        "[TRD-MOM] h1=19.7% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=339.670) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-07-01T00:00:00.000Z",
+      "price": 30585.9,
+      "signal": "BUY",
+      "confidence": 8.1,
+      "outcome": "WIN",
+      "maxMovePct": 2.596294370935622,
+      "minMovePct": -1.408819096381017,
+      "portfolioValue": 677.9646379351186,
+      "pnl": -322.0353620648814,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.5) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.5",
+        "[TRD-MOM] h1=15.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=176.893) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.810, conf: 8.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-08-16T00:00:00.000Z",
+      "price": 28730.51,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 0.18436846404745746,
+      "minMovePct": -12.406706320214985,
+      "portfolioValue": 638.9670439629735,
+      "pnl": -361.03295603702645
+    },
+    {
+      "timestamp": "2023-08-17T00:00:00.000Z",
+      "price": 26623.41,
+      "signal": "BUY",
+      "confidence": 8.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.7857370637345054,
+      "minMovePct": -3.7726572215955803,
+      "portfolioValue": 636.5709175481124,
+      "pnl": -363.42908245188755,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=15.9) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.51) 🟢 BOUNCE",
+        "[REV-RSI] Extreme oversold (21.0) → bounce",
+        "[DECISION] BUY (score: 0.850, conf: 8.5/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2023-08-26T00:00:00.000Z",
+      "price": 26017.37,
+      "signal": "SELL",
+      "confidence": 6.9,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.9094693276069127,
+      "minMovePct": -0.5875689971738073,
+      "portfolioValue": 630.6827333422556,
+      "pnl": -369.3172666577444,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=33.2) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bearish: price < EMA20 < EMA50",
+        "[TRD-ADX] Strong downtrend ADX=33.2",
+        "[TRD-MOM] h1=-11.6% bearish",
+        "[TRD-RSI] Oversold in trend (24.9) → bounce",
+        "[TRD-MACD] Bearish histogram in trend (hist=-147.330) — momentum diverging",
+        "[CONF] m1+m5+h1 all bearish → 1.35x",
+        "[DECISION] SELL (score: -0.689, conf: 6.9/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2023-10-04T00:00:00.000Z",
+      "price": 27778.57,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.8590949786112112,
+      "minMovePct": -2.1694061285372177,
+      "portfolioValue": 628.3176730922221,
+      "pnl": -371.6823269077779,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.3) [rev=0.17 mom=0.83 trend=0.00]",
+        "[REV-BB] Upper band extreme (PB=0.96) → SELL",
+        "[MOM-RSI] Bull momentum zone (62.0) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=145.044)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.428, conf: 4.3/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2023-10-07T00:00:00.000Z",
+      "price": 27956.67,
+      "signal": "BUY",
+      "confidence": 9.1,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.49530219443160134,
+      "minMovePct": -2.49196345630577,
+      "portfolioValue": 627.5396070394772,
+      "pnl": -372.46039296052277,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.7) [rev=0.00 mom=0.58 trend=0.42]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (61.9) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=125.194)",
+        "[MOM-H1] Strong upward momentum h1=5.2%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=5.2% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=125.194) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.911, conf: 9.1/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-10-10T00:00:00.000Z",
+      "price": 27390.12,
+      "signal": "BUY",
+      "confidence": 5.3,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.31861853836346987,
+      "minMovePct": -3.1086391735414054,
+      "portfolioValue": 620.6812835446308,
+      "pnl": -379.3187164553692,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.2) [rev=0.00 mom=0.71 trend=0.29]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=35.098)",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=4.5% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=35.098) — trend confirmed",
+        "[DECISION] BUY (score: 0.533, conf: 5.3/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2023-10-16T00:00:00.000Z",
+      "price": 28500.78,
+      "signal": "BUY",
+      "confidence": 5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.6897081413210508,
+      "minMovePct": -1.5138533050674372,
+      "portfolioValue": 634.0629193123533,
+      "pnl": -365.9370806876467,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.0) [rev=0.24 mom=0.76 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.04) 🔴 FADE",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (65.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=6.660)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.500, conf: 5/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-01-12T00:00:00.000Z",
+      "price": 42782.73,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.1085547836708802,
+      "minMovePct": -2.4840163308886627,
+      "portfolioValue": 842.0158363440831,
+      "pnl": -157.98416365591686
+    },
+    {
+      "timestamp": "2024-02-13T00:00:00.000Z",
+      "price": 49699.59,
+      "signal": "BUY",
+      "confidence": 5.5,
+      "outcome": "WIN",
+      "maxMovePct": 6.27174187956079,
+      "minMovePct": -0.9548972134377658,
+      "portfolioValue": 838.8582769577928,
+      "pnl": -161.14172304220722,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.5) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=781.477)",
+        "[MOM-H1] Strong upward momentum h1=15.7%",
+        "[DECISION] BUY (score: 0.550, conf: 5.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-02-16T00:00:00.000Z",
+      "price": 52124.11,
+      "signal": "BUY",
+      "confidence": 3.6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.48516895540278654,
+      "minMovePct": -2.8760395141518975,
+      "portfolioValue": 846.605190721579,
+      "pnl": -153.394809278421,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=31.2) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=20.7% bullish",
+        "[TRD-RSI] Overbought in trend (81.7)",
+        "[TRD-MACD] Bullish histogram expanding (hist=835.375) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.365, conf: 3.6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-02-19T00:00:00.000Z",
+      "price": 51774.73,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "WIN",
+      "maxMovePct": 2.3375689259992214,
+      "minMovePct": -2.220639296428978,
+      "portfolioValue": 842.3290936531175,
+      "pnl": -157.67090634688248,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.7",
+        "[TRD-MOM] h1=21.2% bullish",
+        "[TRD-RSI] Overbought in trend (75.8)",
+        "[TRD-MACD] Bullish histogram expanding (hist=497.210) — trend confirmed",
+        "[DECISION] BUY (score: 0.450, conf: 4.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-02-22T00:00:00.000Z",
+      "price": 51288.42,
+      "signal": "BUY",
+      "confidence": 7.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.7985818241232656,
+      "minMovePct": -1.4962831765922957,
+      "portfolioValue": 836.4217280305629,
+      "pnl": -163.57827196943708,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.6) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.6",
+        "[TRD-MOM] h1=13.2% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=125.033) — trend confirmed",
+        "[DECISION] BUY (score: 0.750, conf: 7.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-02-27T00:00:00.000Z",
+      "price": 57037.34,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "WIN",
+      "maxMovePct": 12.207196198139682,
+      "minMovePct": -0.6057260033514852,
+      "portfolioValue": 899.3142652220288,
+      "pnl": -100.68573477797122,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=36.6) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=36.6",
+        "[TRD-MOM] h1=14.8% bullish",
+        "[TRD-RSI] Overbought in trend (81.4)",
+        "[TRD-MACD] Bullish histogram expanding (hist=226.227) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-03-16T00:00:00.000Z",
+      "price": 65300.63,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 5.597756101281109,
+      "minMovePct": -1.1755323034402538,
+      "portfolioValue": 988.6417865548906,
+      "pnl": -11.358213445109413
+    },
+    {
+      "timestamp": "2024-03-31T00:00:00.000Z",
+      "price": 71280.01,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "LOSS",
+      "maxMovePct": 0.011531984914145164,
+      "minMovePct": -9.44165131289964,
+      "portfolioValue": 984.9343798553098,
+      "pnl": -15.065620144690229,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.4) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (60.2) — trend has room",
+        "[MOM-MACD] Bearish histogram expanding (hist=-109.482)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.432, conf: 4.3/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-04-02T00:00:00.000Z",
+      "price": 65463.99,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 5.874863417277202,
+      "minMovePct": -1.483135995835265,
+      "portfolioValue": 961.716245347086,
+      "pnl": -38.28375465291401
+    },
+    {
+      "timestamp": "2024-04-13T00:00:00.000Z",
+      "price": 63924.51,
+      "signal": "BUY",
+      "confidence": 5.5,
+      "outcome": "WIN",
+      "maxMovePct": 4.603179594180706,
+      "minMovePct": -2.800975713384431,
+      "portfolioValue": 958.1098094270344,
+      "pnl": -41.890190572965594,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=17.1) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.15) 🟢 BOUNCE",
+        "[DECISION] BUY (score: 0.550, conf: 5.5/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2024-04-30T00:00:00.000Z",
+      "price": 60672,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 0.27958531118143026,
+      "minMovePct": -6.789260284810126,
+      "portfolioValue": 942.6885650196328,
+      "pnl": -57.31143498036715
+    },
+    {
+      "timestamp": "2024-05-20T00:00:00.000Z",
+      "price": 71446.62,
+      "signal": "BUY",
+      "confidence": 8.3,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.7451437170855734,
+      "minMovePct": -3.645280910419545,
+      "portfolioValue": 939.1534829008092,
+      "pnl": -60.846517099190805,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.6) [rev=0.11 mom=0.89 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.16) 🔴 FADE",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (66.3) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=969.873)",
+        "[MOM-H1] Strong upward momentum h1=13.1%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.832, conf: 8.3/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-05-23T00:00:00.000Z",
+      "price": 67969.65,
+      "signal": "BUY",
+      "confidence": 6.5,
+      "outcome": "WIN",
+      "maxMovePct": 2.4133565495776512,
+      "minMovePct": -2.0149140094144946,
+      "portfolioValue": 925.2051555745666,
+      "pnl": -74.79484442543344,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.4) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=722.718)",
+        "[MOM-H1] Strong upward momentum h1=7.8%",
+        "[DECISION] BUY (score: 0.650, conf: 6.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-05-26T00:00:00.000Z",
+      "price": 68507.67,
+      "signal": "BUY",
+      "confidence": 6.3,
+      "outcome": "WIN",
+      "maxMovePct": 3.1819648807206544,
+      "minMovePct": -1.7950690776667704,
+      "portfolioValue": 926.3428781463592,
+      "pnl": -73.65712185364077,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.9) [rev=0.03 mom=0.97 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=395.648)",
+        "[MOM-H1] Strong upward momentum h1=11.4%",
+        "[DECISION] BUY (score: 0.630, conf: 6.3/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-06-05T00:00:00.000Z",
+      "price": 71108,
+      "signal": "BUY",
+      "confidence": 7.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.2502390729594477,
+      "minMovePct": -3.780165382235473,
+      "portfolioValue": 944.91721629317,
+      "pnl": -55.082783706830014,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.6) [rev=0.11 mom=0.89 trend=0.00]",
+        "[REV-BB] Upper band extreme (PB=0.96) → SELL",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (62.8) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=93.029)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.753, conf: 7.5/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-06-18T00:00:00.000Z",
+      "price": 65175.32,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 2.0063115915656455,
+      "minMovePct": -0.9454038737362521,
+      "portfolioValue": 882.0759755254383,
+      "pnl": -117.92402447456175
+    },
+    {
+      "timestamp": "2024-07-15T00:00:00.000Z",
+      "price": 64724.14,
+      "signal": "BUY",
+      "confidence": 4.7,
+      "outcome": "WIN",
+      "maxMovePct": 2.1699631698466835,
+      "minMovePct": -3.6321842206014656,
+      "portfolioValue": 878.7681906172178,
+      "pnl": -121.23180938278222,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=37.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-ADX] Strong uptrend ADX=37.0",
+        "[TRD-MACD] Bullish histogram expanding (hist=775.812) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.472, conf: 4.7/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-07-23T00:00:00.000Z",
+      "price": 65936.01,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.7683811926138695,
+      "minMovePct": -3.7601759645450157,
+      "portfolioValue": 880.3543313940766,
+      "pnl": -119.64566860592345,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.1) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=13.6% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=933.959) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2024-07-26T00:00:00.000Z",
+      "price": 67907.99,
+      "signal": "BUY",
+      "confidence": 8.7,
+      "outcome": "WIN",
+      "maxMovePct": 2.1970905043721656,
+      "minMovePct": -1.852491879085223,
+      "portfolioValue": 889.9837558748475,
+      "pnl": -110.01624412515253,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.2) [rev=0.00 mom=0.69 trend=0.31]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (63.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=554.667)",
+        "[MOM-H1] Strong upward momentum h1=17.3%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=17.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=554.667) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.874, conf: 8.7/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2024-07-29T00:00:00.000Z",
+      "price": 66784.69,
+      "signal": "BUY",
+      "confidence": 5.3,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.32239424934067623,
+      "minMovePct": -3.3760581953738233,
+      "portfolioValue": 880.0221369020376,
+      "pnl": -119.97786309796243,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.0) [rev=0.00 mom=0.74 trend=0.26]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=326.923)",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MACD] Bullish histogram expanding (hist=326.923) — trend confirmed",
+        "[DECISION] BUY (score: 0.525, conf: 5.3/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2024-08-02T00:00:00.000Z",
+      "price": 61498.33,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 1.138063423836061,
+      "minMovePct": -7.114924909343075,
+      "portfolioValue": 824.1551195419763,
+      "pnl": -175.84488045802368
+    },
+    {
+      "timestamp": "2024-08-23T00:00:00.000Z",
+      "price": 64037.24,
+      "signal": "BUY",
+      "confidence": 7.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.5034376871957662,
+      "minMovePct": -0.7905400045348581,
+      "portfolioValue": 821.064537843694,
+      "pnl": -178.93546215630602,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.8) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-RSI] Bull momentum zone (58.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=562.060)",
+        "[MOM-H1] Strong upward momentum h1=5.3%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.716, conf: 7.2/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-08-28T00:00:00.000Z",
+      "price": 59034.9,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 3.6115755256636266,
+      "minMovePct": -2.2593415081587382,
+      "portfolioValue": 802.4045942156231,
+      "pnl": -197.5954057843769
+    },
+    {
+      "timestamp": "2024-09-13T00:00:00.000Z",
+      "price": 60498,
+      "signal": "BUY",
+      "confidence": 4.6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.185873913187208,
+      "minMovePct": -2.9867929518331136,
+      "portfolioValue": 799.3955769873145,
+      "pnl": -200.60442301268552,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.8) [rev=0.06 mom=0.94 trend=0.00]",
+        "[MOM-MACD] Bullish histogram expanding (hist=351.917)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.456, conf: 4.6/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-09-26T00:00:00.000Z",
+      "price": 65173.99,
+      "signal": "BUY",
+      "confidence": 4.4,
+      "outcome": "WIN",
+      "maxMovePct": 2.0315006032314455,
+      "minMovePct": -0.543299558612257,
+      "portfolioValue": 812.4110351338403,
+      "pnl": -187.5889648661597,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.4) [rev=0.40 mom=0.60 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (65.0) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=538.079)",
+        "[MOM-H1] Strong upward momentum h1=12.1%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.444, conf: 4.4/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-09-29T00:00:00.000Z",
+      "price": 65602.01,
+      "signal": "BUY",
+      "confidence": 7.5,
+      "outcome": "LOSS",
+      "maxMovePct": 0.025593727997066176,
+      "minMovePct": -8.289395401146999,
+      "portfolioValue": 813.089657926512,
+      "pnl": -186.91034207348798,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.8) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (65.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=453.186)",
+        "[MOM-H1] Strong upward momentum h1=10.9%",
+        "[DECISION] BUY (score: 0.750, conf: 7.5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-10-10T00:00:00.000Z",
+      "price": 60326.39,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 5.227579505420431,
+      "minMovePct": -0.3957637776767348,
+      "portfolioValue": 768.3788378215884,
+      "pnl": -231.62116217841162
+    },
+    {
+      "timestamp": "2024-10-20T00:00:00.000Z",
+      "price": 69031.99,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.7062377891757123,
+      "minMovePct": -3.564390943966713,
+      "portfolioValue": 765.4974171797573,
+      "pnl": -234.50258282024265,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.0) [rev=0.24 mom=0.76 trend=0.00]",
+        "[REV-BB] Upper band extreme (PB=0.93) → SELL",
+        "[REV-RSI] Overbought (70.6)",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=591.551)",
+        "[MOM-H1] Strong upward momentum h1=9.9%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.417, conf: 4.2/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-10-23T00:00:00.000Z",
+      "price": 66668.65,
+      "signal": "BUY",
+      "confidence": 4,
+      "outcome": "WIN",
+      "maxMovePct": 3.2719276601521194,
+      "minMovePct": -1.6084921473586173,
+      "portfolioValue": 756.8585530142573,
+      "pnl": -243.14144698574273,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=20.7) [rev=0.33 mom=0.67 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=160.373)",
+        "[MOM-H1] Strong upward momentum h1=9.9%",
+        "[DECISION] BUY (score: 0.404, conf: 4/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-10-29T00:00:00.000Z",
+      "price": 72736.42,
+      "signal": "BUY",
+      "confidence": 6.4,
+      "outcome": "LOSS",
+      "maxMovePct": 0.30875866587880146,
+      "minMovePct": -4.194129983301355,
+      "portfolioValue": 784.7849843187364,
+      "pnl": -215.2150156812636,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.7) [rev=0.06 mom=0.94 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.04) 🔴 FADE",
+        "[REV-RSI] Overbought (72.0)",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=296.489)",
+        "[MOM-H1] Strong upward momentum h1=8.4%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.636, conf: 6.4/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-11-01T00:00:00.000Z",
+      "price": 69496.01,
+      "signal": "BUY",
+      "confidence": 5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.601991394901665,
+      "minMovePct": -2.902727796890784,
+      "portfolioValue": 763.048518251003,
+      "pnl": -236.95148174899703,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.5) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=132.346)",
+        "[DECISION] BUY (score: 0.500, conf: 5/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2024-11-06T00:00:00.000Z",
+      "price": 75571.99,
+      "signal": "BUY",
+      "confidence": 4.9,
+      "outcome": "WIN",
+      "maxMovePct": 2.1542373040593477,
+      "minMovePct": -1.5296540424567424,
+      "portfolioValue": 807.5937606463805,
+      "pnl": -192.40623935361953,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.4) [rev=0.15 mom=0.85 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.24) 🔴 FADE",
+        "[REV-RSI] Overbought (70.2)",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=126.490)",
+        "[MOM-H1] Strong upward momentum h1=13.4%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.494, conf: 4.9/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2024-12-19T00:00:00.000Z",
+      "price": 97461.86,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 2.1328856231555604,
+      "minMovePct": -5.36550400330961,
+      "portfolioValue": 976.6067727858297,
+      "pnl": -23.393227214170338
+    },
+    {
+      "timestamp": "2025-02-02T00:00:00.000Z",
+      "price": 97700.59,
+      "signal": "BUY",
+      "confidence": 4,
+      "outcome": "LOSS",
+      "maxMovePct": 4.912375657096849,
+      "minMovePct": -6.62185356301328,
+      "portfolioValue": 972.9444973878827,
+      "pnl": -27.055502612117266,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=14.3) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.01) → BUY",
+        "[DECISION] BUY (score: 0.400, conf: 4/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-02-17T00:00:00.000Z",
+      "price": 95780,
+      "signal": "SELL",
+      "confidence": 6.5,
+      "outcome": "WIN",
+      "maxMovePct": 1.169335978283572,
+      "minMovePct": -2.4972958864063517,
+      "portfolioValue": 964.6805481376197,
+      "pnl": -35.31945186238033,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.9) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bearish: price < EMA20 < EMA50",
+        "[TRD-MOM] h1=-5.5% bearish",
+        "[TRD-MACD] Bearish histogram in trend (hist=-188.869) — momentum diverging",
+        "[CONF] m1+m5+h1 all bearish → 1.35x",
+        "[DECISION] SELL (score: -0.648, conf: 6.5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-04-06T00:00:00.000Z",
+      "price": 78430,
+      "signal": "BUY",
+      "confidence": 8,
+      "outcome": "LOSS",
+      "maxMovePct": 3.587377279102386,
+      "minMovePct": -5.000637511156445,
+      "portfolioValue": 961.0629960821036,
+      "pnl": -38.93700391789639,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=17.9) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.16) 🟢 BOUNCE",
+        "[REV-PAT] Bullish reversal at lows",
+        "[DECISION] BUY (score: 0.800, conf: 8/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-04-22T00:00:00.000Z",
+      "price": 93442.99,
+      "signal": "SELL",
+      "confidence": 6.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.3409887675897332,
+      "minMovePct": -1.9080939083820094,
+      "portfolioValue": 1002.289697923521,
+      "pnl": 2.2896979235209756,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=14.9) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.21) 🔴 FADE",
+        "[DECISION] SELL (score: -0.620, conf: 6.2/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-04-25T00:00:00.000Z",
+      "price": 94638.68,
+      "signal": "BUY",
+      "confidence": 5.3,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.7716929272470908,
+      "minMovePct": -1.0947954895397858,
+      "portfolioValue": 998.5311115563077,
+      "pnl": -1.4688884436923217,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.4) [rev=0.14 mom=0.86 trend=0.00]",
+        "[REV-BB] Upper band extreme (PB=0.96) → SELL",
+        "[REV-RSI] Overbought (69.1)",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=1374.703)",
+        "[MOM-H1] Strong upward momentum h1=13.4%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.530, conf: 5.3/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2025-04-28T00:00:00.000Z",
+      "price": 95011.18,
+      "signal": "BUY",
+      "confidence": 6.4,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.4739968496339124,
+      "minMovePct": -2.2115081614605705,
+      "portfolioValue": 996.6836366692219,
+      "pnl": -3.316363330778131,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=26.3) [rev=0.00 mom=0.42 trend=0.58]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=1018.891)",
+        "[MOM-H1] Strong upward momentum h1=12.3%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=12.3% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=1018.891) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.641, conf: 6.4/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2025-05-01T00:00:00.000Z",
+      "price": 96489.91,
+      "signal": "BUY",
+      "confidence": 3.6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.456908810465249,
+      "minMovePct": -0.7637067958712043,
+      "portfolioValue": 1001.3069108504872,
+      "pnl": 1.3069108504871565,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=28.7) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=13.6% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=626.136) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.365, conf: 3.6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-05-04T00:00:00.000Z",
+      "price": 94277.62,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "WIN",
+      "maxMovePct": 2.803454308668376,
+      "minMovePct": -0.9552850400763143,
+      "portfolioValue": 986.4583738388649,
+      "pnl": -13.541626161135127,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.8) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=10.7% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=195.005) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-05-07T00:00:00.000Z",
+      "price": 97030.5,
+      "signal": "BUY",
+      "confidence": 5,
+      "outcome": "WIN",
+      "maxMovePct": 7.55515018473573,
+      "minMovePct": -0.15892940879414866,
+      "portfolioValue": 1004.813312808803,
+      "pnl": 4.813312808802948,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MACD] Bullish histogram expanding (hist=37.847) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.499, conf: 5/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-05-10T00:00:00.000Z",
+      "price": 104809.53,
+      "signal": "BUY",
+      "confidence": 6.1,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.9635764991981152,
+      "minMovePct": -3.9034236676760243,
+      "portfolioValue": 1065.4097377350818,
+      "pnl": 65.40973773508176,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=33.9) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=33.9",
+        "[TRD-MOM] h1=10.8% bullish",
+        "[TRD-RSI] Overbought in trend (76.9)",
+        "[TRD-MACD] Bullish histogram expanding (hist=727.578) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.607, conf: 6.1/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-06-05T00:00:00.000Z",
+      "price": 101508.68,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 4.326053693142308,
+      "minMovePct": -0.4067435415375219,
+      "portfolioValue": 1024.5876743373403,
+      "pnl": 24.58767433734033
+    },
+    {
+      "timestamp": "2025-06-22T00:00:00.000Z",
+      "price": 100963.87,
+      "signal": "BUY",
+      "confidence": 4.7,
+      "outcome": "WIN",
+      "maxMovePct": 5.275283128509243,
+      "minMovePct": -1.3376468235617291,
+      "portfolioValue": 1020.7454705585753,
+      "pnl": 20.745470558575335,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=17.8) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.04) → BUY",
+        "[DECISION] BUY (score: 0.470, conf: 4.7/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-10T00:00:00.000Z",
+      "price": 116010,
+      "signal": "SELL",
+      "confidence": 7.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 2.46528747521765,
+      "minMovePct": -0.6790621498146701,
+      "portfolioValue": 1056.6057274880093,
+      "pnl": 56.60572748800928,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=12.7) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.20) 🔴 FADE",
+        "[REV-RSI] Overbought (71.0)",
+        "[REV-SR] At resistance $116868",
+        "[REV-PAT] Bullish reversal at lows",
+        "[DECISION] SELL (score: -0.720, conf: 7.2/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-14T00:00:00.000Z",
+      "price": 119841.18,
+      "signal": "BUY",
+      "confidence": 7.4,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.1857959008748107,
+      "minMovePct": -3.4247493223948524,
+      "portfolioValue": 1059.0401212108732,
+      "pnl": 59.04012121087317,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=23.0) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=1176.086)",
+        "[MOM-H1] Strong upward momentum h1=11.8%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.743, conf: 7.4/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-17T00:00:00.000Z",
+      "price": 119177.56,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.3787410985759474,
+      "minMovePct": -1.9842661655432474,
+      "portfolioValue": 1054.3590085128508,
+      "pnl": 54.35900851285078,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=26.2) [rev=0.00 mom=0.44 trend=0.56]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=733.652)",
+        "[MOM-H1] Strong upward momentum h1=8.8%",
+        "[MOM-PAT] Bull flag — momentum continuation",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=8.8% bullish",
+        "[TRD-RSI] Overbought in trend (70.3)",
+        "[TRD-MACD] Bullish histogram expanding (hist=733.652) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.603, conf: 6/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-20T00:00:00.000Z",
+      "price": 117265.12,
+      "signal": "BUY",
+      "confidence": 4.3,
+      "outcome": "WIN",
+      "maxMovePct": 2.543535537250981,
+      "minMovePct": -0.9697001120196657,
+      "portfolioValue": 1043.5451560446559,
+      "pnl": 43.54515604465587,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=27.8) [rev=0.00 mom=0.04 trend=0.96]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-RSI] Bull momentum zone (63.0) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=120.197)",
+        "[MOM-H1] Strong upward momentum h1=7.4%",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=7.4% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=120.197) — trend confirmed",
+        "[DECISION] BUY (score: 0.434, conf: 4.3/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2025-08-16T00:00:00.000Z",
+      "price": 117380.66,
+      "signal": "BUY",
+      "confidence": 4.4,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.0174930009764782,
+      "minMovePct": -2.334728736403428,
+      "portfolioValue": 1042.8100533265665,
+      "pnl": 42.8100533265665,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.7) [rev=0.08 mom=0.92 trend=0.00]",
+        "[MOM-MACD] Bullish histogram expanding (hist=2.444)",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.445, conf: 4.4/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2025-08-19T00:00:00.000Z",
+      "price": 112872.94,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.7265608568360074,
+      "minMovePct": -0.7595000183392088,
+      "portfolioValue": 1002.4754088503929,
+      "pnl": 2.4754088503929097
+    },
+    {
+      "timestamp": "2025-08-25T00:00:00.000Z",
+      "price": 110111.98,
+      "signal": "BUY",
+      "confidence": 6.2,
+      "outcome": "WIN",
+      "maxMovePct": 2.282240315722235,
+      "minMovePct": -1.312591055033242,
+      "portfolioValue": 998.716126067204,
+      "pnl": -1.2838739327960411,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=16.8) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.05) 🟢 BOUNCE",
+        "[DECISION] BUY (score: 0.620, conf: 6.2/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-08-29T00:00:00.000Z",
+      "price": 108377.4,
+      "signal": "BUY",
+      "confidence": 4.5,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.0173892342868622,
+      "minMovePct": -0.9478913500416032,
+      "portfolioValue": 992.0079166160751,
+      "pnl": -7.992083383924864,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=18.1) [rev=0.98 mom=0.02 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.02) → BUY",
+        "[MOM-EMA] Bearish alignment — price < EMA20 < EMA50",
+        "[MOM-RSI] Bear momentum zone (37.6) — selling active",
+        "[MOM-MACD] Bearish histogram expanding (hist=-717.186)",
+        "[MOM-H1] Strong downward momentum h1=-7.6%",
+        "[DECISION] BUY (score: 0.447, conf: 4.5/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2025-09-11T00:00:00.000Z",
+      "price": 115482.69,
+      "signal": "SELL",
+      "confidence": 6.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.0243439947580042,
+      "minMovePct": -0.6422607578676918,
+      "portfolioValue": 1013.2326907184392,
+      "pnl": 13.232690718439244,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=15.0) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.01) 🔴 FADE",
+        "[DECISION] SELL (score: -0.620, conf: 6.2/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-09-25T00:00:00.000Z",
+      "price": 108994.49,
+      "signal": "BUY",
+      "confidence": 5.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.1977761444638115,
+      "minMovePct": -0.34352195234823174,
+      "portfolioValue": 1009.4330681282452,
+      "pnl": 9.433068128245168,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=18.0) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Below lower band (PB=-0.04) 🟢 BOUNCE",
+        "[DECISION] BUY (score: 0.520, conf: 5.2/10, mode: ↔️ REVERSION)"
+      ]
+    },
+    {
+      "timestamp": "2025-10-03T00:00:00.000Z",
+      "price": 122232,
+      "signal": "BUY",
+      "confidence": 7.4,
+      "outcome": "WIN",
+      "maxMovePct": 2.844116107075069,
+      "minMovePct": -0.5906800183258067,
+      "portfolioValue": 1036.8864603326228,
+      "pnl": 36.886460332622846,
+      "reasoning": [
+        "[MODE] ⚡ MOMENTUM (ADX=22.5) [rev=0.00 mom=1.00 trend=0.00]",
+        "[MOM-EMA] Bullish alignment — price > EMA20 > EMA50",
+        "[MOM-MACD] Bullish histogram expanding (hist=983.677)",
+        "[MOM-H1] Strong upward momentum h1=5.7%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.743, conf: 7.4/10, mode: ⚡ MOMENTUM)"
+      ]
+    },
+    {
+      "timestamp": "2025-10-06T00:00:00.000Z",
+      "price": 124658.54,
+      "signal": "BUY",
+      "confidence": 3.6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.37499235912758677,
+      "minMovePct": -3.2758285152385,
+      "portfolioValue": 1044.0188895692709,
+      "pnl": 44.01888956927087,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=29.2) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=10.7% bullish",
+        "[TRD-RSI] Overbought in trend (72.8)",
+        "[TRD-MACD] Bullish histogram expanding (hist=1287.943) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.365, conf: 3.6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-10-09T00:00:00.000Z",
+      "price": 121662.4,
+      "signal": "BUY",
+      "confidence": 4.2,
+      "outcome": "LOSS",
+      "maxMovePct": 0.7295598311392886,
+      "minMovePct": -16.16144346979839,
+      "portfolioValue": 1027.5970103177747,
+      "pnl": 27.597010317774675,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=30.4) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-MOM] h1=11.6% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=709.175) — trend confirmed",
+        "[DECISION] BUY (score: 0.420, conf: 4.2/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2025-10-10T00:00:00.000Z",
+      "price": 112774.5,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "WIN",
+      "maxMovePct": 2.656185573866433,
+      "minMovePct": -2.8489685168189647,
+      "portfolioValue": 966.1173777540705,
+      "pnl": -33.8826222459295
+    },
+    {
+      "timestamp": "2026-01-05T00:00:00.000Z",
+      "price": 93859.71,
+      "signal": "BUY",
+      "confidence": 6.2,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.6229829604203933,
+      "minMovePct": -3.392499294958404,
+      "portfolioValue": 962.4944375874927,
+      "pnl": -37.50556241250729,
+      "reasoning": [
+        "[MODE] 〰️ REV→MOM (ADX=21.7) [rev=0.07 mom=0.93 trend=0.00]",
+        "[REV-BB] Above upper band (PB=1.24) 🔴 FADE",
+        "[REV-PAT] Bullish reversal at lows",
+        "[MOM-RSI] Bull momentum zone (65.4) — trend has room",
+        "[MOM-MACD] Bullish histogram expanding (hist=800.878)",
+        "[MOM-H1] Strong upward momentum h1=5.9%",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.620, conf: 6.2/10, mode: 〰️ REV→MOM)"
+      ]
+    },
+    {
+      "timestamp": "2026-01-08T00:00:00.000Z",
+      "price": 91099.99,
+      "signal": "BUY",
+      "confidence": 4.7,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.0785511612021006,
+      "minMovePct": -1.542623660002599,
+      "portfolioValue": 952.782164376398,
+      "pnl": -47.217835623602014,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=24.3) [rev=0.00 mom=0.92 trend=0.08]",
+        "[MOM-MACD] Bullish histogram expanding (hist=571.656)",
+        "[MOM-PAT] Bull flag — momentum continuation",
+        "[TRD-MOM] h1=4.4% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=571.656) — trend confirmed",
+        "[DECISION] BUY (score: 0.471, conf: 4.7/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2026-01-17T00:00:00.000Z",
+      "price": 95147.77,
+      "signal": "BUY",
+      "confidence": 6,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 0.40289961603933677,
+      "minMovePct": -3.4026756486252983,
+      "portfolioValue": 968.9322194687965,
+      "pnl": -31.06778053120354,
+      "reasoning": [
+        "[MODE] 📈 TRENDING (ADX=34.0) [rev=0.00 mom=0.00 trend=1.00]",
+        "[TRD-EMA] Bullish: price > EMA20 > EMA50",
+        "[TRD-ADX] Strong uptrend ADX=34.0",
+        "[TRD-MOM] h1=5.0% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=514.751) — trend confirmed",
+        "[DECISION] BUY (score: 0.600, conf: 6/10, mode: 📈 TRENDING)"
+      ]
+    },
+    {
+      "timestamp": "2026-01-20T00:00:00.000Z",
+      "price": 88427.66,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 2.427226955909493,
+      "minMovePct": -1.3164772199106078,
+      "portfolioValue": 921.4594471070228,
+      "pnl": -78.54055289297719
+    },
+    {
+      "timestamp": "2026-03-15T00:00:00.000Z",
+      "price": 72815.24,
+      "signal": "BUY",
+      "confidence": 4.9,
+      "outcome": "WIN",
+      "maxMovePct": 4.373754724972402,
+      "minMovePct": -0.7482362208790381,
+      "portfolioValue": 918.0039741803715,
+      "pnl": -81.99602581962847,
+      "reasoning": [
+        "[MODE] 〰️ MOM→TREND (ADX=25.3) [rev=0.00 mom=0.67 trend=0.33]",
+        "[MOM-MACD] Bullish histogram expanding (hist=801.736)",
+        "[MOM-H1] Strong upward momentum h1=10.7%",
+        "[TRD-MOM] h1=10.7% bullish",
+        "[TRD-MACD] Bullish histogram expanding (hist=801.736) — trend confirmed",
+        "[CONF] m1+m5+h1 all bullish → 1.35x",
+        "[DECISION] BUY (score: 0.487, conf: 4.9/10, mode: 〰️ MOM→TREND)"
+      ]
+    },
+    {
+      "timestamp": "2026-03-22T00:00:00.000Z",
+      "price": 67859,
+      "signal": "SELL",
+      "confidence": 10,
+      "outcome": "LOSS",
+      "maxMovePct": 5.83281510190247,
+      "minMovePct": -0.6098233100988918,
+      "portfolioValue": 899.3871976283183,
+      "pnl": -100.61280237168171
+    },
+    {
+      "timestamp": "2026-03-27T00:00:00.000Z",
+      "price": 66407.28,
+      "signal": "BUY",
+      "confidence": 4.7,
+      "outcome": "NEUTRAL",
+      "maxMovePct": 1.3276556425741328,
+      "minMovePct": -2.1191652481474907,
+      "portfolioValue": 896.0144956372121,
+      "pnl": -103.98550436278788,
+      "reasoning": [
+        "[MODE] ↔️ REVERSION (ADX=16.6) [rev=1.00 mom=0.00 trend=0.00]",
+        "[REV-BB] Lower band extreme (PB=0.05) → BUY",
+        "[DECISION] BUY (score: 0.470, conf: 4.7/10, mode: ↔️ REVERSION)"
+      ]
+    }
+  ]
+}

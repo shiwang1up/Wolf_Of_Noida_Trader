@@ -359,13 +359,21 @@ class IndicatorService {
         }
 
         // Momentum changes - Adapt offsets based on timeframe
-        const MOMENTUM_OFFSETS = timeframe === '1h' 
+        const MOMENTUM_OFFSETS = timeframe === '1h'
             ? {
                 M1_CANDLES: 1,   // 1h
                 M5_CANDLES: 5,   // 5h
                 H1_CANDLES: 1,   // 1h (redundant but kept for structure)
                 H4_CANDLES: 4,   // 4h
                 D1_CANDLES: 24,  // 1d
+            }
+            : (timeframe === '1d' || timeframe === '3d' || timeframe === '1w' || timeframe === '1M')
+            ? {
+                M1_CANDLES: 1,   // 1d back — yesterday's return
+                M5_CANDLES: 7,   // 1 week
+                H1_CANDLES: 14,  // 2 weeks (not 60 days — catches corrections faster)
+                H4_CANDLES: 30,  // 1 month
+                D1_CANDLES: 90,  // 3 months
             }
             : {
                 M1_CANDLES: 1,   // 1m
